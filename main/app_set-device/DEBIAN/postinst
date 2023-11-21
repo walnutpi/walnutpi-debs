@@ -1,0 +1,8 @@
+#!/bin/bash
+
+bash_str="source /etc/bash_completion.d/set-device"
+if ! grep -q  "${bash_str}"  /etc/bash.bashrc; then
+    echo ${bash_str} >> /etc/bash.bashrc
+fi
+
+

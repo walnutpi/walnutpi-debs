@@ -1,0 +1,12 @@
+#!/bin/bash
+
+if [[ -f /etc/lightdm/lightdm.conf ]]; then
+    if grep -q "^autologin-user=pi" /etc/lightdm/lightdm.conf; then
+        sudo sed -i 's/^autologin-user=pi/#autologin-user=/g' /etc/lightdm/lightdm.conf
+    fi
+    
+    if grep -q "^autologin-user-timeout=0" /etc/lightdm/lightdm.conf; then
+        sudo sed -i 's/^autologin-user-timeout=0/#autologin-user-timeout=/g' /etc/lightdm/lightdm.conf
+    fi
+fi
+

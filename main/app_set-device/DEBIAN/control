@@ -1,8 +1,8 @@
-Package: check1
-Description: check1
+Package: set-device
+Description: Modifying the /boot/config.txt file about overlays
 Version: 1.0.0
 Maintainer: sc-bin <3335447573@qq.com>
 Section: free
 Priority: optional
-Installed-Size: 16
+Installed-Size: 28
 Architecture: all

@@ -1,0 +1,9 @@
+#!/bin/bash
+
+str="127.0.0.1 WalnutPi"
+
+if ! grep -q "$str" "/etc/hosts" ; then
+    echo $str | sudo tee -a /etc/hosts
+fi
+
+# echo "127.0.0.1 WalnutPi"| sudo tee -a /etc/hosts

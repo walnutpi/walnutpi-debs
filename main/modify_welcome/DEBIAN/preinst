@@ -1,0 +1,10 @@
+#!/bin/bash
+
+if [[ -d /etc/update-motd.d/ ]]; then
+    mkdir /etc/bak.update-motd.d/ 
+    mv /etc/update-motd.d/* /etc/bak.update-motd.d/ 
+fi
+
+if [[ -f /etc/motd ]]; then
+    mv /etc/motd /etc/bak.motd
+fi
