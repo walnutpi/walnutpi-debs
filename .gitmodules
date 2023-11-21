@@ -1,0 +1,3 @@
+[submodule "main/set-lcd/opt/set-lcd"]
+	path = main/set-lcd/opt/set-lcd
+	url = https://github.com/walnutpi/set-lcd.git
