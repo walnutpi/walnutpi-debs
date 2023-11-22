@@ -1,6 +1,0 @@
-#!/bin/bash
-if [[ -f /etc/lightdm/lightdm.conf ]]; then
-    sudo sed -i 's/^#autologin-user=.*/autologin-user=pi/g' /etc/lightdm/lightdm.conf
-    sudo sed -i 's/^#autologin-user-timeout=.*/autologin-user-timeout=0/g' /etc/lightdm/lightdm.conf
-fi
-

@@ -1,0 +1,8 @@
+Package: service-h616-mac-detect
+Description: service, keep the ac200 mac same as chip generate
+Version: 1.0.2
+Maintainer: sc-bin <3335447573@qq.com>
+Section: free
+Priority: optional
+Installed-Size: 36
+Architecture: all

@@ -1,4 +1,0 @@
-#!/bin/bash
-
-echo "192.168.2.33:/nfs /mnt nfs  defaults 0 0" >> /etc/fstab
-echo "deb [trusted=yes] http://192.168.2.33/debian/ bookworm main" >> /etc/apt/sources.list

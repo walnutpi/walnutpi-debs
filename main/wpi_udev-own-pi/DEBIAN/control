@@ -1,8 +1,0 @@
-Package: wpi-udev-own-pi
-Description: Modifying the udev owner to pi
-Version: 1.0.0
-Maintainer: sc-bin <3335447573@qq.com>
-Section: free
-Priority: optional
-Installed-Size: 20
-Architecture: all

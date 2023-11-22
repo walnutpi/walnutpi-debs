@@ -1,0 +1,3 @@
+#!/bin/bash
+
+systemctl enable h616_mac_detect.service

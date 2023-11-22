@@ -1,0 +1,16 @@
+#!/bin/bash
+if [[ -f /etc/lightdm/lightdm.conf ]]; then
+    sudo sed -i 's/^#autologin-user=.*/autologin-user=pi/g' /etc/lightdm/lightdm.conf
+    sudo sed -i 's/^#autologin-user-timeout=.*/autologin-user-timeout=0/g' /etc/lightdm/lightdm.conf
+fi
+
+
+if grep -q "^os_type=server" /etc/WalnutPi-release; then
+    sudo systemctl disable lightdm.service
+
+    mv /usr/share/xsessions/lightdm-xsession.tmp  /usr/share/xsessions/lightdm-xsession.desktop 
+
+    file="/etc/lightdm/lightdm.conf"
+    
+    sed -i 's/^#xserver-command=X/xserver-command=X -s 0 -dpms/g' $file
+fi

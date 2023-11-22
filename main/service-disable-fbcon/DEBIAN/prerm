@@ -1,0 +1,3 @@
+#!/bin/bash
+systemctl stop fbcon_dis.service
+systemctl disable fbcon_dis.service

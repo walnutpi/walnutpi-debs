@@ -1,9 +1,0 @@
-Package: wpi-welcome-info
-Description: Modifying the welcome info
-Version: 1.0.1
-Maintainer: sc-bin <3335447573@qq.com>
-Section: free
-Priority: optional
-Installed-Size: 80
-Architecture: all
-Depends: toilet

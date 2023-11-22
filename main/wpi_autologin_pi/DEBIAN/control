@@ -1,8 +1,0 @@
-Package: wpi-autologin-pi
-Description: setting autologin user is pi
-Version: 1.0.1
-Maintainer: sc-bin <3335447573@qq.com>
-Section: free
-Priority: optional
-Installed-Size: 4
-Architecture: all

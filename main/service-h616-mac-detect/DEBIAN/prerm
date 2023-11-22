@@ -1,0 +1,3 @@
+#!/bin/bash
+systemctl stop h616_mac_detect.service
+systemctl disable h616_mac_detect.service
