@@ -3,10 +3,7 @@
 ```
 git clone https://github.com/walnutpi/set-lcd.git
 ```
-拉取子模块
-```
-./pull.sh
-```
+
 
 ## 1. 生成
 生成一个`output`文件夹，输出相关文件
