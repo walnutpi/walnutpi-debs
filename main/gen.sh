@@ -9,7 +9,6 @@ if [[ -d $OUTPUT_DIR ]]; then
     rm -r  $OUTPUT_DIR
 fi
 
-
 if [[ ! -d ${OUTPUT_DIR} ]]; then
     mkdir ${OUTPUT_DIR}
 fi
@@ -19,9 +18,15 @@ for dir in ${SCRIPT_DIR}/*/ ; do
     if [[ $dir == ${OUTPUT_DIR}/ ]]; then
         continue
     fi
-
-    cd "$dir"
     
+    cd $dir
+    
+    # 检查DEBIAN/gen.sh文件是否存在，如果存在就运行它
+    if [[ -f DEBIAN/gen.sh ]]; then
+        cd DEBIAN
+        bash gen.sh
+        cd $dir
+    fi
     package_name=$(grep -oP '(?<=Package: ).*' DEBIAN/control)
     version=$(grep -oP '(?<=Version: ).*' DEBIAN/control)
     architecture=$(grep -oP '(?<=Architecture: ).*' DEBIAN/control)

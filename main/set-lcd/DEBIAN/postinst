@@ -1,4 +1,6 @@
 #!/bin/bash
+
+
 cd /opt/set-lcd
 chmod +x install
 ./install

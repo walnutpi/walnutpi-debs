@@ -8,29 +8,30 @@ fi
 mkdir ${OUTPUT}
 
 
-#################################
-#           生成deb包           #
-#################################
+# 生成deb包
 mkdir ${OUTPUT}/main
-./main/gen.sh
-cp main/output/*.deb ${OUTPUT}/main/
+bash ${PATH_PWD}/main/gen.sh
+cp ${PATH_PWD}/main/output/*.deb ${OUTPUT}/main/
 
-
-mkdir ${OUTPUT}/arm64
-./arm64/gen.sh
-cp arm64/output/*.deb ${OUTPUT}/arm64/
-
-
-#################################
-#           生成dists           #
-#################################
-cd ${OUTPUT}
+# 生成包索引
 bin_all=${OUTPUT}/dists/bookworm/main/binary-all
-bin_arm64=${OUTPUT}/dists/bookworm/main/binary-arm64
 mkdir  -p ${bin_all}
-mkdir  -p ${bin_arm64}
+cd ${OUTPUT}
 dpkg-scanpackages main /dev/null > ${bin_all}/Packages
+
+
+
+# 生成deb包
+mkdir ${OUTPUT}/arm64
+bash ${PATH_PWD}/arm64/gen.sh
+cp ${PATH_PWD}/arm64/output/*.deb ${OUTPUT}/arm64/
+
+# 生成包索引
+bin_arm64=${OUTPUT}/dists/bookworm/main/binary-arm64
+mkdir  -p ${bin_arm64}
+cd ${OUTPUT}
 dpkg-scanpackages arm64 /dev/null > ${bin_arm64}/Packages
+
 
 # dpkg-scanpackages main  /dev/null | gzip> ${bin_all}/Packages.gz 
 # dpkg-scanpackages arm64  /dev/null | gzip> ${bin_arm64}/Packages.gz 
