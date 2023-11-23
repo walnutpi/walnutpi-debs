@@ -1,0 +1,6 @@
+#!/bin/bash
+
+mv /home/pi/.config /home/pi/.bak.config 
+mv /home/pi/.local /home/pi/.bak.local 
+mv /root/.config /root/.bak.config 
+mv /root/.local /root/.bak.local 

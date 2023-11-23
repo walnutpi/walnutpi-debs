@@ -1,0 +1,4 @@
+#!/bin/bash
+
+mv /usr/share/bak.chromium /usr/share/chromium 
+mv /etc/bak.chromium /etc/chromium 

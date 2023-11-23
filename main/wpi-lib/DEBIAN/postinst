@@ -1,5 +1,6 @@
 #!/bin/bash
 
+set -e
 
 cd /opt
 
@@ -14,3 +15,5 @@ echo "WiringPi"
 cd WiringPi/
 ./build
 
+
+echo -e "\nready"
