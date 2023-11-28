@@ -1,0 +1,19 @@
+#!/bin/bash
+
+set -e
+
+cd /opt
+
+echo "aw.gpio"
+pip3 --no-cache-dir install -e aw.gpio/ 
+
+echo "Adafruit_Blinka"
+pip3 --no-cache-dir install -e Adafruit_Blinka/ 
+
+
+echo "WiringPi"
+cd WiringPi/
+./build
+
+
+echo -e "\nready"

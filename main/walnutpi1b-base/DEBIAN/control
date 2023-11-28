@@ -1,0 +1,9 @@
+Package: walnutpi1b-base
+Description: walnutpi base setting
+Version: 1.0.1
+Maintainer: sc-bin <3335447573@qq.com>
+Section: free
+Priority: optional
+Installed-Size: 4
+Architecture: all
+Depends: wpi-user, wpi-host-name, wpi-welcome-info, wpi-lightdm

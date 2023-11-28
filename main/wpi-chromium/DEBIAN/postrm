@@ -1,4 +1,9 @@
 #!/bin/bash
 
-mv /usr/share/bak.chromium /usr/share/chromium 
-mv /etc/bak.chromium /etc/chromium 
+if [[ -d /usr/share/bak.chromium ]]; then
+    mv /usr/share/bak.chromium /usr/share/chromium
+fi
+if [[ -d /etc/bak.chromium ]]; then
+    mv /etc/bak.chromium /etc/chromium
+fi
+

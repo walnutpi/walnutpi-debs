@@ -1,6 +1,17 @@
 #!/bin/bash
 
-mv /home/pi/.config /home/pi/.bak.config 
-mv /home/pi/.local /home/pi/.bak.local 
-mv /root/.config /root/.bak.config 
-mv /root/.local /root/.bak.local 
+if [[ -d /home/pi/.config ]]; then
+    cp -r /home/pi/.config /home/pi/.bak.config
+fi
+if [[ -d /home/pi/.local ]]; then
+    cp -r /home/pi/.local /home/pi/.bak.local
+fi
+if [[ -d /root/.config ]]; then
+    cp -r /root/.config /root/.bak.config
+fi
+
+if [[ -d /root/.local ]]; then
+    cp -r /root/.local /root/.bak.local
+    
+fi
+

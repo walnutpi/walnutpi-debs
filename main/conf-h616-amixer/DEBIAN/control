@@ -1,6 +1,6 @@
 Package: conf-h616-amixer
 Description: conf amixer
-Version: 1.0.1
+Version: 1.0.0
 Maintainer: sc-bin <3335447573@qq.com>
 Section: free
 Priority: optional
