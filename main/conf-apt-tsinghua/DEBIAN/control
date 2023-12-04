@@ -1,8 +1,9 @@
-Package: conf-apt-tsinghua
-Description: add the tsinghua sources to apt sources.list
+Package: conf-google-pinyin
+Description: enable google pinyin
 Version: 1.0.0
 Maintainer: sc-bin <3335447573@qq.com>
 Section: free
 Priority: optional
 Installed-Size: 4
 Architecture: all
+Depends: fcitx-googlepinyin

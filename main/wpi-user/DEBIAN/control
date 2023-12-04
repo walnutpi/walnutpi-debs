@@ -1,8 +1,8 @@
 Package: wpi-user
 Description: walnutpi user setting
-Version: 1.0.1
+Version: 1.0.2
 Maintainer: sc-bin <3335447573@qq.com>
 Section: free
 Priority: optional
-Installed-Size: 40
+Installed-Size: 48
 Architecture: all

@@ -1,10 +1,8 @@
 #!/bin/bash
 
-echo "修改管理员密码"
 password="root"
 echo "$USER:$password" | chpasswd
 
-echo "创建pi用户"
 useradd -m pi
 echo "pi:pi" |  chpasswd
 usermod -aG sudo pi
