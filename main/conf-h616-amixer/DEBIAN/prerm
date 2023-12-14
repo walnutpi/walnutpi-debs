@@ -1,0 +1,3 @@
+#!/bin/bash
+systemctl stop h616_enable_amixer.service
+systemctl disable h616_enable_amixer.service
