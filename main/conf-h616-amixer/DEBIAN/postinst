@@ -1,3 +1,0 @@
-#!/bin/bash
-
-systemctl enable h616_enable_amixer.service

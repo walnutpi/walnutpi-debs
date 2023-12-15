@@ -1,0 +1,7 @@
+#!/bin/bash
+
+systemctl enable h616_enable_amixer.service
+
+[[ -f /usr/share/pulseaudio/alsa-mixer/profile-sets/default.conf ]] && sed -i "s/auto-profiles = yes/auto-profiles = no/" /usr/share/pulseaudio/alsa-mixer/profile-sets/default.conf
+[[ -f /etc/pulse/default.pa ]] && echo "load-module module-alsa-sink device=hw:audiocodec sink_name=AudioCodec-Playback sink_properties=\"device.description='Audio Codec'\"" >> /etc/pulse/default.pa
+[[ -f /etc/pulse/default.pa ]] && echo "load-module module-alsa-sink device=hw:ahubhdmi sink_name=HDMI-Playback sink_properties=\"device.description='HDMI Audio'\"" >>  /etc/pulse/default.pa

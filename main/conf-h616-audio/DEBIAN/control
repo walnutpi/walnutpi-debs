@@ -1,5 +1,5 @@
-Package: conf-h616-amixer
-Description: conf amixer
+Package: conf-h616-audio
+Description: conf audio
 Version: 1.0.0
 Maintainer: sc-bin <3335447573@qq.com>
 Section: free
