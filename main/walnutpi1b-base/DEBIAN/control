@@ -1,6 +1,6 @@
 Package: walnutpi1b-base
-Description: walnutpi base setting
-Version: 1.0.1
+Description: walnutpi 1b base
+Version: 1.0.0
 Maintainer: sc-bin <3335447573@qq.com>
 Section: free
 Priority: optional
