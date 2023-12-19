@@ -6,4 +6,3 @@ Section: free
 Priority: optional
 Installed-Size: 60
 Architecture: all
-Depends: alsa-utils
