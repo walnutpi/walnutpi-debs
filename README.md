@@ -1,7 +1,8 @@
-# debs-walnutpi
+# walnutpi-debs
+此项目保存了核桃派官方apt源内的所有包，`walnutpi-build`
 ## clone
 ```
-git clone https://github.com/walnutpi/set-lcd.git
+git clone https://github.com/walnutpi/walnutpi-debs.git
 ```
 
 
@@ -23,7 +24,7 @@ sudo  vim /etc/nginx/sites-enabled/default
 在`server`中添加一个`location`项，将路径指向本项目的outpu文件夹
 ```
     location /debian {
-        alias /xxx/debs-walnutpi/output;
+        alias /xxx/walnutpi-debs/output;
         autoindex on;
     }
 ```
