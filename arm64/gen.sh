@@ -6,6 +6,10 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 OUTPUT_DIR="${SCRIPT_DIR}/output"
 SAVE_DIR="${SCRIPT_DIR}/save"
 
+if [[ -d $OUTPUT_DIR ]]; then
+    rm -r  $OUTPUT_DIR
+fi
+
 [[ ! -d ${OUTPUT_DIR} ]] && mkdir ${OUTPUT_DIR}
 
 [[ -d $SAVE_DIR ]] && cp ${SAVE_DIR}/*  ${OUTPUT_DIR}
@@ -43,14 +47,14 @@ for dir in ${SCRIPT_DIR}/*/ ; do
     
     deb_file="${OUTPUT_DIR}/${package_name}_${version}_${architecture}.deb"
     
-    # 检查deb包是否存在，如果存在并且生成时间晚于文件夹的修改时间，就跳过这个包
-    if [[ -f $deb_file ]]; then
-        deb_time=$(stat -c %Y "$deb_file")
-        dir_time=$(find "$dir" -type f -exec stat -c %Y {} \; | sort -nr | head -1)
-        if (( deb_time >= dir_time )); then
-            continue
-        fi
-    fi
+    # # 检查deb包是否存在，如果存在并且生成时间晚于文件夹的修改时间，就跳过这个包
+    # if [[ -f $deb_file ]]; then
+    #     deb_time=$(stat -c %Y "$deb_file")
+    #     dir_time=$(find "$dir" -type f -exec stat -c %Y {} \; | sort -nr | head -1)
+    #     if (( deb_time >= dir_time )); then
+    #         continue
+    #     fi
+    # fi
     
     cd ..
     dpkg -b "$dir" "$deb_file"
