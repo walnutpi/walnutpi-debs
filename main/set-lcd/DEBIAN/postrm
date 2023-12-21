@@ -1,6 +1,8 @@
 #!/bin/bash
 
-if [[ -d "/opt/set-lcd" ]]; then
-    echo "clean the git project"
-    rm -r /opt/set-lcd
+if [ "$1" = "remove" ]  ; then
+    if [[ -d "/opt/set-lcd" ]]; then
+        echo "clean the git project"
+        rm -r /opt/set-lcd
+    fi
 fi

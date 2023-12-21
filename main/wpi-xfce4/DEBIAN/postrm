@@ -1,16 +1,18 @@
 #!/bin/bash
 
-
-if [[ -d /home/pi/.bak.config ]]; then
-    mv /home/pi/.bak.config /home/pi/.config
-fi
-if [[ -d /home/pi/.bak.local ]]; then
-    mv /home/pi/.bak.local /home/pi/.local
-fi
-if [[ -d /root/.bak.config ]]; then
-    mv /root/.bak.config /root/.config
-fi
-
-if [[ -d /root/.bak.local ]]; then
-    mv /root/.bak.local /root/.local
+if [ "$1" = "remove" ]  ; then
+    
+    if [[ -d /home/pi/.bak.config ]]; then
+        mv /home/pi/.bak.config /home/pi/.config
+    fi
+    if [[ -d /home/pi/.bak.local ]]; then
+        mv /home/pi/.bak.local /home/pi/.local
+    fi
+    if [[ -d /root/.bak.config ]]; then
+        mv /root/.bak.config /root/.config
+    fi
+    
+    if [[ -d /root/.bak.local ]]; then
+        mv /root/.bak.local /root/.local
+    fi
 fi

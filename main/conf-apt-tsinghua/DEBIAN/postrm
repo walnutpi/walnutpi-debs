@@ -1,6 +1,8 @@
 #!/bin/bash
 
-
-if [[ -f /etc/apt/bak.sources.list ]]; then
-    mv /etc/apt/bak.sources.list  /etc/apt/sources.list
+if [ "$1" = "remove" ]  ; then
+    
+    if [[ -f /etc/apt/bak.sources.list ]]; then
+        mv /etc/apt/bak.sources.list  /etc/apt/sources.list
+    fi
 fi

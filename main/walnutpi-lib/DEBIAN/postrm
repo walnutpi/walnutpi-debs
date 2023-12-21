@@ -1,14 +1,15 @@
 #!/bin/bash
-
-if [[ -d "/opt/Adafruit_Blinka" ]]; then
-    echo "clean the git project: Adafruit_Blinka"
-    rm -r /opt/Adafruit_Blinka
-fi
-if [[ -d "/opt/aw.gpio" ]]; then
-    echo "clean the git project: aw.gpio"
-    rm -r /opt/aw.gpio
-fi
-if [[ -d "/opt/WiringPi" ]]; then
-    echo "clean the git project: WiringPi"
-    rm -r /opt/WiringPi
+if [ "$1" = "remove" ]  ; then
+    if [[ -d "/opt/Adafruit_Blinka" ]]; then
+        echo "clean the git project: Adafruit_Blinka"
+        rm -r /opt/Adafruit_Blinka
+    fi
+    if [[ -d "/opt/aw.gpio" ]]; then
+        echo "clean the git project: aw.gpio"
+        rm -r /opt/aw.gpio
+    fi
+    if [[ -d "/opt/WiringPi" ]]; then
+        echo "clean the git project: WiringPi"
+        rm -r /opt/WiringPi
+    fi
 fi
