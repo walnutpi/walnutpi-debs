@@ -4,22 +4,7 @@
 for dir in */; do
     # 检查是否存在DEBIAN/control文件
     if [[ -f "${dir}DEBIAN/control" ]]; then
-        # 使用awk命令修改版本号的第三位
-        awk -F'[:.]' '
-            BEGIN {OFS="";}
-            /Version/ {
-                $2=": ";
-                $6+=1;
-                if ($6 == 10) {
-                    $6 = 0;
-                    $4+=1;
-                    if ($4 == 10) {
-                        $4 = 0;
-                        $2+=1;
-                    }
-                }
-            }
-            {print $0}
-        ' "${dir}DEBIAN/control" > temp && mv temp "${dir}DEBIAN/control"
+        # 使用perl命令修改版本号的第三位
+        perl -i -pe 's/(Version: \d+\.\d+\.)(\d+)/$1.($2+1)/e' "${dir}DEBIAN/control"
     fi
 done

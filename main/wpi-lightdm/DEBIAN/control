@@ -1,6 +1,6 @@
 Package: wpi-lightdm
 Description: setting the lightdm autologin as pi.run ternimal in server 
-Version: 1.0.2
+Version: 1.0.0
 Maintainer: sc-bin <3335447573@qq.com>
 Section: free
 Priority: optional

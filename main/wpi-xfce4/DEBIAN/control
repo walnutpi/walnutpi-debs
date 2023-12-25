@@ -1,9 +1,9 @@
 Package: wpi-xfce4
 Description: xfce4 conf
-Version: 1.0.2
+Version: 1.0.0
 Maintainer: sc-bin <3335447573@qq.com>
 Section: free
 Priority: optional
-Installed-Size: 1440
+Installed-Size: 1416
 Architecture: all
 Depends: xfce4, thonny
