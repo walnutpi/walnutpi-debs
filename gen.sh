@@ -7,6 +7,7 @@ if [[ -d $OUTPUT ]]; then
 fi
 mkdir ${OUTPUT}
 
+cp release.log ${OUTPUT}/
 
 # 生成deb包
 mkdir ${OUTPUT}/main
