@@ -1,15 +1,15 @@
 # walnutpi-debs
-此项目保存了核桃派官方apt源内的所有包
+核桃派官方的apt服务器，就是连接到这个server文件夹内的
+
+# 项目使用方式
 ## clone
 ```
 git clone https://github.com/walnutpi/walnutpi-debs.git
 ```
-
-
-## 1. 生成
-生成一个`server`文件夹，输出相关文件
+## 1. 生成相关格式
+生成一个`server`文件夹，输出相关文件。这个脚本会扫描每个包的`DEBIAN/control`文件内的版本号，若版本号跟现有包相同，则跳过
 ```
-./gen.sh
+./build.sh
 ```
 ## 2. 配置nginx
 安装nginx
@@ -21,7 +21,7 @@ sudo apt install nginx
 ```bash
 sudo  vim /etc/nginx/sites-enabled/default
 ```
-在`server`中添加一个`location`项，将路径指向本项目的outpu文件夹
+在`server`中添加一个`location`项，将路径指向本项目的server文件夹
 ```
     location /debian {
         alias /xxx/walnutpi-debs/server;
