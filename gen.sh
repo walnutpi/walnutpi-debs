@@ -7,7 +7,8 @@ if [[ -d $OUTPUT ]]; then
 fi
 mkdir ${OUTPUT}
 
-cp release.log ${OUTPUT}/
+cp release-cn.log ${OUTPUT}/
+cp release-en.log ${OUTPUT}/
 cp wpi-update ${OUTPUT}/
 
 # 生成deb包

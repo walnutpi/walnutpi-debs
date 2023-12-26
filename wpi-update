@@ -1,11 +1,13 @@
 #!/bin/bash
 THIS_SCRIPT_VERSION=1.0
-THIS_SCRIPT_URL="http://apt.walnutpi.com/debian/wpi-update"
+THIS_SCRIPT_URL="http://192.168.2.33/debian/wpi-update"
 THIS_SCRIPT_SAVE="/tmp/wpi-update-air"
 
-SOURCE_STR="deb [trusted=yes] http://apt.walnutpi.com/debian/ bookworm main"
+SOURCE_STR="deb [trusted=yes] http://192.168.2.33/debian/ bookworm main"
 TMP_SOURCE_FILE="/tmp/wpi-update-source"
-LOG_URL="http://apt.walnutpi.com/debian/release.log"
+LOG_URL_CN="http://192.168.2.33/debian/release-cn.log"
+LOG_URL_EN="http://192.168.2.33/debian/release-en.log"
+LOG_URL=""
 RELEASE_FILE="/etc/WalnutPi-release"
 FILE_LOG_SAVE="/tmp/wpi-update-update.log"
 FILE_PACKAGES="/tmp/wpi-update-packages.txt"
@@ -43,8 +45,65 @@ echo_blue() {
 }
 
 
+echo_auto_detect() {
+    str_cn=$1
+    str_en=$2
+    if [[ $LANG ==  zh_CN* ]]; then
+        echo -e $str_cn
+    else
+        echo -e $str_en
+    fi
+}
+
+declare -A STR_CN
+declare -A STR_EN
+declare -A STR_AUTO
+
+STR_CN['sudo_warn']="\n\t请使用sudo来运行本指令\n"
+STR_EN['sudo_warn']="\n\tError:  please use sudo !\n"
+
+STR_CN['version_newest_h']="\n\t你的系统版本已经是最新的  ,无需更新\n"
+STR_CN['version_newest_l']="  ,无需更新\n"
+STR_EN['version_newest_h']="\n\tYour system version is already up to "
+STR_EN['version_newest_l']="  ,No need to update\n"
+
+STR_CN['backup_warn']=$(cat <<- 'EOF'
+\t=================================
+\t||前注意备份好个人数据,以免发生意外
+\t=================================
+EOF
+)
+STR_EN['backup_warn']=$(cat <<- 'EOF'
+\t========================================================
+\tBe sure to back up your personal data to avoid accidents
+\t========================================================
+EOF
+)
+STR_CN['are_u_redy']="您希望继续执行吗？"
+STR_EN['are_u_redy']="Do you want to continue?"
+
+STR_CN['abort']="中止"
+STR_EN['abort']="Abort"
+
+STR_CN['install_error']="ERROR: 获取不到可更新的包"
+STR_EN['install_error']="ERROR: Could not get updatable package"
+
+
+if [[ $LANG ==  zh_CN* ]]; then
+    LOG_URL=$LOG_URL_CN
+    for key in "${!STR_CN[@]}"; do
+        STR_AUTO[$key]="${STR_CN[$key]}"
+    done
+else
+    LOG_URL=$LOG_URL_EN
+    for key in "${!STR_EN[@]}"; do
+        STR_AUTO[$key]="${STR_EN[$key]}"
+    done
+fi
+
+
 if [[ $EUID -ne 0 ]]; then
-    echo -e "\n\tError:  please use sudo !\n"
+    echo -e "${STR_AUTO['sudo_warn']}"
     exit 1
 fi
 
@@ -71,10 +130,8 @@ if [[ $FLAG != "no_update" ]]; then
     # echo "新版本=$NEW_SCRIPT_VERSION"
     if [[ "$NEW_SCRIPT_VERSION" > "$THIS_SCRIPT_VERSION" ]]; then
         cp $THIS_SCRIPT_SAVE $0
-        # echo "脚本已更新到版本 $NEW_SCRIPT_VERSION。"
         exec bash $0 no_update
-    # else
-    #     echo "当前脚本已是最新版本。"
+        
     fi
 fi
 
@@ -103,37 +160,31 @@ NEW_VERSION=$(grep -o '\[[^]]*\] - [^ ]*' $FILE_LOG_SAVE | head -n 1 | awk '{pri
 
 
 if [ -z "$HAS_NEW" ]; then
-    echo -e "\n\t你的系统版本已经是最新的 [${NEW_VERSION}] ,无需更新\n"
+    echo -e  "${STR_AUTO['version_newest_h']}[${NEW_VERSION}]${STR_AUTO['version_newest_l']}"
     exit 0
 fi
 
-
+# 输出是否安装的提示语
 clear
 echo -e "[${BOARD_VER}] -> \033[32m[${NEW_VERSION}]\033[0m"
-echo ""
-echo -e "\t=================================================="
-echo -e "\t本工具基于apt,对核桃派官方提供的系统配置包进行更新"
-echo -e "\t更新前注意备份好个人数据,以免发生意外"
-echo -e "\t=================================================="
-echo ""
+echo -e "${STR_AUTO['backup_warn']}"
 
-# echo "更新日志如下:"
 sed -n "1,/\\[$LAST_DATE\\]/p" $FILE_LOG_SAVE | sed '/\['$LAST_DATE'\]/d'
-read -p "您希望继续执行吗？ [Y/n]" CHOICE
-if [ "$CHOICE" != "y" ]; then
-    echo "退出。"
+echo -n "${STR_AUTO['are_u_redy']} "
+read -p "[Y/n]" CHOICE
+if [[ "$CHOICE" != "y" && "$CHOICE" != "Y" ]]; then
+    echo -e "${STR_AUTO['abort']}."
     exit 1
 fi
 
 
-# 获取更新，存进文件
+# 获取更新，安装
 run_status "get the package info ..." apt-get update -o Dir::Etc::sourcelist="$TMP_SOURCE_FILE" -o Dir::Etc::sourceparts="-" -o APT::Get::List-Cleanup="0"
 apt-get --just-print upgrade -o Dir::Etc::sourcelist="$TMP_SOURCE_FILE" -o Dir::Etc::sourceparts="-" -o APT::Get::List-Cleanup="0" | grep 'Inst' | cut -d ' ' -f 2 >  $FILE_PACKAGES
 if [ ! -s $FILE_PACKAGES ]; then
-    echo "获取更新失败"
+    echo -e "${STR_AUTO['install_error']}."
     exit 1
 fi
-# 从文件中读取包的名称
 while read PACKAGE_NAME; do
     run_status "install $PACKAGE_NAME"  apt-get install -o Dir::Etc::sourcelist="$TMP_SOURCE_FILE" -o Dir::Etc::sourceparts="-" -o APT::Get::List-Cleanup="0" $PACKAGE_NAME
 done < $FILE_PACKAGES
