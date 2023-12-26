@@ -1,12 +1,12 @@
 #!/bin/bash
 THIS_SCRIPT_VERSION=1.0
-THIS_SCRIPT_URL="http://192.168.2.33/debian/wpi-update"
+THIS_SCRIPT_URL="http://http://apt.walnutpi.com//debian/wpi-update"
 THIS_SCRIPT_SAVE="/tmp/wpi-update-air"
 
-SOURCE_STR="deb [trusted=yes] http://192.168.2.33/debian/ bookworm main"
+SOURCE_STR="deb [trusted=yes] http://http://apt.walnutpi.com//debian/ bookworm main"
 TMP_SOURCE_FILE="/tmp/wpi-update-source"
-LOG_URL_CN="http://192.168.2.33/debian/release-cn.log"
-LOG_URL_EN="http://192.168.2.33/debian/release-en.log"
+LOG_URL_CN="http://http://apt.walnutpi.com//debian/release-cn.log"
+LOG_URL_EN="http://http://apt.walnutpi.com//debian/release-en.log"
 LOG_URL=""
 RELEASE_FILE="/etc/WalnutPi-release"
 FILE_LOG_SAVE="/tmp/wpi-update-update.log"
