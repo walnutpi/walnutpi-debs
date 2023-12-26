@@ -1,0 +1,52 @@
+Package: hcitools
+Version: 1.0.0
+Architecture: arm64
+Maintainer: sc-bin <3335447573@qq.com>
+Installed-Size: 992
+Filename: arm64/hcitools_1.0.0_arm64.deb
+Size: 233428
+MD5sum: 7c1db86ab27514c6087f472ba806f908
+SHA1: 9fbdfcf187259ff353eda98b8eb9b8b1bd3ab5bb
+SHA256: 459f085a7e7b502c6e020a052b961a28231ced81f52cfc46315f70244c781229
+Section: free
+Priority: optional
+Description: hcitools is used to control bluetooth
+
+Package: python3-sudo
+Version: 1.0.0
+Architecture: arm64
+Maintainer: sc-bin <3335447573@qq.com>
+Installed-Size: 92
+Filename: arm64/python3-sudo_1.0.0_arm64.deb
+Size: 3698
+MD5sum: 4826f0627758d074910d36c81d314807
+SHA1: 56267f7c90536098db574666d35e66718649c1c5
+SHA256: 8eb62e6cec98831c36bff648041c2a73f40216673397a3f5263573806dda3ed3
+Section: free
+Priority: optional
+Description: run python3 as sudo
+
+Package: realvnc-vnc-viewer
+Source: realvnc-vnc
+Version: 7.6.0.50657
+Architecture: arm64
+Maintainer: RealVNC <noreply@realvnc.com>
+Installed-Size: 10210
+Depends: libc6, libgcc1 (>= 1:4.2), libice6 (>= 1:1.0.0), libsm6, libx11-6, libxext6
+Conflicts: vnc-e, xtightvncviewer
+Filename: arm64/VNC-Viewer-7.6.0-Linux-ARM64.deb
+Size: 3396800
+MD5sum: bc2299dfbe04f9af004c853c7c5e17ed
+SHA1: 5a92ba323b9b21f22df6c789ef644f74b6a5336c
+SHA256: b03fa4a6b0567895782a657e99cec2da1c8410f97db2e9e5d9a9adf8e85c2b9c
+Section: x11
+Priority: optional
+Homepage: https://www.realvnc.com/
+Description: VNC® Viewer
+ VNC Viewer, from RealVNC, the original inventor of VNC technology, is remote access
+ software that enables you to securely connect to and control a remote
+ computer.
+ RealVNC recommends the realvnc-vnc-server package (VNC Server) for the
+ remote computer, for seamless, secure and reliable connections. A free trial
+ is available.
+

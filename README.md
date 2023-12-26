@@ -1,5 +1,5 @@
 # walnutpi-debs
-此项目保存了核桃派官方apt源内的所有包，`walnutpi-build`
+此项目保存了核桃派官方apt源内的所有包
 ## clone
 ```
 git clone https://github.com/walnutpi/walnutpi-debs.git
@@ -7,7 +7,7 @@ git clone https://github.com/walnutpi/walnutpi-debs.git
 
 
 ## 1. 生成
-生成一个`output`文件夹，输出相关文件
+生成一个`server`文件夹，输出相关文件
 ```
 ./gen.sh
 ```
@@ -24,7 +24,7 @@ sudo  vim /etc/nginx/sites-enabled/default
 在`server`中添加一个`location`项，将路径指向本项目的outpu文件夹
 ```
     location /debian {
-        alias /xxx/walnutpi-debs/output;
+        alias /xxx/walnutpi-debs/server;
         autoindex on;
     }
 ```

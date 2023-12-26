@@ -1,0 +1,344 @@
+Package: conf-apt-tsinghua
+Version: 1.0.0
+Architecture: all
+Maintainer: sc-bin <3335447573@qq.com>
+Installed-Size: 4
+Filename: main/conf-apt-tsinghua_1.0.0_all.deb
+Size: 984
+MD5sum: dc7dc1cf5746d137675443dfa2d6a6ba
+SHA1: 8a1aac9642c686c4c18e6212570d745ce646196e
+SHA256: 6ef716e3b343139d94223ea0badf677b24bb42ff25369e0a9bd5ffe2948e4e30
+Section: free
+Priority: optional
+Description: add the tsinghua sources to apt sources.list
+
+Package: conf-google-pinyin
+Version: 1.0.0
+Architecture: all
+Maintainer: sc-bin <3335447573@qq.com>
+Installed-Size: 4
+Depends: fcitx-googlepinyin
+Filename: main/conf-google-pinyin_1.0.0_all.deb
+Size: 596
+MD5sum: d7820253ad8dc7c9d9bfc6c06542b8be
+SHA1: c3586d68201a58c3b9aacd3ea2e40042abead82b
+SHA256: c10ca44788a8b27d940ce3654cfa6cd5ade493d289e6a58698f3caec00f374e8
+Section: free
+Priority: optional
+Description: enable google pinyin
+
+Package: conf-h616-audio
+Version: 1.0.0
+Architecture: all
+Maintainer: sc-bin <3335447573@qq.com>
+Installed-Size: 60
+Filename: main/conf-h616-audio_1.0.0_all.deb
+Size: 2094
+MD5sum: cbc864b834cc81b862ca614785a8b1ba
+SHA1: e759b3407c0d6a5e36cafabbbec755d9b14ff315
+SHA256: 528751a236f983c5bf90d75328ab2ef9e5cbbee7e66e0490f7d5d9dc0da94561
+Section: free
+Priority: optional
+Description: conf audio
+
+Package: conf-qtenv
+Version: 1.0.0
+Architecture: all
+Maintainer: sc-bin <3335447573@qq.com>
+Installed-Size: 4
+Filename: main/conf-qtenv_1.0.0_all.deb
+Size: 762
+MD5sum: 0656bd02fa9f1c03bf0a3cbc56b93be4
+SHA1: cfc3cfa90511bd0e45e4b874aacc31fc74f8dee3
+SHA256: a623e6d4e8e5002ffac7e38971f2aae607e4d7fbd8f8fcae378568b98f4535c5
+Section: free
+Priority: optional
+Description: setting autologin user is pi
+
+Package: conf-thonny
+Version: 1.0.0
+Architecture: all
+Maintainer: sc-bin <3335447573@qq.com>
+Installed-Size: 4
+Depends: thonny
+Filename: main/conf-thonny_1.0.0_all.deb
+Size: 654
+MD5sum: 602ba21e1456a703be05f2d5a20186ea
+SHA1: fbca9192e55afda4dbbf26f66f6e339c516f39d6
+SHA256: 987184e775a0046099149b5f4d18ec91a64f0f3e68aac338cb44fc33fdfc9578
+Section: free
+Priority: optional
+Description: conf thonny
+
+Package: disable-wifi-random
+Version: 1.0.0
+Architecture: all
+Maintainer: sc-bin <3335447573@qq.com>
+Installed-Size: 20
+Filename: main/disable-wifi-random_1.0.0_all.deb
+Size: 628
+MD5sum: 123bc8c02d8b99fb29d0c22ed2197e1c
+SHA1: 40cacceac57357f07956d075b869a56a5b353e50
+SHA256: 318ecb75c6d4cb56855e3040b97380d619512768a90bc80cd4015049aa2fa1ef
+Section: free
+Priority: optional
+Description: disable the wifi random mac
+
+Package: enable-ssh-root
+Version: 1.0.0
+Architecture: all
+Maintainer: sc-bin <3335447573@qq.com>
+Installed-Size: 4
+Filename: main/enable-ssh-root_1.0.0_all.deb
+Size: 710
+MD5sum: dab4c501b16d47fc61075e592b67e0b3
+SHA1: 421784da90d31b8427f98d86752e1219ae1fdc00
+SHA256: 7a74c2d568ea3aa5e14b4a94fbd6019816a91c00ea33d204c5c90de0d27aee85
+Section: free
+Priority: optional
+Description: enable the ssh login with root
+
+Package: pyuic
+Version: 1.0.0
+Architecture: all
+Maintainer: sc-bin <3335447573@qq.com>
+Installed-Size: 16
+Filename: main/pyuic_1.0.0_all.deb
+Size: 750
+MD5sum: 2abdde68698909c41c8070bd327af96f
+SHA1: 3cbd3c6de80c21c70ae1931d372bc4447b606608
+SHA256: 40d5ed1545b940f63152e79236c421ebc625a2a4838f166f0510295a4e7c98dd
+Section: free
+Priority: optional
+Description: transfer the .ui to .py by PyQt5.uic.pyuic
+
+Package: service-aw859-bluetooth
+Version: 1.0.0
+Architecture: all
+Maintainer: sc-bin <3335447573@qq.com>
+Installed-Size: 20
+Filename: main/service-aw859-bluetooth_1.0.0_all.deb
+Size: 872
+MD5sum: b9513e6696f93ddcbfc842b64dfdf227
+SHA1: 32cb3928b248911d14db8ffc733a5962ddc87331
+SHA256: 79e838ff6488da5bd1f9d0ee8eef98f1dcdd915f4f4659c32ec7080517c18f2a
+Section: free
+Priority: optional
+Description: service, enable the aw859 bluetooth
+
+Package: service-disable-fbcon
+Version: 1.0.0
+Architecture: all
+Maintainer: sc-bin <3335447573@qq.com>
+Installed-Size: 36
+Filename: main/service-disable-fbcon_1.0.0_all.deb
+Size: 1056
+MD5sum: d737af2465721d1c45cede4438f12d73
+SHA1: 114315f6f4d9dba68f965849fda7e09f8ab95041
+SHA256: b93ff5327faefda3562f49333386cdc8a1c77442dde2ff9b7e35c58931771e12
+Section: free
+Priority: optional
+Description: service, disable the frmebuf console when config.txt has keyword
+
+Package: service-h616-mac-detect
+Version: 1.0.0
+Architecture: all
+Maintainer: sc-bin <3335447573@qq.com>
+Installed-Size: 36
+Filename: main/service-h616-mac-detect_1.0.0_all.deb
+Size: 1396
+MD5sum: 13601ac93c014e2615960b6b468a9bb7
+SHA1: 1d1b6431feec0b542f81c0f1e90df7ddf46de63e
+SHA256: b657cc7490fa822955d70920c9dd2b52a9d13b9c1c163812a69bb9291d5c9907
+Section: free
+Priority: optional
+Description: service, keep the ac200 mac same as chip generate
+
+Package: service-resize-part
+Version: 1.0.0
+Architecture: all
+Maintainer: sc-bin <3335447573@qq.com>
+Installed-Size: 36
+Filename: main/service-resize-part_1.0.0_all.deb
+Size: 1112
+MD5sum: 699c580cd572b18b816b8084ea349341
+SHA1: b5613bae7e5715d6b8a7e55193faf9a86140344d
+SHA256: 1f059b13c018cf63e9582b7e24eeb5dfc0c4f9a5d5e86dc5df38a5b21f17eb72
+Section: free
+Priority: optional
+Description: service,extend the part size at first boot
+
+Package: set-device
+Version: 1.0.0
+Architecture: all
+Maintainer: sc-bin <3335447573@qq.com>
+Installed-Size: 28
+Filename: main/set-device_1.0.0_all.deb
+Size: 1626
+MD5sum: 3f032d898bcbe1f97216e98e101fa15d
+SHA1: e33eeb8acbf682ea1d34f89d03301740456cbe2b
+SHA256: 749fa40cd653180a0d1a3b40c83aa42be7bb820e2721e3be75855d0630d70f99
+Section: free
+Priority: optional
+Description: Modifying the /boot/config.txt file about overlays
+
+Package: set-language
+Version: 1.0.0
+Architecture: all
+Maintainer: sc-bin <3335447573@qq.com>
+Installed-Size: 28
+Filename: main/set-language_1.0.0_all.deb
+Size: 1750
+MD5sum: 188482c193855c42481bf206ad304a17
+SHA1: ef04a7cc46b4eebb4891a2302eb77994dfaf24a8
+SHA256: e2923e401c087bfb0ea49893fdd01f97afcd029ff1ca09425f3cdf1e3c873653
+Section: free
+Priority: optional
+Description: Configuration language
+
+Package: set-lcd
+Version: 1.0.0
+Architecture: all
+Maintainer: sc-bin <3335447573@qq.com>
+Installed-Size: 812
+Filename: main/set-lcd_1.0.0_all.deb
+Size: 171170
+MD5sum: 0e034437f5d88c575a7fd2e943f5b156
+SHA1: e40d87fd192e1dc5328580f9e2bc2d1fcfc37427
+SHA256: e3821c106912ec8c961f54897860f1d100d55ae5d3d2dfdf2455da13a6ee4dbc
+Section: free
+Priority: optional
+Description: Configuration lcd
+
+Package: set-vnc
+Version: 1.0.0
+Architecture: all
+Maintainer: sc-bin <3335447573@qq.com>
+Installed-Size: 44
+Filename: main/set-vnc_1.0.0_all.deb
+Size: 1744
+MD5sum: 279beaef9ebb7c55e5f64c605887e0be
+SHA1: b79cbbd869db8c74c0da2e6a2431f82ef1efb649
+SHA256: ff88e173c814096de933d81c10e26fc9d667666fc503de35abf019ef32b32646
+Section: free
+Priority: optional
+Description: Configuration x11 vnc server
+
+Package: walnutpi-lib
+Version: 1.0.0
+Architecture: all
+Maintainer: sc-bin <3335447573@qq.com>
+Installed-Size: 7168
+Depends: make, gcc
+Filename: main/walnutpi-lib_1.0.0_all.deb
+Size: 2975866
+MD5sum: 59e5ec3a15d5b4c9a03fa8104c5502f1
+SHA1: 5df851ff3c2c957c7ebf2ded3692e647393e76d3
+SHA256: 183b870113dd15f2cca5b5d079cc294072b1a4f4b3878b77b3c055702815b18e
+Section: free
+Priority: optional
+Description: walnutpi support some lib
+
+Package: walnutpi1b-base
+Version: 1.0.0
+Architecture: all
+Maintainer: sc-bin <3335447573@qq.com>
+Installed-Size: 4
+Depends: wpi-user, wpi-host-name, wpi-welcome-info, wpi-lightdm
+Filename: main/walnutpi1b-base_1.0.0_all.deb
+Size: 552
+MD5sum: 7cfdd963cb44ac0d3123ce075e1481fb
+SHA1: 4d56583d02b3feeaa3fce507167fd6c14464b531
+SHA256: 463134d29b50ec213f799b71c2f3e87b828651525b09e443d1b48e2c6101819a
+Section: free
+Priority: optional
+Description: walnutpi 1b base
+
+Package: wpi-chromium
+Version: 1.0.0
+Architecture: all
+Maintainer: sc-bin <3335447573@qq.com>
+Installed-Size: 32
+Depends: chromium
+Filename: main/wpi-chromium_1.0.0_all.deb
+Size: 2066
+MD5sum: 2f5a13b77562d7333fabd98503f2d0f3
+SHA1: 31bc788982de8f068351c8ad9c2e36a16d72c288
+SHA256: 8c6ddf0a29fb97bc51339434b4cf7151e74092058532ddbee64e0dd32d795aed
+Section: free
+Priority: optional
+Description: walnutpi chromium conf
+
+Package: wpi-host-name
+Version: 1.0.0
+Architecture: all
+Maintainer: sc-bin <3335447573@qq.com>
+Installed-Size: 12
+Filename: main/wpi-host-name_1.0.0_all.deb
+Size: 838
+MD5sum: 6f373991cb426fcc3e51cbe3ea8c5504
+SHA1: dad4be7187aedb9355e2ac679d2a36624fb913f8
+SHA256: 978aa7e34b8054a4ddd4a5dba36e7902fb3de75631a2745096a4859cb44e784c
+Section: free
+Priority: optional
+Description: Modifying the host name
+
+Package: wpi-lightdm
+Version: 1.0.0
+Architecture: all
+Maintainer: sc-bin <3335447573@qq.com>
+Installed-Size: 32
+Depends: wpi-user,lightdm
+Filename: main/wpi-lightdm_1.0.0_all.deb
+Size: 1118
+MD5sum: b0442c88c5f88681c7c9553fcab79aa7
+SHA1: 426bd886559ac53f7060ac3729349e63ff34e629
+SHA256: 0f66a4fec8bb428761a333efe2e07c39cf1468f0ce56cf394019c013d968326e
+Section: free
+Priority: optional
+Description: setting the lightdm autologin as pi.run ternimal in server
+
+Package: wpi-user
+Version: 1.0.0
+Architecture: all
+Maintainer: sc-bin <3335447573@qq.com>
+Installed-Size: 48
+Filename: main/wpi-user_1.0.0_all.deb
+Size: 2846
+MD5sum: 5f36d486fcbf56c895a7ab6d4402839e
+SHA1: 680ec64297f26d7c98f91d13604b34acb739fc6f
+SHA256: 9e04e385df64dcec9e817477ecad32f41145c3d7b25f1fbe22c6ec624f02eb11
+Section: free
+Priority: optional
+Description: walnutpi user setting
+
+Package: wpi-welcome-info
+Version: 1.0.0
+Architecture: all
+Maintainer: sc-bin <3335447573@qq.com>
+Installed-Size: 80
+Depends: toilet
+Filename: main/wpi-welcome-info_1.0.0_all.deb
+Size: 9106
+MD5sum: 78f9c1f92fc12c6b2649a1fa5987371a
+SHA1: 0ddeca304e6f8ad41e4307fdf038fe7426de206c
+SHA256: bce35751df6c1028cc6c879c79e27e65865e5d1a1fc6f7a33f4c0c9b56f99bfa
+Section: free
+Priority: optional
+Description: the welcome info
+
+Package: wpi-xfce4
+Version: 1.0.0
+Architecture: all
+Maintainer: sc-bin <3335447573@qq.com>
+Installed-Size: 1416
+Depends: xfce4, thonny
+Filename: main/wpi-xfce4_1.0.0_all.deb
+Size: 687312
+MD5sum: d0dc3fde5645da12e85cb4491e2b7d93
+SHA1: 21176a0b688476af9905edeeaa00d4d788a91526
+SHA256: d2478df1058a74e874c359162f3afa91031f329269407c8c483de49029c1ed2c
+Section: free
+Priority: optional
+Description: xfce4 conf
+
