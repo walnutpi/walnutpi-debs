@@ -8,6 +8,7 @@ fi
 mkdir ${OUTPUT}
 
 cp release.log ${OUTPUT}/
+cp wpi-update ${OUTPUT}/
 
 # 生成deb包
 mkdir ${OUTPUT}/main

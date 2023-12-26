@@ -1,0 +1,147 @@
+#!/bin/bash
+THIS_SCRIPT_VERSION=1.0
+THIS_SCRIPT_URL="http://apt.walnutpi.com/debian/wpi-update"
+THIS_SCRIPT_SAVE="/tmp/wpi-update-air"
+
+SOURCE_STR="deb [trusted=yes] http://apt.walnutpi.com/debian/ bookworm main"
+TMP_SOURCE_FILE="/tmp/wpi-update-source"
+LOG_URL="http://apt.walnutpi.com/debian/release.log"
+RELEASE_FILE="/etc/WalnutPi-release"
+FILE_LOG_SAVE="/tmp/wpi-update-update.log"
+FILE_PACKAGES="/tmp/wpi-update-packages.txt"
+
+run_status() {
+    local message=$1
+    shift
+    # set +e
+    start_time=$(date +%s)
+    while true; do
+        echo -e  -n "...\t$message"
+        output=$("$@" 2>&1)
+        exit_status=$?
+        if [ $exit_status -ne 0 ]; then
+            echo -e "\r\033[31m[error]\033[0m"
+            echo -e $output
+            exit 1
+        else
+            end_time=$(date +%s)
+            duration=$((end_time - start_time))
+            echo -e "\r\033[32m[ok]\033[0m\t${message}"
+            break
+        fi
+    done
+    # set -e
+}
+echo_red() {
+    echo -e "\r\033[31m$1\033[0m"
+}
+echo_green() {
+    echo -e "\r\033[32m$1\033[0m"
+}
+echo_blue() {
+    echo -e "\r\033[36m$1\033[0m"
+}
+
+
+if [[ $EUID -ne 0 ]]; then
+    echo -e "\n\tError:  please use sudo !\n"
+    exit 1
+fi
+
+echo $SOURCE_STR > $TMP_SOURCE_FILE
+FLAG=$1
+
+
+
+# 从文件中获取版本号和日期
+BOARD_VER=$(grep '^version=' $RELEASE_FILE | cut -d '=' -f 2)
+BOARD_DATE=$(grep '^date=' $RELEASE_FILE | cut -d '=' -f 2)
+# echo "BOARD_VER: $BOARD_VER"
+# echo "BOARD_DATE: $BOARD_DATE"
+
+
+
+# 获取网站上存储的本脚本,进行更新
+if [[ $FLAG != "no_update" ]]; then
+    if [ -f $THIS_SCRIPT_SAVE ]; then
+        rm $THIS_SCRIPT_SAVE
+    fi
+    run_status "update this script ...."  wget -c $THIS_SCRIPT_URL -O $THIS_SCRIPT_SAVE
+    NEW_SCRIPT_VERSION=$(grep -o 'THIS_SCRIPT_VERSION=[0-9.]*' $THIS_SCRIPT_SAVE | cut -d '=' -f 2)
+    # echo "新版本=$NEW_SCRIPT_VERSION"
+    if [[ "$NEW_SCRIPT_VERSION" > "$THIS_SCRIPT_VERSION" ]]; then
+        cp $THIS_SCRIPT_SAVE $0
+        # echo "脚本已更新到版本 $NEW_SCRIPT_VERSION。"
+        exec bash $0 no_update
+    # else
+    #     echo "当前脚本已是最新版本。"
+    fi
+fi
+
+# 获取release.log
+if [ -f $FILE_LOG_SAVE ]; then
+    rm $FILE_LOG_SAVE
+fi
+run_status "download the release log ...."  wget -c $LOG_URL -O $FILE_LOG_SAVE
+
+# 计算release.log内是否有更新的log
+BOARD_DATE_SECONDS=$(date -d"$BOARD_DATE" +%s)
+DATES_IN_LOG=$(grep -o '\[[^]]*\]' $FILE_LOG_SAVE | tr -d '[]')
+LAST_DATE=""
+HAS_NEW=""
+for DATE in $DATES_IN_LOG; do
+    DATE_SECONDS=$(date -d"$DATE" +%s)
+    if (( DATE_SECONDS > BOARD_DATE_SECONDS )); then
+        HAS_NEW="yew"
+    fi
+    if (( DATE_SECONDS <= BOARD_DATE_SECONDS )); then
+        LAST_DATE=$DATE
+        break
+    fi
+done
+NEW_VERSION=$(grep -o '\[[^]]*\] - [^ ]*' $FILE_LOG_SAVE | head -n 1 | awk '{print $3}')
+
+
+if [ -z "$HAS_NEW" ]; then
+    echo -e "\n\t你的系统版本已经是最新的 [${NEW_VERSION}] ,无需更新\n"
+    exit 0
+fi
+
+
+clear
+echo -e "[${BOARD_VER}] -> \033[32m[${NEW_VERSION}]\033[0m"
+echo ""
+echo -e "\t=================================================="
+echo -e "\t本工具基于apt,对核桃派官方提供的系统配置包进行更新"
+echo -e "\t更新前注意备份好个人数据,以免发生意外"
+echo -e "\t=================================================="
+echo ""
+
+# echo "更新日志如下:"
+sed -n "1,/\\[$LAST_DATE\\]/p" $FILE_LOG_SAVE | sed '/\['$LAST_DATE'\]/d'
+read -p "您希望继续执行吗？ [Y/n]" CHOICE
+if [ "$CHOICE" != "y" ]; then
+    echo "退出。"
+    exit 1
+fi
+
+
+# 获取更新，存进文件
+run_status "get the package info ..." apt-get update -o Dir::Etc::sourcelist="$TMP_SOURCE_FILE" -o Dir::Etc::sourceparts="-" -o APT::Get::List-Cleanup="0"
+apt-get --just-print upgrade -o Dir::Etc::sourcelist="$TMP_SOURCE_FILE" -o Dir::Etc::sourceparts="-" -o APT::Get::List-Cleanup="0" | grep 'Inst' | cut -d ' ' -f 2 >  $FILE_PACKAGES
+if [ ! -s $FILE_PACKAGES ]; then
+    echo "获取更新失败"
+    exit 1
+fi
+# 从文件中读取包的名称
+while read PACKAGE_NAME; do
+    run_status "install $PACKAGE_NAME"  apt-get install -o Dir::Etc::sourcelist="$TMP_SOURCE_FILE" -o Dir::Etc::sourceparts="-" -o APT::Get::List-Cleanup="0" $PACKAGE_NAME
+done < $FILE_PACKAGES
+
+
+# 替换新版本号
+sed -i "s/^version=.*/version=$NEW_VERSION/" $RELEASE_FILE
+
+# 替换新时间
+DATE=$(grep -o '\[[^]]*\]' $FILE_LOG_SAVE | head -n 1 | tr -d '[]')
+sed -i "s/^date=.*/date=$DATE/" $RELEASE_FILE
