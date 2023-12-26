@@ -72,6 +72,8 @@ fi
 if (( $COUNT_DEB_SUCCESS > 0 )); then
     cd $PATH_PWD
     apt-ftparchive -c=bookworm.conf release ${OUTPUT}/dists/bookworm > ${OUTPUT}/dists/bookworm/Release
+else
+    echo "没有任何包有更新"
 fi
 
 
