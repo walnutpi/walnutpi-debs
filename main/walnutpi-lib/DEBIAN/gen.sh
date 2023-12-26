@@ -6,12 +6,12 @@ clone_or_pull() {
     url="$1"
 
     project_name=$(basename "$url" .git)
-    target_path="${PATH_PWD}/../opt/$project_name"
+    target_path="${PATH_PWD}/../usr/lib/walnutpi/$project_name"
 
     if [[ ! -d "$target_path" ]]; then
         
-        if [[ ! -d "${PATH_PWD}/../opt" ]]; then
-            mkdir ${PATH_PWD}/../opt
+        if [[ ! -d "${PATH_PWD}/../usr/lib/walnutpi" ]]; then
+            mkdir -p ${PATH_PWD}/../usr/lib/walnutpi
         fi
 
         max_attempts=5

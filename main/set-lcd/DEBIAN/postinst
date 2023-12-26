@@ -1,6 +1,6 @@
 #!/bin/bash
 
 
-cd /opt/set-lcd
+cd /usr/lib/walnutpi/set-lcd
 chmod +x install
 ./install

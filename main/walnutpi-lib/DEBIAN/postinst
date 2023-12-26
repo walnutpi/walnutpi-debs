@@ -2,7 +2,7 @@
 
 set -e
 
-cd /opt
+cd /usr/lib/walnutpi
 
 echo "aw.gpio"
 pip3 --no-cache-dir install -e aw.gpio/ 
