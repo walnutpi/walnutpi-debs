@@ -244,12 +244,27 @@ Version: 1.0.0
 Architecture: all
 Maintainer: sc-bin <3335447573@qq.com>
 Installed-Size: 4
-Depends: wpi-user, wpi-host-name, wpi-welcome-info, wpi-lightdm
+Depends: wpi-user, wpi-host-name, wpi-welcome-info, wpi-lightdm,
+  walnutpi-lib,
+  conf-h616-audio,
+  conf-qtenv,
+  enable-ssh-root,
+  disable-wifi-random,
+  set-device,
+  set-language,
+  set-lcd,
+  pyuic,
+  python3-sudo,
+  hcitools,
+  service-disable-fbcon,
+  service-h616-mac-detect,
+  service-resize-part,
+  service-aw859-bluetooth
 Filename: main/walnutpi1b-base_1.0.0_all.deb
-Size: 552
-MD5sum: 7cfdd963cb44ac0d3123ce075e1481fb
-SHA1: 4d56583d02b3feeaa3fce507167fd6c14464b531
-SHA256: 463134d29b50ec213f799b71c2f3e87b828651525b09e443d1b48e2c6101819a
+Size: 698
+MD5sum: a3a867220bc64010e42cf66fb27ae8f0
+SHA1: 8653767c76d438e9912d8c7224bb36f2685376c8
+SHA256: e7d6ee6ab287586de571b300a93c2a534f961efda104b17f257be5ee0a8f145a
 Section: free
 Priority: optional
 Description: walnutpi 1b base

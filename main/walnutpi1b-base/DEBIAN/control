@@ -6,4 +6,19 @@ Section: free
 Priority: optional
 Installed-Size: 4
 Architecture: all
-Depends: wpi-user, wpi-host-name, wpi-welcome-info, wpi-lightdm
+Depends: wpi-user, wpi-host-name, wpi-welcome-info, wpi-lightdm,
+  walnutpi-lib,
+  conf-h616-audio,
+  conf-qtenv,
+  enable-ssh-root,
+  disable-wifi-random,
+  set-device,
+  set-language,
+  set-lcd,
+  pyuic,
+  python3-sudo,
+  hcitools,
+  service-disable-fbcon,
+  service-h616-mac-detect,
+  service-resize-part,
+  service-aw859-bluetooth
