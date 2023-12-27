@@ -1,0 +1,16 @@
+Package: walnutpi1b-desktop
+Description: walnutpi 1b desktop
+Version: 1.0.0
+Maintainer: sc-bin <3335447573@qq.com>
+Section: free
+Priority: optional
+Installed-Size: 4
+Architecture: all
+Depends: walnutpi1b-base,
+  wpi-xfce4,
+  wpi-chromium,
+  conf-google-pinyin,
+  conf-thonny,
+  realvnc-vnc-viewer,
+  set-vnc
+

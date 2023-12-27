@@ -269,6 +269,27 @@ Section: free
 Priority: optional
 Description: walnutpi 1b base
 
+Package: walnutpi1b-desktop
+Version: 1.0.0
+Architecture: all
+Maintainer: sc-bin <3335447573@qq.com>
+Installed-Size: 4
+Depends: walnutpi1b-base,
+  wpi-xfce4,
+  wpi-chromium,
+  conf-google-pinyin,
+  conf-thonny,
+  realvnc-vnc-viewer,
+  set-vnc
+Filename: main/walnutpi1b-desktop_1.0.0_all.deb
+Size: 590
+MD5sum: 231ec3992df090bd697028079fb3cc77
+SHA1: 7d4ee61d35fab163528b7e12c5b286c176bc4ea8
+SHA256: 49a5d822a27b5133d7cc5099de335259a64ca10108727a436c881629b2a02314
+Section: free
+Priority: optional
+Description: walnutpi 1b desktop
+
 Package: wpi-chromium
 Version: 1.0.0
 Architecture: all
