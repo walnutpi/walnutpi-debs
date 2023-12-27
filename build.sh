@@ -1,5 +1,5 @@
 #!/bin/bash
-URL_TOOL="https://github.com/sc-bin/wpi-update.git"
+URL_TOOL="https://github.com/walnutpi/wpi-update.git"
 
 
 PATH_PWD="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
