@@ -12,6 +12,9 @@ RELEASE_FILE="/etc/WalnutPi-release"
 FILE_LOG_SAVE="/tmp/wpi-update-update.log"
 FILE_PACKAGES="/tmp/wpi-update-packages.txt"
 
+run_as_client() {
+    $@ > /dev/null 2>&1
+}
 
 run_status() {
     local message=$1
@@ -101,16 +104,17 @@ fi
 echo $SOURCE_STR > $TMP_SOURCE_FILE
 FLAG=$1
 
-
-
-# 从文件中获取版本号和日期
-if [[ -f $RELEASE_FILE ]]; then
-    BOARD_VER=$(grep '^version=' $RELEASE_FILE | cut -d '=' -f 2)
-    BOARD_DATE=$(grep '^date=' $RELEASE_FILE | cut -d '=' -f 2)
-    # echo "BOARD_VER: $BOARD_VER"
-    # echo "BOARD_DATE: $BOARD_DATE"
+if [[ $FLAG =~ -v ]]; then
+    echo $THIS_SCRIPT_VERSION
+    exit 0
 fi
 
+if [[ $FLAG =~ -s ]]; then
+    run_as_client  wget -c $LOG_URL -O $FILE_LOG_SAVE
+    NEW_VERSION=$(grep -o '\[[^]]*\] - [^ ]*' $FILE_LOG_SAVE | head -n 1 | awk '{print $3}')
+    echo "$NEW_VERSION "
+    exit 0
+fi
 
 # 获取网站上存储的本脚本,进行更新
 if [[ $FLAG != "no_update" ]]; then
@@ -130,11 +134,21 @@ if [[ $FLAG != "no_update" ]]; then
     fi
 fi
 
+
+# 从文件中获取版本号和日期
+if [[ -f $RELEASE_FILE ]]; then
+    BOARD_VER=$(grep '^version=' $RELEASE_FILE | cut -d '=' -f 2)
+    BOARD_DATE=$(grep '^date=' $RELEASE_FILE | cut -d '=' -f 2)
+    # echo "BOARD_VER: $BOARD_VER"
+    # echo "BOARD_DATE: $BOARD_DATE"
+fi
+
 # 获取release.log
 if [ -f $FILE_LOG_SAVE ]; then
     rm $FILE_LOG_SAVE
 fi
 run_status "download the release log ...."  wget -c $LOG_URL -O $FILE_LOG_SAVE
+NEW_VERSION=$(grep -o '\[[^]]*\] - [^ ]*' $FILE_LOG_SAVE | head -n 1 | awk '{print $3}')
 
 # 计算release.log内是否有更新的log
 BOARD_DATE_SECONDS=$(date -d"$BOARD_DATE" +%s)
@@ -151,11 +165,6 @@ for DATE in $DATES_IN_LOG; do
         break
     fi
 done
-NEW_VERSION=$(grep -o '\[[^]]*\] - [^ ]*' $FILE_LOG_SAVE | head -n 1 | awk '{print $3}')
-if [[ $* =~ -v ]]; then
-    echo "新版本= $NEW_VERSION "
-    exit 0
-fi
 
 if [ -z "$HAS_NEW" ]; then
     echo -e  "${STR_AUTO['version_newest_h']}[${NEW_VERSION}]${STR_AUTO['version_newest_l']}"
