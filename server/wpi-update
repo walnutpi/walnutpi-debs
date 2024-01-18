@@ -1,5 +1,5 @@
 #!/bin/bash
-THIS_SCRIPT_VERSION=1.1
+THIS_SCRIPT_VERSION=1.2
 THIS_SCRIPT_URL="http://apt.walnutpi.com//debian/wpi-update"
 THIS_SCRIPT_SAVE="/tmp/wpi-update-air"
 
@@ -56,7 +56,7 @@ declare -A STR_AUTO
 STR_CN['sudo_warn']="\n\t请使用sudo来运行本指令\n"
 STR_EN['sudo_warn']="\n\tError:  please use sudo !\n"
 
-STR_CN['version_newest_h']="\n\t你的系统版本已经是最新的  ,无需更新"
+STR_CN['version_newest_h']="\n\t你的系统版本已经是最新的"
 STR_CN['version_newest_l']="  ,无需更新\n"
 STR_EN['version_newest_h']="\n\tYour system version is already up to "
 STR_EN['version_newest_l']="  ,No need to update\n"
@@ -104,17 +104,25 @@ fi
 echo $SOURCE_STR > $TMP_SOURCE_FILE
 COMMAND=$1
 COMMAND_VALUE=$2
-# if [[ $COMMAND =~ -v ]]; then
-#     echo $THIS_SCRIPT_VERSION
-#     exit 0
-# fi
 
-# if [[ $COMMAND =~ -s ]]; then
-#     run_as_client  wget -c $LOG_URL -O $FILE_LOG_SAVE
-#     NEW_VERSION=$(grep -o '\[[^]]*\] - [^ ]*' $FILE_LOG_SAVE | head -n 1 | awk '{print $3}')
-#     echo "$NEW_VERSION "
-#     exit 0
-# fi
+
+# 获取网站上存储的本脚本,进行更新
+if [[ $COMMAND != "no_update" ]]; then
+    if [ -f $THIS_SCRIPT_SAVE ]; then
+        rm $THIS_SCRIPT_SAVE
+    fi
+    run_status "update this script ...."  wget -c $THIS_SCRIPT_URL -O $THIS_SCRIPT_SAVE
+    NEW_SCRIPT_VERSION=$(grep -o 'THIS_SCRIPT_VERSION=[0-9.]*' $THIS_SCRIPT_SAVE | cut -d '=' -f 2)
+    # if [[ $* =~ -v ]]; then
+    #     echo "新版本=$NEW_SCRIPT_VERSION"
+    # fi
+
+    if [[ "$NEW_SCRIPT_VERSION" > "$THIS_SCRIPT_VERSION" ]]; then
+        cp $THIS_SCRIPT_SAVE $0
+        exec bash $0 no_update
+        
+    fi
+fi
 
 
 
@@ -138,23 +146,6 @@ case $COMMAND in
         ;;
 esac
 
-# 获取网站上存储的本脚本,进行更新
-if [[ $COMMAND != "no_update" ]]; then
-    if [ -f $THIS_SCRIPT_SAVE ]; then
-        rm $THIS_SCRIPT_SAVE
-    fi
-    run_status "update this script ...."  wget -c $THIS_SCRIPT_URL -O $THIS_SCRIPT_SAVE
-    NEW_SCRIPT_VERSION=$(grep -o 'THIS_SCRIPT_VERSION=[0-9.]*' $THIS_SCRIPT_SAVE | cut -d '=' -f 2)
-    # if [[ $* =~ -v ]]; then
-    #     echo "新版本=$NEW_SCRIPT_VERSION"
-    # fi
-
-    if [[ "$NEW_SCRIPT_VERSION" > "$THIS_SCRIPT_VERSION" ]]; then
-        cp $THIS_SCRIPT_SAVE $0
-        exec bash $0 no_update
-        
-    fi
-fi
 
 
 # 从文件中获取版本号和日期
@@ -215,10 +206,10 @@ fi
 # 获取更新，安装
 run_status "get the package info ..." apt-get update -o Dir::Etc::sourcelist="$TMP_SOURCE_FILE" -o Dir::Etc::sourceparts="-" -o APT::Get::List-Cleanup="0"
 apt-get --just-print upgrade -o Dir::Etc::sourcelist="$TMP_SOURCE_FILE" -o Dir::Etc::sourceparts="-" -o APT::Get::List-Cleanup="0" | grep 'Inst' | cut -d ' ' -f 2 >  $FILE_PACKAGES
-if [ ! -s $FILE_PACKAGES ]; then
-    echo -e "${STR_AUTO['install_error']}."
-    exit 1
-fi
+# if [ ! -s $FILE_PACKAGES ]; then
+#     echo -e "${STR_AUTO['install_error']}."
+#     exit 1
+# fi
 while read PACKAGE_NAME; do
     run_status "install $PACKAGE_NAME"  apt-get install -o Dir::Etc::sourcelist="$TMP_SOURCE_FILE" -o Dir::Etc::sourceparts="-" -o APT::Get::List-Cleanup="0" $PACKAGE_NAME
 done < $FILE_PACKAGES
