@@ -41,6 +41,21 @@ Section: free
 Priority: optional
 Description: conf audio
 
+Package: conf-h616-eth0
+Version: 1.0.0
+Architecture: all
+Maintainer: sc-bin <3335447573@qq.com>
+Installed-Size: 16
+Depends: netplan.io
+Filename: main/conf-h616-eth0_1.0.0_all.deb
+Size: 634
+MD5sum: 0a30cede09299165d5d3fbe40885cfbb
+SHA1: 4a8a909e38a169289b9a00bc82d7f6a96d104c8a
+SHA256: e18b322e291a0683576f05017dea428fc574145eb47fb13b2f677cf868541412
+Section: free
+Priority: optional
+Description: enable the eth0
+
 Package: conf-qtenv
 Version: 1.0.0
 Architecture: all
