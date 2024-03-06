@@ -8,12 +8,21 @@ file_link="/etc/systemd/network/00-default.link"
 mac_range=$(cat /sys/class/addr_mgt/addr_eth)
 
 
-# 如果end1存在,则代表本配置未被运行过,则创建配置文件
-if [[ -f "$file_end1" ]]; then
-    mac_end1=$(cat $file_end1 )
+# 如果文件不存在,则创建配置文件
+if [[ ! -f "$file_link" ]]; then
+    mac_raw=""
+    # debian下是end1节点
+    # ubuntu下是eth0节点
+    if [[ -f "$file_end1" ]]; then
+        mac_raw=$(cat $file_end1 )
+    else
+        mac_raw=$(cat $file_eth0 )
+        
+    fi
+    
     cat << EOF > $file_link
 [Match]
-MACAddress=$mac_end1
+MACAddress=$mac_raw
 
 [Link]
 MACAddress=$mac_range
@@ -31,10 +40,5 @@ if [[ -f "$file_eth0" ]]; then
         sed -i "${line_number}s/.*/$file_content/" "$file_link"
         reboot
     fi
-
 fi
-
-
-# 
-
 

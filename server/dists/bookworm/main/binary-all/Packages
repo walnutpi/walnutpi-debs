@@ -141,15 +141,15 @@ Priority: optional
 Description: service, disable the frmebuf console when config.txt has keyword
 
 Package: service-h616-mac-detect
-Version: 1.0.0
+Version: 1.0.1
 Architecture: all
 Maintainer: sc-bin <3335447573@qq.com>
 Installed-Size: 36
-Filename: main/service-h616-mac-detect_1.0.0_all.deb
-Size: 1396
-MD5sum: 13601ac93c014e2615960b6b468a9bb7
-SHA1: 1d1b6431feec0b542f81c0f1e90df7ddf46de63e
-SHA256: b657cc7490fa822955d70920c9dd2b52a9d13b9c1c163812a69bb9291d5c9907
+Filename: main/service-h616-mac-detect_1.0.1_all.deb
+Size: 1428
+MD5sum: c1af973ffdcc4e1e3b082c9e3fe67b67
+SHA1: 7ad1922b9aac54098f34f8a67506fa9140996dd8
+SHA256: 259a4faa66418d59ac160c4dd9b0219ae9c8faf317e39a48639e9e49e1fb1fa5
 Section: free
 Priority: optional
 Description: service, keep the ac200 mac same as chip generate
