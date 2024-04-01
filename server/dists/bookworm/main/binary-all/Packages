@@ -269,7 +269,7 @@ Priority: optional
 Description: walnutpi support some lib
 
 Package: walnutpi1b-base
-Version: 1.0.0
+Version: 1.0.1
 Architecture: all
 Maintainer: sc-bin <3335447573@qq.com>
 Installed-Size: 4
@@ -284,16 +284,16 @@ Depends: wpi-user, wpi-host-name, wpi-welcome-info, wpi-lightdm,
   set-lcd,
   pyuic,
   python3-sudo,
-  hcitools,
+  bluez,
   service-disable-fbcon,
   service-h616-mac-detect,
   service-resize-part,
   service-aw859-bluetooth
-Filename: main/walnutpi1b-base_1.0.0_all.deb
-Size: 698
-MD5sum: a3a867220bc64010e42cf66fb27ae8f0
-SHA1: 8653767c76d438e9912d8c7224bb36f2685376c8
-SHA256: e7d6ee6ab287586de571b300a93c2a534f961efda104b17f257be5ee0a8f145a
+Filename: main/walnutpi1b-base_1.0.1_all.deb
+Size: 696
+MD5sum: dfb0cbfdf59fe2a52310936643474d3f
+SHA1: 2777f6b04d1b11cfc96cc73c885ad13413850e39
+SHA256: 1eb8cd856e915cacb165fb242799c908b6f9b6350e36887d40d28f3692be3b5d
 Section: free
 Priority: optional
 Description: walnutpi 1b base
