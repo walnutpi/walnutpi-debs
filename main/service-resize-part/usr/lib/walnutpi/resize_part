@@ -8,7 +8,7 @@ disk_device=$(lsblk -no pkname $root_partition)
 disk_size=$(cat /sys/block/$disk_device/size)
 
 # 拓展分区
-sudo parted /dev/$disk_device resizepart ${root_partition_last_digit} 100%
+sudo parted -s /dev/$disk_device resizepart ${root_partition_last_digit} 100%
 sudo resize2fs $root_partition
 
 
