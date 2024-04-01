@@ -113,6 +113,20 @@ Section: free
 Priority: optional
 Description: enable the ssh login with root
 
+Package: initramfs-tools-hook
+Version: 1.0.0
+Architecture: all
+Maintainer: sc-bin <3335447573@qq.com>
+Installed-Size: 32
+Filename: main/initramfs-tools-hook_1.0.0_all.deb
+Size: 1084
+MD5sum: bc6bb5f249de5c6dd5067c7ec2f1ddce
+SHA1: ccedff749e01fcdc9cd167eac28833cd9fcb08d1
+SHA256: 8bfe3391aea4edd56f12ee6b20f5a6e2d89e737279b27d3dee9dcfdd3fce88a3
+Section: free
+Priority: optional
+Description: initramfs-tools hooks
+
 Package: pyuic
 Version: 1.0.0
 Architecture: all

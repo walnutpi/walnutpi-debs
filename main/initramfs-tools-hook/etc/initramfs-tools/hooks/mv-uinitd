@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# 获取/boot分区的可用空间
+AVAILABLE_SPACE=$(df -BM /boot | awk 'NR==2 {print substr($4, 1, length($4)-1)}')
+echo "/boot : $AVAILABLE_SPACE"
+# 可用空间小于30M
+if [ $AVAILABLE_SPACE -lt 30 ]; then
+    echo "/boot space less than 30MB"
+    if [ -f /boot/uInitrd ]; then
+        mv /boot/uInitrd /tmp/uInitrd
+    fi
+fi
