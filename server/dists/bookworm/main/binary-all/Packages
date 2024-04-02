@@ -184,15 +184,15 @@ Priority: optional
 Description: service, keep the ac200 mac same as chip generate
 
 Package: service-resize-part
-Version: 1.0.1
+Version: 1.0.2
 Architecture: all
 Maintainer: sc-bin <3335447573@qq.com>
 Installed-Size: 36
-Filename: main/service-resize-part_1.0.1_all.deb
-Size: 1116
-MD5sum: 188dc3d23c35970f7ada27f8a69442c5
-SHA1: 580ee4bb6f941791b5cd371f8f9f0bb7281df027
-SHA256: 57e3aa6f36aaa340b64faa61f63554bd1da92329e237d5369164d485af2af190
+Filename: main/service-resize-part_1.0.2_all.deb
+Size: 1134
+MD5sum: dbd6905559eaee8543865cf231457037
+SHA1: 108e2506182b8af68eae2b433a343e052a9ae7ec
+SHA256: 9c4fbfb02731b68e29c4f177bb0389aba0c18b4c0c41601bf8bb950bebd53265
 Section: free
 Priority: optional
 Description: service,extend the part size at first boot

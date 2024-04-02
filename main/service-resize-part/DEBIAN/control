@@ -1,6 +1,6 @@
 Package: service-resize-part
 Description: service,extend the part size at first boot
-Version: 1.0.1
+Version: 1.0.2
 Maintainer: sc-bin <3335447573@qq.com>
 Section: free
 Priority: optional
