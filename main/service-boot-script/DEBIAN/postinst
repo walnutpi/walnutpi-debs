@@ -1,0 +1,7 @@
+#!/bin/bash
+
+systemctl enable service_boot_script.service
+
+if [ ! -d /boot/start ]; then
+    mkdir -p /boot/start
+fi

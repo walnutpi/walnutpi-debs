@@ -142,21 +142,6 @@ Section: free
 Priority: optional
 Description: plymouth themes walnutpi
 
-Package: plymouth-walnutpi
-Version: 1.0.0
-Architecture: all
-Maintainer: sc-bin <3335447573@qq.com>
-Installed-Size: 252
-Depends: plymouth-themes
-Filename: main/plymouth-walnutpi_1.0.0_all.deb
-Size: 141740
-MD5sum: 2b355160203dd32c2308a95a934057cc
-SHA1: 92a98e03118577527387e1508e71458908f10d70
-SHA256: 23d0a2ff1b09ff071ec6100fe7e254f07f5f2c0804c26eaab8cdd233f181e4d4
-Section: free
-Priority: optional
-Description: add a plymouth themes
-
 Package: pyuic
 Version: 1.0.0
 Architecture: all
@@ -184,6 +169,20 @@ SHA256: 79e838ff6488da5bd1f9d0ee8eef98f1dcdd915f4f4659c32ec7080517c18f2a
 Section: free
 Priority: optional
 Description: service, enable the aw859 bluetooth
+
+Package: service-boot-script
+Version: 1.0.0
+Architecture: all
+Maintainer: sc-bin <3335447573@qq.com>
+Installed-Size: 36
+Filename: main/service-boot-script_1.0.0_all.deb
+Size: 1100
+MD5sum: d0c2742edbeb05d4383f59d0f2e31f74
+SHA1: 58fff4b62880a709cf07cb98590d72f3b7774cb4
+SHA256: 16e8dd54f2392951d13616ec33eada21f8b10c1b54f296cb2cbece5a079dbac0
+Section: free
+Priority: optional
+Description: service,run the scripts when power on
 
 Package: service-disable-fbcon
 Version: 1.0.0
