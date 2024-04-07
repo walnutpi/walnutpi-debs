@@ -127,6 +127,36 @@ Section: free
 Priority: optional
 Description: initramfs-tools hooks
 
+Package: plymouth-themes-walnutpi
+Version: 1.0.0
+Architecture: all
+Maintainer: sc-bin <3335447573@qq.com>
+Installed-Size: 36
+Depends: plymouth-themes
+Filename: main/plymouth-themes-walnutpi_1.0.0_all.deb
+Size: 3970
+MD5sum: 038c9205d27f9ac243e24aef06c3cb89
+SHA1: 271ade5a4428e7f7f75d30ed1992ef50e874e10b
+SHA256: 75911065710b32adbcea45d229a3bafce87fc29f4ac33ffb1f02df80b4eb9096
+Section: free
+Priority: optional
+Description: plymouth themes walnutpi
+
+Package: plymouth-walnutpi
+Version: 1.0.0
+Architecture: all
+Maintainer: sc-bin <3335447573@qq.com>
+Installed-Size: 252
+Depends: plymouth-themes
+Filename: main/plymouth-walnutpi_1.0.0_all.deb
+Size: 141740
+MD5sum: 2b355160203dd32c2308a95a934057cc
+SHA1: 92a98e03118577527387e1508e71458908f10d70
+SHA256: 23d0a2ff1b09ff071ec6100fe7e254f07f5f2c0804c26eaab8cdd233f181e4d4
+Section: free
+Priority: optional
+Description: add a plymouth themes
+
 Package: pyuic
 Version: 1.0.0
 Architecture: all
