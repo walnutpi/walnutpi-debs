@@ -1,7 +1,7 @@
 #!/bin/bash
 URL_TOOL="https://github.com/walnutpi/wpi-update.git"
-
-
+TOOL_NAME="wpi-update"
+TOOL_NAME_TAR="wpi-update.gz"
 PATH_PWD="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 OUTPUT="${PATH_PWD}/server"
 SCRIPT_GEN="${PATH_PWD}/generate.sh"
@@ -34,8 +34,26 @@ cp release-cn.log ${OUTPUT}/
 cp release-en.log ${OUTPUT}/
 
 clone_url $URL_TOOL
-# cp wpi-update ${OUTPUT}/
-cp $DIR_TOOL/wpi-update  ${OUTPUT}/
+cp $DIR_TOOL/$TOOL_NAME  ${OUTPUT}/
+
+
+# 获取git项目的最后一次提交时间
+cd $DIR_TOOL
+GIT_TIME=$(git log -1 --format=%cd --date=unix)
+
+
+# 获取文件的修改时间
+cd ${OUTPUT}
+if [ ! -f $TOOL_NAME_TAR ];then
+    tar -czf $TOOL_NAME_TAR $TOOL_NAME
+fi
+FILE_TIME=$(stat -c %Y $TOOL_NAME_TAR)
+
+# 比较两个时间
+if [ $GIT_TIME -gt $FILE_TIME ];then
+    tar -czf $TOOL_NAME_TAR $TOOL_NAME
+    
+fi
 
 COUNT_DEB_SUCCESS=0
 
