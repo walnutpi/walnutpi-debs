@@ -6,7 +6,7 @@ PATH_Locale="/home/pi/.local/share/applications"
 language="en"
 # language="zh_CN"
 
-_run_as_client() {
+_run_as_silent() {
     output=$("$@" 2>&1)
 }
 _replace_name() {
@@ -59,7 +59,7 @@ cn() {
         exit 1
     fi
     _title_replay "开始  "
-    _run_as_client _thonny_language zh_CN
+    _run_as_silent _thonny_language zh_CN
     echo "重启后生效"
 }
 en() {
@@ -70,7 +70,7 @@ en() {
         exit 1
     fi
     _title_replay "start  "
-    _run_as_client _thonny_language en_US
+    _run_as_silent _thonny_language en_US
     
     echo "Take effect after reboot"
 }
