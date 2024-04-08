@@ -95,5 +95,25 @@ else
 fi
 
 
+
 # 搬运patch-list
-cp -r patch-list $OUTPUT
+
+cd "$PATH_PWD/patch-list"
+for DIR in */
+do
+    cd "$PATH_PWD/patch-list"
+    DIR_NAME=${DIR%/}
+
+    DIR_TIME=$(stat -c %Y "$DIR_NAME")
+    FILE_TIME=$(stat -c %Y "$OUTPUT/patch-list/$DIR_NAME.gz" 2>/dev/null)
+
+    # 如果.gz文件不存在，或者文件夹的修改时间比.gz文件晚，就生成同名.gz压缩文件覆盖
+    if [ -z "$FILE_TIME" ] || [ $DIR_TIME -gt $FILE_TIME ]
+    then
+        cd $PATH_PWD/patch-list/$DIR_NAME
+        tar -czf "$OUTPUT/patch-list/$DIR_NAME.gz" ./
+        echo "已生成$OUTPUT/patch-list/$DIR_NAME.gz"
+    fi
+
+    cp -r $PATH_PWD/patch-list/$DIR_NAME  $OUTPUT/patch-list/
+done
