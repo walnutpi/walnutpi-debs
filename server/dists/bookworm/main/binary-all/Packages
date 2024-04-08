@@ -132,12 +132,11 @@ Version: 1.0.0
 Architecture: all
 Maintainer: sc-bin <3335447573@qq.com>
 Installed-Size: 36
-Depends: plymouth-themes
 Filename: main/plymouth-themes-walnutpi_1.0.0_all.deb
-Size: 3970
-MD5sum: 038c9205d27f9ac243e24aef06c3cb89
-SHA1: 271ade5a4428e7f7f75d30ed1992ef50e874e10b
-SHA256: 75911065710b32adbcea45d229a3bafce87fc29f4ac33ffb1f02df80b4eb9096
+Size: 3966
+MD5sum: c782f06ae3c95872643665edb17d7bef
+SHA1: 49cfdd0733e4e40e2074d8daa7a03e175c8a1ad8
+SHA256: a807343c368d616de99cd970e4df25b303e2444a70d9b5946e4bae798e10ce8b
 Section: free
 Priority: optional
 Description: plymouth themes walnutpi
@@ -347,6 +346,20 @@ SHA256: 49a5d822a27b5133d7cc5099de335259a64ca10108727a436c881629b2a02314
 Section: free
 Priority: optional
 Description: walnutpi 1b desktop
+
+Package: walnutpi1b-patch
+Version: 1.0.0
+Architecture: all
+Maintainer: sc-bin <3335447573@qq.com>
+Installed-Size: 224
+Filename: main/walnutpi1b-patch_1.0.0_all.deb
+Size: 46966
+MD5sum: d780e8682ea79ba1412703cfd9b34e7c
+SHA1: b89464cae9d7a176e63c003ef1022d84e58b7270
+SHA256: 476797f6a0fd49b808cc10bb055fbfbcb311efb926751d0623c76ff05561e13e
+Section: free
+Priority: optional
+Description: walnutpi1b patch
 
 Package: wpi-chromium
 Version: 1.0.0

@@ -6,4 +6,3 @@ Section: free
 Priority: optional
 Installed-Size: 36
 Architecture: all
-Depends: plymouth-themes
