@@ -241,15 +241,15 @@ Priority: optional
 Description: Modifying the /boot/config.txt file about overlays
 
 Package: set-language
-Version: 1.0.0
+Version: 1.0.1
 Architecture: all
 Maintainer: sc-bin <3335447573@qq.com>
 Installed-Size: 28
-Filename: main/set-language_1.0.0_all.deb
-Size: 1750
-MD5sum: 188482c193855c42481bf206ad304a17
-SHA1: ef04a7cc46b4eebb4891a2302eb77994dfaf24a8
-SHA256: e2923e401c087bfb0ea49893fdd01f97afcd029ff1ca09425f3cdf1e3c873653
+Filename: main/set-language_1.0.1_all.deb
+Size: 1754
+MD5sum: 013f747f76f9a41c1d57bd3e4f4ef2ba
+SHA1: 03ff14a41d1298f101b81636acf7a460941bfee4
+SHA256: 23a8ed80e4c7e2947e2a907c79216a97b5409eacc54ce0a92823505055c17a2f
 Section: free
 Priority: optional
 Description: Configuration language

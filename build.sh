@@ -95,4 +95,5 @@ else
 fi
 
 
-
+# 搬运patch-list
+cp -r patch-list $OUTPUT

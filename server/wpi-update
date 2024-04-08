@@ -1,7 +1,8 @@
 #!/bin/bash
 THIS_SCRIPT_VERSION=1.2
-THIS_SCRIPT_URL="http://apt.walnutpi.com//debian/wpi-update"
-THIS_SCRIPT_SAVE="/tmp/wpi-update-air"
+THIS_SCRIPT_URL="http://apt.walnutpi.com//debian/wpi-update.gz"
+THIS_SCRIPT_SAVE="/tmp/wpi-update.gz"
+THIS_SCRIPT_FILE="/tmp/wpi-update"
 
 SOURCE_STR="deb [trusted=yes] http://apt.walnutpi.com//debian/ bookworm main"
 TMP_SOURCE_FILE="/tmp/wpi-update-source"
@@ -12,7 +13,7 @@ RELEASE_FILE="/etc/WalnutPi-release"
 FILE_LOG_SAVE="/tmp/wpi-update-update.log"
 FILE_PACKAGES="/tmp/wpi-update-packages.txt"
 
-run_as_client() {
+run_as_silent() {
     $@ > /dev/null 2>&1
 }
 
@@ -111,14 +112,12 @@ if [[ $COMMAND != "no_update" ]]; then
     if [ -f $THIS_SCRIPT_SAVE ]; then
         rm $THIS_SCRIPT_SAVE
     fi
-    run_status "update this script ...."  wget -c $THIS_SCRIPT_URL -O $THIS_SCRIPT_SAVE
-    NEW_SCRIPT_VERSION=$(grep -o 'THIS_SCRIPT_VERSION=[0-9.]*' $THIS_SCRIPT_SAVE | cut -d '=' -f 2)
-    # if [[ $* =~ -v ]]; then
-    #     echo "新版本=$NEW_SCRIPT_VERSION"
-    # fi
+    run_status "get updates ..."  wget -c $THIS_SCRIPT_URL -O $THIS_SCRIPT_SAVE
+    run_status "unzip the file" tar -xvf $THIS_SCRIPT_SAVE -C /tmp
+    NEW_SCRIPT_VERSION=$(grep -o 'THIS_SCRIPT_VERSION=[0-9.]*' $THIS_SCRIPT_FILE | cut -d '=' -f 2)
 
     if [[ "$NEW_SCRIPT_VERSION" > "$THIS_SCRIPT_VERSION" ]]; then
-        cp $THIS_SCRIPT_SAVE $0
+        cp $THIS_SCRIPT_FILE $0
         exec bash $0 no_update
         
     fi
@@ -133,7 +132,7 @@ case $COMMAND in
         ;;
             
     -s)
-        run_as_client  wget -c $LOG_URL -O $FILE_LOG_SAVE
+        run_as_silent  wget -c $LOG_URL -O $FILE_LOG_SAVE
         NEW_VERSION=$(grep -o '\[[^]]*\] - [^ ]*' $FILE_LOG_SAVE | head -n 1 | awk '{print $3}')
         echo "$NEW_VERSION "
         exit 0
