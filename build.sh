@@ -103,10 +103,11 @@ for DIR in */
 do
     cd "$PATH_PWD/patch-list"
     DIR_NAME=${DIR%/}
-
-    DIR_TIME=$(stat -c %Y "$DIR_NAME")
+    DIR_TIME=$(find "$DIR_NAME" -type f -exec stat -c %Y {} \; | sort -nr | head -n 1)
     FILE_TIME=$(stat -c %Y "$OUTPUT/patch-list/$DIR_NAME.gz" 2>/dev/null)
-
+    if [ $DIR_TIME -gt $FILE_TIME ]; then
+        echo "大于"
+    fi
     # 如果.gz文件不存在，或者文件夹的修改时间比.gz文件晚，就生成同名.gz压缩文件覆盖
     if [ -z "$FILE_TIME" ] || [ $DIR_TIME -gt $FILE_TIME ]
     then
