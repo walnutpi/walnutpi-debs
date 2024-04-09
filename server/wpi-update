@@ -150,12 +150,12 @@ case $COMMAND in
 esac
 
 
-
-# 从文件中获取版本号和日期
-BOARD_VER=$(grep '^version=' $RELEASE_FILE | cut -d '=' -f 2)
-BOARD_DATE=$(grep '^date=' $RELEASE_FILE | cut -d '=' -f 2)
-BOARD_OS_TYPE=$(grep '^os_type=' $RELEASE_FILE | cut -d '=' -f 2)
-
+if [[ -f $RELEASE_FILE ]]; then
+    # 从文件中获取版本号和日期
+    BOARD_VER=$(grep '^version=' $RELEASE_FILE | cut -d '=' -f 2)
+    BOARD_DATE=$(grep '^date=' $RELEASE_FILE | cut -d '=' -f 2)
+    BOARD_OS_TYPE=$(grep '^os_type=' $RELEASE_FILE | cut -d '=' -f 2)
+fi
 # 获取release.log
 if [ -f $FILE_LOG_SAVE ]; then
     rm $FILE_LOG_SAVE
