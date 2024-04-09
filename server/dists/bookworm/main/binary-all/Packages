@@ -353,10 +353,10 @@ Architecture: all
 Maintainer: sc-bin <3335447573@qq.com>
 Installed-Size: 224
 Filename: main/walnutpi1b-patch_1.0.0_all.deb
-Size: 47010
-MD5sum: b2955cc7093e9ed7ba572dbba2419e52
-SHA1: 314b4f018fcb217d2058e9df2b23cd03e4ff332a
-SHA256: 1e5cef69d7f970ef6f2fb0e52c2174e035dcc336fb541ac93b24661deaaeaf40
+Size: 47018
+MD5sum: 4c110e80be1a26765a040eda1ab88e6b
+SHA1: d9df6b22c9e524e7623e3e844f259ff6d15b8f41
+SHA256: 7ecd14d53baab93268361cda5be34e75fbd1cfb9301bf79da204c9c50d17ccf8
 Section: free
 Priority: optional
 Description: walnutpi1b patch

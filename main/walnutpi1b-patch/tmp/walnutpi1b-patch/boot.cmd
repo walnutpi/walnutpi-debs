@@ -75,9 +75,13 @@ fi
 
 load ${devtype} ${devnum} ${kernel_addr_r} ${prefix}Image
 
-if test -e ${devtype} ${devnum} ${prefix}uInitrd; then
-    load ${devtype} ${devnum} ${ramdisk_addr_r} ${prefix}uInitrd
-    booti ${kernel_addr_r} ${ramdisk_addr_r} ${fdt_addr_r}
+if test ${bootlogo} = true; then
+	if test -e ${devtype} ${devnum} ${prefix}uInitrd; then
+		load ${devtype} ${devnum} ${ramdisk_addr_r} ${prefix}uInitrd
+		booti ${kernel_addr_r} ${ramdisk_addr_r} ${fdt_addr_r}
+	else
+		booti ${kernel_addr_r} - ${fdt_addr_r}
+	fi
 else
     booti ${kernel_addr_r} - ${fdt_addr_r}
 fi
