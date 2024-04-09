@@ -2,10 +2,10 @@
 if [ "$1" = "remove" ]  ; then
     
     if [[ -d /usr/share/bak.chromium ]]; then
-        mv /usr/share/bak.chromium /usr/share/chromium
+        mv /usr/share/bak.chromium/* /usr/share/chromium
     fi
     if [[ -d /etc/bak.chromium ]]; then
-        mv /etc/bak.chromium /etc/chromium
+        mv /etc/bak.chromium/* /etc/chromium
     fi
     
 fi

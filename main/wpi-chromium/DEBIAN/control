@@ -1,9 +1,9 @@
 Package: wpi-chromium
 Description: walnutpi chromium conf
-Version: 1.0.0
+Version: 1.0.1
 Maintainer: sc-bin <3335447573@qq.com>
 Section: free
 Priority: optional
-Installed-Size: 32
+Installed-Size: 40
 Architecture: all
 Depends: chromium

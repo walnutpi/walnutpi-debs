@@ -362,16 +362,16 @@ Priority: optional
 Description: walnutpi1b patch
 
 Package: wpi-chromium
-Version: 1.0.0
+Version: 1.0.1
 Architecture: all
 Maintainer: sc-bin <3335447573@qq.com>
-Installed-Size: 32
+Installed-Size: 40
 Depends: chromium
-Filename: main/wpi-chromium_1.0.0_all.deb
-Size: 2066
-MD5sum: 2f5a13b77562d7333fabd98503f2d0f3
-SHA1: 31bc788982de8f068351c8ad9c2e36a16d72c288
-SHA256: 8c6ddf0a29fb97bc51339434b4cf7151e74092058532ddbee64e0dd32d795aed
+Filename: main/wpi-chromium_1.0.1_all.deb
+Size: 2154
+MD5sum: 84d8a431c2716fd8cee4fd05004787bd
+SHA1: ef5ee68cdae59b958b206c5aa7e477a2f158fc92
+SHA256: 417bc3bf15675f961eef23a2b1e311bcfc926b9b51eb995faaee7aa7abf8e366
 Section: free
 Priority: optional
 Description: walnutpi chromium conf
