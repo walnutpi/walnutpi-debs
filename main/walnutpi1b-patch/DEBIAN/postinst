@@ -1,0 +1,11 @@
+#!/bin/bash
+set -e
+PATH_TMP="/tmp/walnutpi1b-patch"
+
+cp $PATH_TMP/config-6.1.31 /boot
+
+
+update-initramfs -uv -k 6.1.31
+
+cp $PATH_TMP/boot.cmd /boot
+cp $PATH_TMP/boot.scr /boot

@@ -2,3 +2,4 @@ bluez
 initramfs-tools-hook
 plymouth-themes-walnutpi
 service-boot-script
+walnutpi1b-patch
