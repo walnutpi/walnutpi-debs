@@ -1,17 +1,21 @@
 #!/bin/bash
-THIS_SCRIPT_VERSION=1.2
+THIS_SCRIPT_VERSION=1.3
 THIS_SCRIPT_URL="http://apt.walnutpi.com//debian/wpi-update.gz"
 THIS_SCRIPT_SAVE="/tmp/wpi-update.gz"
 THIS_SCRIPT_FILE="/tmp/wpi-update"
 
 SOURCE_STR="deb [trusted=yes] http://apt.walnutpi.com//debian/ bookworm main"
+BOARD_MODEL=$(tr -d '\0' < /proc/device-tree/model)
+PATCH_LIST_URL="http://apt.walnutpi.com/debian/patch-list/${BOARD_MODEL}.gz"
 TMP_SOURCE_FILE="/tmp/wpi-update-source"
-LOG_URL_CN="http://apt.walnutpi.com//debian/release-cn.log"
-LOG_URL_EN="http://apt.walnutpi.com//debian/release-en.log"
+LOG_URL_CN="http://apt.walnutpi.com/debian/release-cn.log"
+LOG_URL_EN="http://apt.walnutpi.com/debian/release-en.log"
 LOG_URL=""
 RELEASE_FILE="/etc/WalnutPi-release"
 FILE_LOG_SAVE="/tmp/wpi-update-update.log"
 FILE_PACKAGES="/tmp/wpi-update-packages.txt"
+
+
 
 run_as_silent() {
     $@ > /dev/null 2>&1
@@ -148,12 +152,9 @@ esac
 
 
 # 从文件中获取版本号和日期
-if [[ -f $RELEASE_FILE ]]; then
-    BOARD_VER=$(grep '^version=' $RELEASE_FILE | cut -d '=' -f 2)
-    BOARD_DATE=$(grep '^date=' $RELEASE_FILE | cut -d '=' -f 2)
-    # echo "BOARD_VER: $BOARD_VER"
-    # echo "BOARD_DATE: $BOARD_DATE"
-fi
+BOARD_VER=$(grep '^version=' $RELEASE_FILE | cut -d '=' -f 2)
+BOARD_DATE=$(grep '^date=' $RELEASE_FILE | cut -d '=' -f 2)
+BOARD_OS_TYPE=$(grep '^os_type=' $RELEASE_FILE | cut -d '=' -f 2)
 
 # 获取release.log
 if [ -f $FILE_LOG_SAVE ]; then
@@ -170,14 +171,16 @@ HAS_NEW=""
 for DATE in $DATES_IN_LOG; do
     DATE_SECONDS=$(date -d"$DATE" +%s)
     if (( DATE_SECONDS > BOARD_DATE_SECONDS )); then
-        HAS_NEW="yew"
+        HAS_NEW="yes"
     fi
     if (( DATE_SECONDS <= BOARD_DATE_SECONDS )); then
         LAST_DATE=$DATE
         break
     fi
 done
-
+if [[ $* =~ -N ]]; then
+    HAS_NEW=yes
+fi
 if [ -z "$HAS_NEW" ]; then
     echo -e  "${STR_AUTO['version_newest_h']}[${NEW_VERSION}]${STR_AUTO['version_newest_l']}"
     exit 0
@@ -202,16 +205,44 @@ else
 
 fi
 
+tmp_path="/tmp/walnutpi-patch-list"
+mkdir -p $tmp_path
+cd $tmp_path
+run_status "download the package list" wget $PATCH_LIST_URL -O list.gz
+run_status "unzip the package list" tar -xvf list.gz
+run_status "apt-get update" apt-get update -o Dir::Etc::sourcelist="$TMP_SOURCE_FILE" -o Dir::Etc::sourceparts="-" -o APT::Get::List-Cleanup="0"
+
+# 参数1是写着包列表的文件
+# 参数2是要输出的信息
+# 参数3是要执行的apt命令
+package_opt(){
+    LIST_FILE=$1
+    MESSAGE=$2
+    COMMAND=$3
+    TOTAL_PACKAGES=$(wc -l < "$LIST_FILE")
+    COUNT=0
+
+    while read PACKAGE_NAME
+    do
+        COUNT=$((COUNT+1))
+        echo -e "$MESSAGE [ $COUNT / $TOTAL_PACKAGES ] \t $PACKAGE_NAME " 
+        apt-get $COMMAND -y -o Dir::Etc::sourcelist="$TMP_SOURCE_FILE" -o Dir::Etc::sourceparts="-" -o APT::Get::List-Cleanup="0" $PACKAGE_NAME
+        # run_status "$MESSAGE [ $COUNT / $TOTAL_PACKAGES ] \t $PACKAGE_NAME " apt-get $COMMAND -y -o Dir::Etc::sourcelist="$TMP_SOURCE_FILE" -o Dir::Etc::sourceparts="-" -o APT::Get::List-Cleanup="0" $PACKAGE_NAME
+    done < "$LIST_FILE"
+}
+
+
+# 删除指定包
+package_opt "del-$BOARD_OS_TYPE" "remove" remove 
+
+# 增加新包
+package_opt "add-$BOARD_OS_TYPE" "add" install
+
 # 获取更新，安装
-run_status "get the package info ..." apt-get update -o Dir::Etc::sourcelist="$TMP_SOURCE_FILE" -o Dir::Etc::sourceparts="-" -o APT::Get::List-Cleanup="0"
 apt-get --just-print upgrade -o Dir::Etc::sourcelist="$TMP_SOURCE_FILE" -o Dir::Etc::sourceparts="-" -o APT::Get::List-Cleanup="0" | grep 'Inst' | cut -d ' ' -f 2 >  $FILE_PACKAGES
-# if [ ! -s $FILE_PACKAGES ]; then
-#     echo -e "${STR_AUTO['install_error']}."
-#     exit 1
-# fi
-while read PACKAGE_NAME; do
-    run_status "install $PACKAGE_NAME"  apt-get install -o Dir::Etc::sourcelist="$TMP_SOURCE_FILE" -o Dir::Etc::sourceparts="-" -o APT::Get::List-Cleanup="0" $PACKAGE_NAME
-done < $FILE_PACKAGES
+package_opt "$FILE_PACKAGES" "update"  install
+
+exit 1
 
 
 # 替换新版本号
