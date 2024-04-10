@@ -19,8 +19,8 @@ logo_size = small_dimension * LOGO_SIZE_PCT;
 logo_center.x = window_max.width * LOGO_CENTER_PCT.x;
 logo_center.y = window_max.height * LOGO_CENTER_PCT.y;
 
-    logo_pos.x = logo_center.x - logo.GetWidth()/2;
-    logo_pos.y = logo_center.y - logo.GetHeight()/2;
+logo_pos.x = logo_center.x - logo.GetWidth()/2;
+logo_pos.y = logo_center.y - logo.GetHeight()/2;
 
 
 if(LOGO_SIZE_PCT > 0)
@@ -33,8 +33,11 @@ if(LOGO_SIZE_PCT > 0)
                     
 }
 
-logo_to_top_edge = Window.GetHeight() * 0.3;
-logo_sprite = Sprite(logo);
-logo_sprite.SetPosition(logo_pos.x, logo_pos.y, 0);
+if (Plymouth.GetMode () == "boot" )
+{
+    logo_to_top_edge = Window.GetHeight() * 0.3;
+    logo_sprite = Sprite(logo);
+    logo_sprite.SetPosition(logo_pos.x, logo_pos.y, 0);
+}
 
 

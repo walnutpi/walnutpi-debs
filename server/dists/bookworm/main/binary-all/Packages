@@ -133,10 +133,10 @@ Architecture: all
 Maintainer: sc-bin <3335447573@qq.com>
 Installed-Size: 36
 Filename: main/plymouth-themes-walnutpi_1.0.0_all.deb
-Size: 3966
-MD5sum: c782f06ae3c95872643665edb17d7bef
-SHA1: 49cfdd0733e4e40e2074d8daa7a03e175c8a1ad8
-SHA256: a807343c368d616de99cd970e4df25b303e2444a70d9b5946e4bae798e10ce8b
+Size: 3992
+MD5sum: 6550297e99ed1542b2f25f7ac9897de9
+SHA1: fa2e54d76b8e5efe7004b66f6061e6c3bd786d17
+SHA256: 591d755ed09ede05e31c77b3682f770e88e9f52005e5a0f097fcf8ab78e28c4f
 Section: free
 Priority: optional
 Description: plymouth themes walnutpi
