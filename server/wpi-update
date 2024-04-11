@@ -1,21 +1,28 @@
 #!/bin/bash
 THIS_SCRIPT_VERSION=1.3
-THIS_SCRIPT_URL="http://apt.walnutpi.com//debian/wpi-update.gz"
+SERVER_DOMAIN="apt.walnutpi.com"
+THIS_SCRIPT_URL="http://${SERVER_DOMAIN}//debian/wpi-update.gz"
 THIS_SCRIPT_SAVE="/tmp/wpi-update.gz"
 THIS_SCRIPT_FILE="/tmp/wpi-update"
 
-SOURCE_STR="deb [trusted=yes] http://apt.walnutpi.com//debian/ bookworm main"
-BOARD_MODEL=$(tr -d '\0' < /proc/device-tree/model)
-PATCH_LIST_URL="http://apt.walnutpi.com/debian/patch-list/${BOARD_MODEL}.gz"
+SOURCE_STR="deb [trusted=yes] http://${SERVER_DOMAIN}//debian/ bookworm main"
+if [ -f /proc/device-tree/model ];then
+    BOARD_MODEL=$(tr -d '\0' < /proc/device-tree/model)
+    PATCH_LIST_URL="http://${SERVER_DOMAIN}/debian/patch-list/${BOARD_MODEL}.gz"
+fi
 TMP_SOURCE_FILE="/tmp/wpi-update-source"
-LOG_URL_CN="http://apt.walnutpi.com/debian/release-cn.log"
-LOG_URL_EN="http://apt.walnutpi.com/debian/release-en.log"
+LOG_URL_CN="http://${SERVER_DOMAIN}/debian/release-cn.log"
+LOG_URL_EN="http://${SERVER_DOMAIN}/debian/release-en.log"
 LOG_URL=""
 RELEASE_FILE="/etc/WalnutPi-release"
 FILE_LOG_SAVE="/tmp/wpi-update-update.log"
 FILE_PACKAGES="/tmp/wpi-update-packages.txt"
 
-
+[[ -f $THIS_SCRIPT_SAVE ]] && rm $THIS_SCRIPT_SAVE
+[[ -f $THIS_SCRIPT_FILE ]] && rm $THIS_SCRIPT_FILE
+[[ -f $TMP_SOURCE_FILE ]] && rm $TMP_SOURCE_FILE
+[[ -f $FILE_LOG_SAVE ]] && rm $FILE_LOG_SAVE
+[[ -f $FILE_PACKAGES ]] && rm $FILE_PACKAGES
 
 run_as_silent() {
     $@ > /dev/null 2>&1
@@ -25,7 +32,7 @@ run_status() {
     local message=$1
     shift
     # set +e
-    start_time=$(date +%s)
+    local start_time=$(date +%s)
     while true; do
         echo -e  -n "...\t$message"
         output=$("$@" 2>&1)
@@ -216,11 +223,11 @@ run_status "apt-get update" apt-get update -o Dir::Etc::sourcelist="$TMP_SOURCE_
 # 参数2是要输出的信息
 # 参数3是要执行的apt命令
 package_opt(){
-    LIST_FILE=$1
-    MESSAGE=$2
-    COMMAND=$3
-    TOTAL_PACKAGES=$(wc -l < "$LIST_FILE")
-    COUNT=0
+    local LIST_FILE=$1
+    local MESSAGE=$2
+    local COMMAND=$3
+    local TOTAL_PACKAGES=$(wc -l < "$LIST_FILE")
+    local COUNT=0
 
     while read PACKAGE_NAME
     do
@@ -241,8 +248,6 @@ package_opt "add-$BOARD_OS_TYPE" "add" install
 # 获取更新，安装
 apt-get --just-print upgrade -o Dir::Etc::sourcelist="$TMP_SOURCE_FILE" -o Dir::Etc::sourceparts="-" -o APT::Get::List-Cleanup="0" | grep 'Inst' | cut -d ' ' -f 2 >  $FILE_PACKAGES
 package_opt "$FILE_PACKAGES" "update"  install
-
-exit 1
 
 
 # 替换新版本号
