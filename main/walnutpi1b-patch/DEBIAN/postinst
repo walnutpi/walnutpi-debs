@@ -3,6 +3,7 @@ set -e
 PATH_TMP="/tmp/walnutpi1b-patch"
 
 cp $PATH_TMP/config-6.1.31 /boot
+cp $PATH_TMP/sun50i-h616-walnutpi-1b.dtb /boot
 
 
 update-initramfs -uv -k 6.1.31
