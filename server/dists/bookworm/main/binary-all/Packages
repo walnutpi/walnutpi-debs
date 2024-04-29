@@ -362,15 +362,15 @@ Priority: optional
 Description: walnutpi 1b desktop
 
 Package: walnutpi1b-patch
-Version: 1.0.1
+Version: 1.0.2
 Architecture: all
 Maintainer: sc-bin <3335447573@qq.com>
 Installed-Size: 264
-Filename: main/walnutpi1b-patch_1.0.1_all.deb
-Size: 55766
-MD5sum: 2bb4f4520b7778beab2938c3bae576cd
-SHA1: c5af135d864df8ddfb287a14906d549aef48420e
-SHA256: 3d4aa09bbda7f18530762905f4d0f40053e52282ec6063b63e81c6ca557a03e5
+Filename: main/walnutpi1b-patch_1.0.2_all.deb
+Size: 55794
+MD5sum: e0e56c9d42587f1f8a3fb962f7696c26
+SHA1: 250d940efaebd36b31b228ce1176cef9a218c286
+SHA256: 12a82281cf00f7f414992a1d24440a8fc87645bb59fe7e4747fb329116ff86f9
 Section: free
 Priority: optional
 Description: walnutpi1b patch
