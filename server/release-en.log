@@ -1,5 +1,8 @@
-[2024-4-11] - 2.2.0
+[2024-4-29] - 2.2.1
 
+    - FIX : some boards trigger high temperature protection when starting up
+    
+[2024-4-11] - 2.2.0
     - FIX : Some packet conflicts
     - NEW function : startup logo display
     - NEW function : The script in the /boot/start directory is automatically run up on startup

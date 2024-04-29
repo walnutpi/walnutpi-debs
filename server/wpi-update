@@ -1,5 +1,5 @@
 #!/bin/bash
-THIS_SCRIPT_VERSION=1.3
+THIS_SCRIPT_VERSION=1.4
 SERVER_DOMAIN="apt.walnutpi.com"
 THIS_SCRIPT_URL="http://${SERVER_DOMAIN}//debian/wpi-update.gz"
 THIS_SCRIPT_SAVE="/tmp/wpi-update.gz"
@@ -234,16 +234,32 @@ package_opt(){
         COUNT=$((COUNT+1))
         echo -e "$MESSAGE [ $COUNT / $TOTAL_PACKAGES ] \t $PACKAGE_NAME " 
         apt-get $COMMAND -y -o Dir::Etc::sourcelist="$TMP_SOURCE_FILE" -o Dir::Etc::sourceparts="-" -o APT::Get::List-Cleanup="0" $PACKAGE_NAME
-        # run_status "$MESSAGE [ $COUNT / $TOTAL_PACKAGES ] \t $PACKAGE_NAME " apt-get $COMMAND -y -o Dir::Etc::sourcelist="$TMP_SOURCE_FILE" -o Dir::Etc::sourceparts="-" -o APT::Get::List-Cleanup="0" $PACKAGE_NAME
     done < "$LIST_FILE"
 }
 
 
 # 删除指定包
-package_opt "del-$BOARD_OS_TYPE" "remove" remove 
+file="del-$BOARD_OS_TYPE" 
+new_file="del-$BOARD_OS_TYPE-available" 
+while IFS= read -r package
+do
+    if dpkg -l | grep -q "^ii  $package "; then
+        echo "$package" >> "$new_file"
+    fi
+done < "$file"
+[[ -f $new_file ]] && package_opt "$new_file" "remove" remove 
+
 
 # 增加新包
-package_opt "add-$BOARD_OS_TYPE" "add" install
+file="add-$BOARD_OS_TYPE" # 替换为你的文件路径
+new_file="add-$BOARD_OS_TYPE-available" # 替换为你的新文件路径
+while IFS= read -r package
+do
+    if ! dpkg -l | grep -q "^ii  $package "; then
+        echo "$package" >> "$new_file"
+    fi
+done < "$file"
+[[ -f $new_file ]] && package_opt "$new_file" "add" install
 
 # 获取更新，安装
 apt-get --just-print upgrade -o Dir::Etc::sourcelist="$TMP_SOURCE_FILE" -o Dir::Etc::sourceparts="-" -o APT::Get::List-Cleanup="0" | grep 'Inst' | cut -d ' ' -f 2 >  $FILE_PACKAGES
@@ -256,3 +272,5 @@ sed -i "s/^version=.*/version=$NEW_VERSION/" $RELEASE_FILE
 # 替换新时间
 DATE=$(grep -o '\[[^]]*\]' $FILE_LOG_SAVE | head -n 1 | tr -d '[]')
 sed -i "s/^date=.*/date=$DATE/" $RELEASE_FILE
+
+echo_green "\n\n【OK】please reboot"
