@@ -197,6 +197,20 @@ Section: free
 Priority: optional
 Description: service, disable the frmebuf console when config.txt has keyword
 
+Package: service-h616-conf-thermal-trip
+Version: 1.0.
+Architecture: all
+Maintainer: sc-bin <3335447573@qq.com>
+Installed-Size: 36
+Filename: main/service-h616-conf-thermal-trip_1.0._all.deb
+Size: 1004
+MD5sum: 1d55ffca20d2f0c3ca70a8ca62dc0ddc
+SHA1: e39b5cbb341a8fde91c7776331038ce86ef3249c
+SHA256: 6b16d6f84655343cc7f7cb135eac99d4a6cc157945a50bae83f1d3d129834587
+Section: free
+Priority: optional
+Description: service, modify the thermal_zon trips
+
 Package: service-h616-mac-detect
 Version: 1.0.1
 Architecture: all
