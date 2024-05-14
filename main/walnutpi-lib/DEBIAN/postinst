@@ -5,15 +5,15 @@ set -e
 cd /usr/lib/walnutpi
 
 echo "aw.gpio"
-pip3 --no-cache-dir install -e aw.gpio/ 
+pip3 --no-cache-dir install -e gpioc/ 
 
 echo "Adafruit_Blinka"
 pip3 --no-cache-dir install -e Adafruit_Blinka/ 
 
 
-echo "WiringPi"
-cd WiringPi/
-./build
+echo "gpioc"
+cd gpioc/
+./install
 
 
 echo -e "\nready"
