@@ -4,6 +4,6 @@ Version: 1.1.0
 Maintainer: sc-bin <3335447573@qq.com>
 Section: free
 Priority: optional
-Installed-Size: 5004
+Installed-Size: 5024
 Architecture: all
 Depends: make, gcc

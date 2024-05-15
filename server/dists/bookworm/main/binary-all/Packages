@@ -299,13 +299,13 @@ Package: walnutpi-lib
 Version: 1.1.0
 Architecture: all
 Maintainer: sc-bin <3335447573@qq.com>
-Installed-Size: 5004
+Installed-Size: 5024
 Depends: make, gcc
 Filename: main/walnutpi-lib_1.1.0_all.deb
-Size: 2260562
-MD5sum: 40a42cee65e9e8d753a2dc846865b882
-SHA1: a724f8c3d8457118011ee11e4798de8d074f3905
-SHA256: 25bb1155391fdc22d84531b0fbf478608e445e675d045d83564a75b59f6ee764
+Size: 2265104
+MD5sum: 55f57d5d08844ac7c9218057d8c5644b
+SHA1: 12ad4fb49be83d41b5c28268ec3b218a2435b8a3
+SHA256: e0653d936060456e825fbdf58794ce29d367e6a75f8dd2807b54d6c6693839a3
 Section: free
 Priority: optional
 Description: walnutpi support some lib
