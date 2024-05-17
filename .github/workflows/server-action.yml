@@ -1,0 +1,19 @@
+name: remote ssh command
+on: [push]
+jobs:
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+    - name: executing remote ssh commands
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_UER }}
+        key: ${{ secrets.SSH_KEY_PRAVITE }}
+        port: ${{ secrets.SSH_PORT }}
+        script: |
+            cd /opt/walnutpi-debs/ 
+            git reset --hard 6d04db265fd1f2d59c9bce37257dd435dcdb69c9
+            git pull
