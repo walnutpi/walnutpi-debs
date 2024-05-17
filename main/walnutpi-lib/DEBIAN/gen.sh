@@ -35,5 +35,6 @@ clone_or_pull() {
 }
 
 clone_or_pull "https://github.com/sc-bin/gpioc.git"
+clone_or_pull "https://github.com/walnutpi/WiringPi.git"
 clone_or_pull "https://github.com/walnutpi/Adafruit_Blinka.git"
 
