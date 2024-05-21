@@ -1,0 +1,30 @@
+#!/bin/bash
+
+gpio_bin_file="/usr/bin/_gpiocommand"
+
+dis_if_mmc() {
+    pin=$1
+    mode_name=$($gpio_bin_file "do_pri_mode_name" $pin)
+    mode_name_big=$(echo $mode_name | tr [a-z] [A-Z])    # 转变成大写再做比较
+    
+    if [[  "$mode_name_big" == MMC* ]];then    
+        gpio mode $pin OFF
+
+    fi
+}
+
+
+mmc2_status_file="/proc/device-tree/soc/mmc@4022000/status"
+if [ -f $mmc2_status_file ]; then
+    mmc2_status=$(tr -d '\0' < $mmc2_status_file)
+    
+    if [ ${mmc2_status} != "okay" ]; then
+        dis_if_mmc 7
+        dis_if_mmc 11
+        dis_if_mmc 12
+        dis_if_mmc 13
+        dis_if_mmc 18
+        dis_if_mmc 22
+    fi
+fi
+exit 0

@@ -1,0 +1,3 @@
+#!/bin/bash
+
+systemctl enable w1b_dis_mmc2.service

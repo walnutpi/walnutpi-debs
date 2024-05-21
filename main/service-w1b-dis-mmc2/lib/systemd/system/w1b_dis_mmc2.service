@@ -1,0 +1,12 @@
+[Unit]
+Description=set the mmc2 pins
+After=basic.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/lib/walnutpi/w1b_dis_mmc2
+RemainAfterExit=yes
+StandardOutput=null
+
+[Install]
+WantedBy=multi-user.target

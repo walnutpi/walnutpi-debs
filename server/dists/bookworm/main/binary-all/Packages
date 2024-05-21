@@ -239,6 +239,20 @@ Section: free
 Priority: optional
 Description: service,extend the part size at first boot
 
+Package: service-w1b-dis-mmc2
+Version: 1.0.0
+Architecture: all
+Maintainer: sc-bin <3335447573@qq.com>
+Installed-Size: 36
+Filename: main/service-w1b-dis-mmc2_1.0.0_all.deb
+Size: 1312
+MD5sum: f7eeea363ad6faea768ad24f5c2bbb28
+SHA1: 6784ecfa3e84a3c18871dca102dd2455ca29dad1
+SHA256: e30871c0c830acdd714a633d63e7783aa17822de8beda4029a368615ec2de819
+Section: free
+Priority: optional
+Description: service, run on walnutpi-1b board. set the mmc2 pins as off if mmc2 is disable
+
 Package: set-device
 Version: 1.0.0
 Architecture: all
@@ -299,13 +313,13 @@ Package: walnutpi-lib
 Version: 1.1.0
 Architecture: all
 Maintainer: sc-bin <3335447573@qq.com>
-Installed-Size: 7596
+Installed-Size: 7676
 Depends: make, gcc
 Filename: main/walnutpi-lib_1.1.0_all.deb
-Size: 3295462
-MD5sum: 830383ff07655e0063ccdf044179839a
-SHA1: 49bb1d935bda7aaf9ec1db46cb320d6a18600329
-SHA256: 565be546c5fb62737522eb2196c8013e2229282ae482f67419dd4e7120f553e8
+Size: 3301952
+MD5sum: df5965e0456120356a3ce93b1f292cda
+SHA1: 769e240506f3c57f236bf82a10d5d75b2751ed0e
+SHA256: cdbf4684bce59fbfa6ad16a23c07c0759f01c587b1983720c1f2a0b2deae426d
 Section: free
 Priority: optional
 Description: walnutpi support some lib
