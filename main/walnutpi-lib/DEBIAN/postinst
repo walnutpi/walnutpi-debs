@@ -14,7 +14,13 @@ cd /usr/lib/walnutpi
 echo "gpioc"
 pip3 --no-cache-dir install -e gpioc/ 
 
+if python -c "import adafruit_platformdetect" >/dev/null 2>&1
+then
+    pip3  uninstall  Adafruit-PlatformDetect
+fi
+
 echo "Adafruit_Blinka"
+pip3 --no-cache-dir install -e Adafruit_Python_PlatformDetect/ 
 pip3 --no-cache-dir install -e Adafruit_Blinka/ 
 
 
