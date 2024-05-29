@@ -1,0 +1,92 @@
+#!/bin/bash
+
+
+# 测试时的板子是mmcblk2，但不排除因为不同设备树配置，导致blk号改变
+_get_mmcblk() {
+    local PREFLIX_DEV="/dev/mmcblk"
+    if [ -b "${PREFLIX_DEV}2boot0" ]; then
+        echo "${PREFLIX_DEV}2"
+        elif [ -b "${PREFLIX_DEV}1boot0" ]; then
+        echo "${PREFLIX_DEV}1"
+        elif [ -b "${PREFLIX_DEV}0boot0" ]; then
+        echo "${PREFLIX_DEV}0"
+    fi
+}
+
+_show_burn_progress() {
+    local progress=$1
+    local speed_MB=$2
+    local time_use=$3
+    local time_may_stop=$4
+    local term_width=$(tput cols)
+    local bar_width=$((term_width - 30))
+    local filled_part=$((progress * bar_width / 100))
+    local empty_part=$((bar_width - filled_part))
+    local output=$(
+        printf '\r'
+        printf '%ds' $time_use
+        printf '['
+        if [ $filled_part -gt 0 ]; then
+            printf '\033[42m%0.s \033[0m' $(seq 1 $filled_part)
+        fi
+        if [ $empty_part -gt 0 ]; then
+            printf '\033[41m%0.s-\033[0m' $(seq 1 $empty_part)
+        fi
+        printf ']%3.d%%'  $progress
+        printf '%6.1fMB/s'  $speed_MB
+        printf ' <%ds'  $time_may_stop
+    )
+    
+    echo -e $output "\c"
+    
+}
+burn() {
+    local BIN=$1
+    if [ -z $BIN ] || [ ! -f $BIN ]; then
+        echo "the file error"
+        exit
+    fi
+    local BIN_SIZE=$(stat -c "%s" $BIN)
+    local PATH_OF=$(_get_mmcblk)
+    local mountpoint=$(mount | grep $PATH_OF)
+    if [ -n "$mountpoint" ]; then
+        echo "the disk is in used"
+        exit
+    fi
+
+    echo ""
+    echo "file : $BIN"
+    local num=$BIN_SIZE
+    while [ $num -gt 999 ]; do
+        remainder=$(($num % 1000))
+        if [ $remainder -lt 100 ];then
+            remainder=0"$remainder"
+        fi
+        num=$(($num / 1000))
+        result=",${remainder}${result}"
+    done
+    echo "size : ${num}${result} Byte"
+    
+    set_emmc_burn_speed=0
+    set_emmc_burn_time_use=0
+    while IFS= read -r -d $'\r' line
+    do
+        # 15467008 bytes (15 MB, 15 MiB) copied, 1 s, 15.5 MB/s
+        local total_bytes=$(echo $line | awk '{print $1}')
+        set_emmc_burn_speed=$(echo $line | awk '{print $10}')
+        set_emmc_burn_time_use=$(echo $line | awk '{print $8}')
+        if [ -z  $total_bytes ]; then
+            continue
+        fi
+        local progress=$[ total_bytes * 100 / BIN_SIZE   ]
+        local time_may_stop=$[ (BIN_SIZE - total_bytes ) / $(echo $set_emmc_burn_speed | awk '{print int($1)}') / 1000 / 1000  ]
+        _show_burn_progress $progress $set_emmc_burn_speed $set_emmc_burn_time_use $time_may_stop
+    done < <(dd if=${BIN} of=${PATH_OF} status=progress 2>&1)
+    _show_burn_progress 100 $set_emmc_burn_speed $set_emmc_burn_time_use 0
+    echo ""
+    
+}
+
+FUNCTION_NAME=$1
+BIN_NAME=$2
+$FUNCTION_NAME $BIN_NAME
