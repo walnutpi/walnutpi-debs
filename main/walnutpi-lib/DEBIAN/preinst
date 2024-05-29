@@ -1,0 +1,11 @@
+#!/bin/bash
+
+set -e
+
+if python -c "import adafruit_platformdetect" >/dev/null 2>&1
+then
+    pip3  uninstall  Adafruit-PlatformDetect -y
+    pip3  uninstall  Adafruit-Blinka -y
+fi
+
+

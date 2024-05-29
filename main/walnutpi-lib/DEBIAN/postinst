@@ -8,27 +8,18 @@ echo "WiringPi"
 cd WiringPi/
 ./build
 
-
 cd /usr/lib/walnutpi
-
 echo "gpioc"
 pip3 --no-cache-dir install -e gpioc/ 
+cd gpioc/
+./install
 
-if python -c "import adafruit_platformdetect" >/dev/null 2>&1
-then
-    pip3  uninstall  Adafruit-PlatformDetect
-fi
-
+cd /usr/lib/walnutpi
 echo "Adafruit_Blinka"
 pip3 --no-cache-dir install -e Adafruit_Python_PlatformDetect/ 
 pip3 --no-cache-dir install -e Adafruit_Blinka/ 
 
 
-cd /usr/lib/walnutpi
-
-echo "gpioc"
-cd gpioc/
-./install
 
 
 echo -e "\nready"
