@@ -113,6 +113,21 @@ Section: free
 Priority: optional
 Description: enable the ssh login with root
 
+Package: gpioc
+Version: 1.
+Architecture: all
+Maintainer: sc-bin <3335447573@qq.com>
+Installed-Size: 984
+Depends: make, gcc
+Filename: main/gpioc_1._all.deb
+Size: 446492
+MD5sum: 9bc3fcc2127d874f0a1729ec9ad32022
+SHA1: f930b8c46d924d10c97ad4086fefa87e74f5f0b7
+SHA256: e4114d209dbada6d2db925d2736828cdce2a915de56b8010462929d069ac41dc
+Section: free
+Priority: optional
+Description: control the gpio
+
 Package: initramfs-tools-hook
 Version: 1.0.0
 Architecture: all
@@ -324,16 +339,16 @@ Priority: optional
 Description: Configuration x11 vnc server
 
 Package: walnutpi-lib
-Version: 1.1.1
+Version: 1.0.1
 Architecture: all
 Maintainer: sc-bin <3335447573@qq.com>
-Installed-Size: 9096
+Installed-Size: 8976
 Depends: make, gcc
-Filename: main/walnutpi-lib_1.1.1_all.deb
-Size: 4060212
-MD5sum: 7e9cf08645709ff5c20ec23529da49ec
-SHA1: c52f5933a6b574ae2ede0642e48f30a94c16a421
-SHA256: c396e986462f78a39d41b8c272ba84b26fbe508019f3318897ed45e34aaa5095
+Filename: main/walnutpi-lib_1.0.1_all.deb
+Size: 4055694
+MD5sum: cbbd2a8c51ef7cbf2c6443d1c0a70f9b
+SHA1: f5caab2492ce34d33d3ab9f5b9be46a34071a554
+SHA256: 93c1064a7ac245d066d8c3a2a0a92c91ca2c476e6116803443be6c66f03566da
 Section: free
 Priority: optional
 Description: walnutpi support some lib
@@ -390,15 +405,15 @@ Priority: optional
 Description: walnutpi 1b desktop
 
 Package: walnutpi1b-patch
-Version: 1.0.3
+Version: 1.0.4
 Architecture: all
 Maintainer: sc-bin <3335447573@qq.com>
-Installed-Size: 264
-Filename: main/walnutpi1b-patch_1.0.3_all.deb
-Size: 55826
-MD5sum: 77848e36c23d2aefbc78f2443182137a
-SHA1: f2fd922b11dd61b6b1066c6b3f847f0cf4631636
-SHA256: 4795bae39f056cd6ceefbeb8c0b9ec4ed77d52082d7050cda1c9acbc239245fd
+Installed-Size: 304
+Filename: main/walnutpi1b-patch_1.0.4_all.deb
+Size: 56280
+MD5sum: a98c636f7563c22350f52eb474e6dc80
+SHA1: a586d637323f623f067125a571929b3e3f997054
+SHA256: 50a040e5c632484be5c6f42fa6cc3b1051b0b7d5ebb55cf7c29686946d8fc227
 Section: free
 Priority: optional
 Description: walnutpi1b patch
