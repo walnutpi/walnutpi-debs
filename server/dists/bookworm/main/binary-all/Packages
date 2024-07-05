@@ -283,15 +283,15 @@ Priority: optional
 Description: Modifying the /boot/config.txt file about overlays
 
 Package: set-emmc
-Version: 1.0.0
+Version: 1.0.1
 Architecture: all
 Maintainer: sc-bin <3335447573@qq.com>
-Installed-Size: 28
-Filename: main/set-emmc_1.0.0_all.deb
-Size: 2102
-MD5sum: e32f32c9c978b9a84dc9da52cdc03471
-SHA1: fbf325269ff2ba2d52bea78753a46110c67c834a
-SHA256: f79f1e6909773d6a4255ff76e50df3ab60a0daf9e789f02107215933578f9f31
+Installed-Size: 32
+Filename: main/set-emmc_1.0.1_all.deb
+Size: 2378
+MD5sum: 03972929c1e631cff04b78234cbbea4b
+SHA1: 7df4f19798e505edca12fcaddd3e08be29847735
+SHA256: 4c74eaa187340453a65e7c8418a9ddd602f53d5a0671cd79fbcccc55d931b4ff
 Section: free
 Priority: optional
 Description: set-emmc command

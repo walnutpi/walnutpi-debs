@@ -1,15 +1,9 @@
-#!/bin/bash
-
 _set-emmc () {
     local cur=${COMP_WORDS[COMP_CWORD]}
     if [ $COMP_CWORD -eq 1 ]; then
-        local functions=$(grep -oP '^[^_]\w+\s*\(\)' /usr/bin/set-emmc | sed 's/()//')
+        local functions=$(grep -oP '^[^-_][\w-]+\s*\(\)' /usr/bin/set-emmc | sed 's/()//')
         COMPREPLY=($(compgen -W "$functions" -- $cur))
     elif [ $COMP_CWORD -eq 2 ]; then
-        # local function_name=${COMP_WORDS[1]}
-        # local para_function="_para_${function_name}"
-        # local options=$(bash -c "/usr/bin/set-emmc $para_function")
-        # COMPREPLY=($(compgen -W "$options" -- $cur))
         COMPREPLY=($(compgen -f -- "$cur"))
     fi
 }

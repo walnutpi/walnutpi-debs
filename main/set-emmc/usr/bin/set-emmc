@@ -18,13 +18,18 @@ _show_burn_progress() {
     local speed_MB=$2
     local time_use=$3
     local time_may_stop=$4
+    local dd_done=$5
+    
     local term_width=$(tput cols)
-    local bar_width=$((term_width - 30))
+    local bar_width=$((term_width - 40))
     local filled_part=$((progress * bar_width / 100))
     local empty_part=$((bar_width - filled_part))
     local output=$(
         printf '\r'
         printf '%ds' $time_use
+        if [ -n "$dd_done" ]; then
+            echo -n  " $dd_done"
+        fi
         printf '['
         if [ $filled_part -gt 0 ]; then
             printf '\033[42m%0.s \033[0m' $(seq 1 $filled_part)
@@ -32,18 +37,91 @@ _show_burn_progress() {
         if [ $empty_part -gt 0 ]; then
             printf '\033[41m%0.s-\033[0m' $(seq 1 $empty_part)
         fi
-        printf ']%3.d%%'  $progress
+        # printf ']%3.d%%'  $progress
+        echo "] $progress%"
+        
         printf '%6.1fMB/s'  $speed_MB
-        printf ' <%ds'  $time_may_stop
+        printf '  <%ds'  $time_may_stop
     )
     
     echo -e $output "\c"
     
 }
+
+_delete_all_part() {
+    MMC_DEVICE=$1
+    if ls ${MMC_DEVICE}p* 1> /dev/null 2>&1; then
+        partitions=$(parted -s $MMC_DEVICE print | awk '{if(NF>1 && $1 ~ /^[0-9]+$/) print $1}')
+        for partition in $partitions; do
+            echo "remove part $partition"
+            parted -s $MMC_DEVICE rm $partition
+        done
+        
+    fi
+}
+earse-quick() {
+    local PATH_OF=$(_get_mmcblk)
+    local mountpoint=$(mount | grep $PATH_OF)
+    
+    if [ -n "$mountpoint" ]; then
+        echo "the disk is in used"
+        exit
+    fi
+    
+    _delete_all_part $PATH_OF
+    
+    dd if=/dev/zero of=${PATH_OF} bs=512 count=2048
+    echo -e "\nearse quick ok"
+    
+}
+
+earse-overwrite() {
+    local PATH_OF=$(_get_mmcblk)
+    local mountpoint=$(mount | grep $PATH_OF)
+    if [ -n "$mountpoint" ]; then
+        echo "the disk is in used"
+        exit
+    fi
+    
+    local DISK_SIZE=$(fdisk -l $PATH_OF | grep Disk | awk '{print $5}')
+    
+    local num=$DISK_SIZE
+    while [ $num -gt 999 ]; do
+        remainder=$(($num % 1000))
+        if [ $remainder -lt 100 ];then
+            remainder=0"$remainder"
+        fi
+        num=$(($num / 1000))
+        result=",${remainder}${result}"
+    done
+    echo "EMMC size : ${num}${result} Byte"
+    
+    _delete_all_part $PATH_OF
+    
+    set_emmc_burn_speed=0
+    set_emmc_burn_time_use=0
+    while IFS= read -r -d $'\r' line
+    do
+        # 15467008 bytes (15 MB, 15 MiB) copied, 1 s, 15.5 MB/s
+        local total_bytes=$(echo $line | awk '{print $1}')
+        set_emmc_burn_speed=$(echo $line | awk '{print $10}')
+        set_emmc_burn_time_use=$(echo $line | awk '{print $8}')
+        set_emmc_dd_done="$(echo $line | awk '{print $5}')$(echo $line | awk '{print $4}')"
+        if [ -z  $total_bytes ]; then
+            continue
+        fi
+        local progress=$[ total_bytes * 100 / DISK_SIZE   ]
+        local time_may_stop=$[ (DISK_SIZE - total_bytes ) / $(echo $set_emmc_burn_speed | awk '{print int($1)}') / 1000 / 1000  ]
+        _show_burn_progress $progress $set_emmc_burn_speed $set_emmc_burn_time_use $time_may_stop ${set_emmc_dd_done%?}
+    done < <(dd if=/dev/zero of=${PATH_OF} status=progress 2>&1)
+    _show_burn_progress 100 $set_emmc_burn_speed $set_emmc_burn_time_use 0
+    echo ""
+    
+}
 burn() {
     local BIN=$1
     if [ -z $BIN ] || [ ! -f $BIN ]; then
-        echo "the file error"
+        echo "Error: $BIN is not a file"
         exit
     fi
     local BIN_SIZE=$(stat -c "%s" $BIN)
@@ -53,7 +131,7 @@ burn() {
         echo "the disk is in used"
         exit
     fi
-
+    
     echo ""
     echo "file : $BIN"
     local num=$BIN_SIZE

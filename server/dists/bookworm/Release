@@ -1,24 +1,24 @@
 Architectures: all arm64
 Codename: bookworm
 Components: main
-Date: Wed, 29 May 2024 09:13:09 +0000
+Date: Fri, 05 Jul 2024 08:05:29 +0000
 Description: Your description
 Label: Walnut Pi
 Origin: Walnut Pi
 Suite: stable
 MD5Sum:
- ca3e8dd3c3b775867f19898985337d31              178 Release
- ad117d0377517bd7dd89eaf5df2aeb81            14559 main/binary-all/Packages
+ 4738d89366f1dc9ef1bd1b5fd98b506f              178 Release
+ 97ba912b772d29111c8093b1e7adc4ae            14559 main/binary-all/Packages
  3ab14929d57c8552a4a5f0039fbbf631             2978 main/binary-arm64/Packages
 SHA1:
- 3004e530c6c14808cbd28bbff03f395b096a0be6              178 Release
- 47eb913cca1c0e444dbd1c999904a5617bc49ff4            14559 main/binary-all/Packages
+ 70e071aafb6df7fabf4cbf499f5686686b8d0216              178 Release
+ 58e2587cc7e5fb7cce16a4e8bd70d75cac2653a1            14559 main/binary-all/Packages
  a643059d0038ce9a5e67f498af89223ee7006736             2978 main/binary-arm64/Packages
 SHA256:
- db2fc1630d65631c8ab216b81c778efb681447405e8c703bc9d62e80bbe6df7f              178 Release
- 07216c0807de59d17ef7d292089a00e3137f86b8b8ccc639a63af4e1cb522248            14559 main/binary-all/Packages
+ 5ef871ba8ab95a48ccf2328deadcdc63fc73b53bfcaf227748e721f4ee1a7d8c              178 Release
+ e672eada1f89e186ffae5accaaf4e1a9948c8028333e33d4218ffe6f32c5aade            14559 main/binary-all/Packages
  49243767594ddc321666e9791eed4e8868e890555dad0829d277031170b6f03b             2978 main/binary-arm64/Packages
 SHA512:
- e6bb5d4ff6ddf18a1843ed2e2a0d62673989fed0081dbc7ad1110231e7335b95accb07292475ca66b9cf6733de93cc34eed07580ca753171228593ff3a858604              178 Release
- 9682c7080adddb27bb05cb31ff0d28b4f97818984770ee04907afe776109140210d2bda9b7cc7a7b5714ba4f74d62a49394b5e844296b173cb5106cf02283459            14559 main/binary-all/Packages
+ 66a3e459a1c8867ac4dcb6a43917c1d65bb8fe15692823deddf1f4a7619e7f96048df3a36f8357129c10de48262665aea1982ff2d84a2721c8fbffa5edc7be5d              178 Release
+ 4caa29f038fe1011c0e01d6360ae473984ff69bd46d090da47aa8d0258c6e4d60ea9b2fd9013c32b3aa0048d3b29b4550d494bc731bbe1c8ed1e9c21a0a5f43c            14559 main/binary-all/Packages
  bf9c129ab9fdf608fa0ae1cb5b6e0768d660976c8490537ceefcdff3bcc4c1c011c272532d3d2a84670b6eab24f0638e32841669ff61ca4a10e84abd127cb1f0             2978 main/binary-arm64/Packages
