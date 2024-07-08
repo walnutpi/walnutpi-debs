@@ -16,6 +16,6 @@ script_list=$(ls ${PATH_START}/*.sh )
 for script in $script_list
 do
     cd $PATH_START
-    bash $script
+    bash $script &
 done
 

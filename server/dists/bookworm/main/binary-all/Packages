@@ -214,15 +214,15 @@ Priority: optional
 Description: service, enable the aw859 bluetooth
 
 Package: service-boot-script
-Version: 1.1.0
+Version: 1.1.1
 Architecture: all
 Maintainer: sc-bin <3335447573@qq.com>
 Installed-Size: 36
-Filename: main/service-boot-script_1.1.0_all.deb
-Size: 1196
-MD5sum: 9a4fa735488f69c38d1e22cf24350672
-SHA1: d62872a8719ecdb3a2cb047cef08cdb4149d9a4b
-SHA256: 4bfa5a03448fe65eb83ff158204355be4a48f9f6b2616f4749399c8430e3bbc2
+Filename: main/service-boot-script_1.1.1_all.deb
+Size: 1200
+MD5sum: 55a474780fe75e51471159f956ce7027
+SHA1: 4a419ee75f8f7e3c0a67c5c41ce34113dfb84fe6
+SHA256: 7e11b2c3fff213af53352441facacd16b9919e1c40c729760fd5697d02f0315e
 Section: free
 Priority: optional
 Description: service,run the scripts when power on
