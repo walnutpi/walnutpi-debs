@@ -339,16 +339,16 @@ Priority: optional
 Description: Configuration x11 vnc server
 
 Package: walnutpi-lib
-Version: 1.0.1
+Version: 1.0.2
 Architecture: all
 Maintainer: sc-bin <3335447573@qq.com>
-Installed-Size: 8976
+Installed-Size: 9072
 Depends: make, gcc
-Filename: main/walnutpi-lib_1.0.1_all.deb
-Size: 4055694
-MD5sum: cbbd2a8c51ef7cbf2c6443d1c0a70f9b
-SHA1: f5caab2492ce34d33d3ab9f5b9be46a34071a554
-SHA256: 93c1064a7ac245d066d8c3a2a0a92c91ca2c476e6116803443be6c66f03566da
+Filename: main/walnutpi-lib_1.0.2_all.deb
+Size: 4065792
+MD5sum: f275126ff304aef83f096da89d8b0010
+SHA1: 5ecab077e61bc06e439623901f8f254a11c2bfe8
+SHA256: 37109f824c376f4d1cdd7a2f13c194a7c7f033629284f95416b12b0d016ef157
 Section: free
 Priority: optional
 Description: walnutpi support some lib
