@@ -1,0 +1,3 @@
+#!/bin/bash
+systemctl stop hass-status-led.service
+systemctl disable hass-status-led.service

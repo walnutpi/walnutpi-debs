@@ -128,6 +128,21 @@ Section: free
 Priority: optional
 Description: control the gpio
 
+Package: hass-status-led
+Version: 1.1.0
+Architecture: all
+Maintainer: sc-bin <3335447573@qq.com>
+Installed-Size: 36
+Depends: netcat-openbsd
+Filename: main/hass-status-led_1.1.0_all.deb
+Size: 1252
+MD5sum: 7a25faee42a65ddc3f33bbca94549a52
+SHA1: ce89d76469b7485801b377d2122e9251a1e561e0
+SHA256: 15e0c73d3847aa46a217b80f04fd3ba8fb0ada475e9ff5b8ab091a4f5eecef39
+Section: free
+Priority: optional
+Description: show the hass status on the led
+
 Package: initramfs-tools-hook
 Version: 1.0.0
 Architecture: all
@@ -155,6 +170,20 @@ SHA256: 591d755ed09ede05e31c77b3682f770e88e9f52005e5a0f097fcf8ab78e28c4f
 Section: free
 Priority: optional
 Description: plymouth themes walnutpi
+
+Package: powerdown-key
+Version: 1.1.0
+Architecture: arm64
+Maintainer: sc-bin <3335447573@qq.com>
+Installed-Size: 36
+Filename: main/powerdown-key_1.1.0_arm64.deb
+Size: 1182
+MD5sum: deedf0b9724bc0132f2a77279a0a4bb8
+SHA1: 954d56733c765fe9bbf1f02962db2784c2b6eec3
+SHA256: 0506f005aa4275a87bd2fc0fc1612e9694056adff855bfa315c90f12aa733022
+Section: free
+Priority: optional
+Description: Use the walnutpi-1b on-board button as the shutdown button
 
 Package: pyuic
 Version: 1.0.0

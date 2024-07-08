@@ -1,0 +1,37 @@
+#!/bin/bash
+
+GPIO_KEY=41
+GPIO_LED=42
+
+read_key() {
+    gpio mode ${GPIO_KEY} in
+    echo $(gpio read ${GPIO_KEY})
+}
+
+led_blink() {
+    gpio mode ${GPIO_LED} output
+    gpio write ${GPIO_LED} 0
+    sleep 0.5
+    gpio write ${GPIO_LED} 1
+    sleep 0.5
+}
+count=0
+while true  :
+do
+    while (($(read_key) == 0)) ;  do
+        sleep 1
+        
+        let count++
+        # echo $count
+        if (( $count > 6 )); then
+            led_blink
+            led_blink
+            led_blink
+            sudo shutdown now
+        fi
+
+    done
+    count=0
+    sleep 1
+    
+done

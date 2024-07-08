@@ -1,0 +1,12 @@
+[Unit]
+Description=Use the on-board button as the shutdown button
+After=sysinit.target
+
+[Service]
+Type=simple
+ExecStart=/usr/lib/walnutpi/powerdown-key
+RemainAfterExit=yes
+StandardOutput=null
+
+[Install]
+WantedBy=multi-user.target

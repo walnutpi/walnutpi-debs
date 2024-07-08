@@ -1,0 +1,10 @@
+Package: hass-status-led
+Description: show the hass status on the led
+Version: 1.1.0
+Maintainer: sc-bin <3335447573@qq.com>
+Section: free
+Priority: optional
+Installed-Size: 36
+Architecture: all
+Depends: netcat-openbsd
+

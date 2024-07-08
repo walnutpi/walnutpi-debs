@@ -1,0 +1,3 @@
+#!/bin/bash
+
+systemctl enable hass-status-led.service
