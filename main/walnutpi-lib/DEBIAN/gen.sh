@@ -39,3 +39,17 @@ clone_or_pull "https://github.com/walnutpi/Adafruit_Python_PlatformDetect.git"
 clone_or_pull "https://github.com/walnutpi/WiringPi.git"
 clone_or_pull "https://github.com/walnutpi/Adafruit_Blinka.git"
 
+FILE_SETUP="${PATH_PWD}/../usr/lib/walnutpi/Adafruit_Python_PlatformDetect/setup.py"
+
+# 在ubuntu22上，需要提供setup.py才能用pip本地安装
+if [ ! -f $FILE_SETUP ]; then
+    # touch $FILE_SETUP
+
+    cat << EOF > $FILE_SETUP
+#!/usr/bin/env python
+import setuptools
+if __name__ == "__main__":
+    setuptools.setup()
+EOF
+
+fi
