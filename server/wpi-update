@@ -189,7 +189,7 @@ if [[ $* =~ -N ]]; then
     HAS_NEW=yes
 fi
 if [ -z "$HAS_NEW" ]; then
-    echo -e  "${STR_AUTO['version_newest_h']}[${NEW_VERSION}]${STR_AUTO['version_newest_l']}"
+    echo -e  "${STR_AUTO['version_newest_h']}[${BOARD_VER}]${STR_AUTO['version_newest_l']}"
     exit 0
 fi
 
