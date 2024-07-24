@@ -1,8 +1,9 @@
 Package: walnutpi1b-patch
 Description: walnutpi1b patch
-Version: 1.0.4
+Version: 1.0.5
 Maintainer: sc-bin <3335447573@qq.com>
 Section: free
 Priority: optional
 Installed-Size: 304
 Architecture: all
+Depends: btop

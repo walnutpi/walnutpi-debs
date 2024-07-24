@@ -1,16 +1,18 @@
 #!/bin/bash
-THIS_SCRIPT_VERSION=1.4
+THIS_SCRIPT_VERSION=1.5
 SERVER_DOMAIN="apt.walnutpi.com"
 THIS_SCRIPT_URL="http://${SERVER_DOMAIN}//debian/wpi-update.gz"
 THIS_SCRIPT_SAVE="/tmp/wpi-update.gz"
 THIS_SCRIPT_FILE="/tmp/wpi-update"
 
-SOURCE_STR="deb [trusted=yes] http://${SERVER_DOMAIN}//debian/ bookworm main"
+SOURCE_STR_WALNUTPI="deb [trusted=yes] http://${SERVER_DOMAIN}//debian/ bookworm main"
+SOURCE_STR_TSINGHUA="deb http://mirrors.tuna.tsinghua.edu.cn/debian bookworm main"
 if [ -f /proc/device-tree/model ];then
     BOARD_MODEL=$(tr -d '\0' < /proc/device-tree/model)
     PATCH_LIST_URL="http://${SERVER_DOMAIN}/debian/patch-list/${BOARD_MODEL}.gz"
 fi
 TMP_SOURCE_FILE="/tmp/wpi-update-source"
+TMP_SOURCE_FILE_WPI="/tmp/wpi-update-source-wpi"
 LOG_URL_CN="http://${SERVER_DOMAIN}/debian/release-cn.log"
 LOG_URL_EN="http://${SERVER_DOMAIN}/debian/release-en.log"
 LOG_URL=""
@@ -21,6 +23,7 @@ FILE_PACKAGES="/tmp/wpi-update-packages.txt"
 [[ -f $THIS_SCRIPT_SAVE ]] && rm $THIS_SCRIPT_SAVE
 [[ -f $THIS_SCRIPT_FILE ]] && rm $THIS_SCRIPT_FILE
 [[ -f $TMP_SOURCE_FILE ]] && rm $TMP_SOURCE_FILE
+[[ -f $TMP_SOURCE_FILE_WPI ]] && rm $TMP_SOURCE_FILE_WPI
 [[ -f $FILE_LOG_SAVE ]] && rm $FILE_LOG_SAVE
 [[ -f $FILE_PACKAGES ]] && rm $FILE_PACKAGES
 
@@ -113,7 +116,9 @@ if [[ $EUID -ne 0 ]]; then
     exit 1
 fi
 
-echo $SOURCE_STR > $TMP_SOURCE_FILE
+echo -e "$SOURCE_STR_WALNUTPI \n" > $TMP_SOURCE_FILE_WPI
+echo -e "$SOURCE_STR_WALNUTPI \n" > $TMP_SOURCE_FILE
+echo -e "$SOURCE_STR_TSINGHUA \n" >> $TMP_SOURCE_FILE
 COMMAND=$1
 COMMAND_VALUE=$2
 
@@ -150,7 +155,7 @@ case $COMMAND in
         ;;
     install)
         
-        run_status "get the package info ..." apt-get update -o Dir::Etc::sourcelist="$TMP_SOURCE_FILE" -o Dir::Etc::sourceparts="-" -o APT::Get::List-Cleanup="0"
+        run_status "get the package info ..." apt-get update -o Dir::Etc::sourcelist="$TMP_SOURCE_FILE_WPI" -o Dir::Etc::sourceparts="-" -o APT::Get::List-Cleanup="0"
         apt-get install -o Dir::Etc::sourcelist="$TMP_SOURCE_FILE" -o Dir::Etc::sourceparts="-" -o APT::Get::List-Cleanup="0" $COMMAND_VALUE
         exit 0
         ;;
@@ -262,7 +267,7 @@ done < "$file"
 [[ -f $new_file ]] && package_opt "$new_file" "add" install
 
 # 获取更新，安装
-apt-get --just-print upgrade -o Dir::Etc::sourcelist="$TMP_SOURCE_FILE" -o Dir::Etc::sourceparts="-" -o APT::Get::List-Cleanup="0" | grep 'Inst' | cut -d ' ' -f 2 >  $FILE_PACKAGES
+apt-get --just-print upgrade -o Dir::Etc::sourcelist="$TMP_SOURCE_FILE_WPI" -o Dir::Etc::sourceparts="-" -o APT::Get::List-Cleanup="0" | grep 'Inst' | cut -d ' ' -f 2 >  $FILE_PACKAGES
 package_opt "$FILE_PACKAGES" "update"  install
 
 
