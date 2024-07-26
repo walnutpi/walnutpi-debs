@@ -493,15 +493,15 @@ Priority: optional
 Description: setting the lightdm autologin as pi.run ternimal in server
 
 Package: wpi-user
-Version: 1.0.0
+Version: 1.0.1
 Architecture: all
 Maintainer: sc-bin <3335447573@qq.com>
-Installed-Size: 48
-Filename: main/wpi-user_1.0.0_all.deb
-Size: 2846
-MD5sum: 5f36d486fcbf56c895a7ab6d4402839e
-SHA1: 680ec64297f26d7c98f91d13604b34acb739fc6f
-SHA256: 9e04e385df64dcec9e817477ecad32f41145c3d7b25f1fbe22c6ec624f02eb11
+Installed-Size: 56
+Filename: main/wpi-user_1.0.1_all.deb
+Size: 3104
+MD5sum: 5e75e8e0b2cfd663a4d3c7ba585e603d
+SHA1: b354ed04bc3dfd3c461141c2c1b25623ed97a215
+SHA256: 95dae27025aeefe34140e656dde00201246559fe57e52ae172a1e5f7a8b644c5
 Section: free
 Priority: optional
 Description: walnutpi user setting

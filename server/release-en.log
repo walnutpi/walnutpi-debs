@@ -1,3 +1,6 @@
+[2024-7-26] - 2.4.1
+    - FIX : Change the ssh command-line character encoding to UTF-8
+
 [2024-7-12] - 2.4
     - NEW function :  `set-emmc` command, can burn and erase on-board emmc
     - MODIFY function : The script in the /boot/start directory is automatically run up on startup. Now each script runs independently, not sequentially
