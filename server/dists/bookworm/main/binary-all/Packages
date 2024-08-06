@@ -85,6 +85,20 @@ Section: free
 Priority: optional
 Description: conf thonny
 
+Package: conf-ubuntu-autologin
+Version: 1.0.0
+Architecture: all
+Maintainer: sc-bin <3335447573@qq.com>
+Installed-Size: 4
+Filename: main/conf-ubuntu-autologin_1.0.0_all.deb
+Size: 768
+MD5sum: 52c69ae562f77db2c9af9d7dbe997985
+SHA1: c859d6c826c2cc28687b404656cb49d16cf47fd9
+SHA256: 0507b03b6c0beac8d133852da9b744e8650ed7c281eea52c880d85ec0f431891
+Section: free
+Priority: optional
+Description: enable the ubuntu-desktop autologin as user pi
+
 Package: disable-wifi-random
 Version: 1.0.0
 Architecture: all

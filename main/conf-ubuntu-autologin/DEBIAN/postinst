@@ -1,0 +1,12 @@
+#!/bin/bash
+
+FILE="/etc/gdm3/custom.conf"
+
+# 检查文件是否存在
+if [ ! -f "$FILE" ]; then
+    echo "文件 $FILE 不存在。"
+    exit 1
+fi
+
+sed -i 's/^\#\s*AutomaticLoginEnable.*$/AutomaticLoginEnable = true/' "$FILE"
+sed -i 's/^\#\s*AutomaticLogin.*$/AutomaticLogin = pi/' "$FILE"

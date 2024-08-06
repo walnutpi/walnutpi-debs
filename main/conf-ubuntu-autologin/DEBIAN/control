@@ -1,0 +1,8 @@
+Package: conf-ubuntu-autologin
+Description: enable the ubuntu-desktop autologin as user pi
+Version: 1.0.0
+Maintainer: sc-bin <3335447573@qq.com>
+Section: free
+Priority: optional
+Installed-Size: 4
+Architecture: all
