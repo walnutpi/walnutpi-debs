@@ -1,0 +1,9 @@
+Package: conf-w2-eth
+Description: enable the eth0 and eth1
+Version: 1.0.0
+Maintainer: sc-bin <3335447573@qq.com>
+Section: free
+Priority: optional
+Installed-Size: 16
+Architecture: all
+Depends: netplan.io

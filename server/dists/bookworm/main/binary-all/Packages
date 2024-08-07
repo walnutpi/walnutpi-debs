@@ -99,6 +99,21 @@ Section: free
 Priority: optional
 Description: enable the ubuntu-desktop autologin as user pi
 
+Package: conf-w2-eth
+Version: 1.0.0
+Architecture: all
+Maintainer: sc-bin <3335447573@qq.com>
+Installed-Size: 16
+Depends: netplan.io
+Filename: main/conf-w2-eth_1.0.0_all.deb
+Size: 636
+MD5sum: 2b78b4702bb9840aa2f7d125ddfadab8
+SHA1: 2e75d6617c75b3acc622365102fcfb62c35f92dc
+SHA256: 0a00643caa5206b88a43baf841d52a9969a272ba364eb501ab845805f0a52ff4
+Section: free
+Priority: optional
+Description: enable the eth0 and eth1
+
 Package: disable-wifi-random
 Version: 1.0.0
 Architecture: all
