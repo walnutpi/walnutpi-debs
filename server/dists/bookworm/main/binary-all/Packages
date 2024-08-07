@@ -142,6 +142,20 @@ Section: free
 Priority: optional
 Description: enable the ssh login with root
 
+Package: fix-ubuntu-networkd-wait
+Version: 1.0.0
+Architecture: all
+Maintainer: sc-bin <3335447573@qq.com>
+Installed-Size: 4
+Filename: main/fix-ubuntu-networkd-wait_1.0.0_all.deb
+Size: 776
+MD5sum: 6963e4259dd343e1574910a50ae52667
+SHA1: 233c04640531942f8de0839c09b1bc750bf1dfad
+SHA256: b790429e6e42cc34acf87090210fc3cea49917757fa04bcafca21d02398e7630
+Section: free
+Priority: optional
+Description: fix the systemd-networkd-wait-online.service bug
+
 Package: gpioc
 Version: 1.
 Architecture: all
