@@ -2,6 +2,8 @@
 
 GPIO_KEY=41
 GPIO_LED=42
+PRESS_TIME_S=5
+
 
 read_key() {
     gpio mode ${GPIO_KEY} in
@@ -9,29 +11,34 @@ read_key() {
 }
 
 led_blink() {
-    gpio mode ${GPIO_LED} output
+    gpio mode ${GPIO_LED} OUT
     gpio write ${GPIO_LED} 0
     sleep 0.5
     gpio write ${GPIO_LED} 1
     sleep 0.5
 }
-count=0
-while true  :
-do
-    while (($(read_key) == 0)) ;  do
-        sleep 1
-        
-        let count++
-        # echo $count
-        if (( $count > 6 )); then
-            led_blink
-            led_blink
-            led_blink
-            sudo shutdown now
-        fi
 
-    done
-    count=0
-    sleep 1
-    
+
+while true; do
+    if [ $(read_key) -eq 0 ]; then
+        if [ $last_press_time -eq 0 ]; then
+            last_press_time=$(date +%s)
+            # echo "记录时间戳 $last_press_time"
+        else
+            current_time=$(date +%s)
+            elapsed_time=$(($current_time - $last_press_time))
+
+            if [ $elapsed_time -ge $PRESS_TIME_S ]; then
+                led_blink
+                led_blink
+                led_blink
+                sudo shutdown now
+                break
+            fi
+        fi
+    else
+        # 按键被释放
+        last_press_time=0
+        count=0
+    fi
 done

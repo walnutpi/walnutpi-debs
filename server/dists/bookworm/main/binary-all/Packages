@@ -215,15 +215,15 @@ Priority: optional
 Description: plymouth themes walnutpi
 
 Package: powerdown-key
-Version: 1.1.0
+Version: 1.1.1
 Architecture: arm64
 Maintainer: sc-bin <3335447573@qq.com>
 Installed-Size: 36
-Filename: main/powerdown-key_1.1.0_arm64.deb
-Size: 1182
-MD5sum: deedf0b9724bc0132f2a77279a0a4bb8
-SHA1: 954d56733c765fe9bbf1f02962db2784c2b6eec3
-SHA256: 0506f005aa4275a87bd2fc0fc1612e9694056adff855bfa315c90f12aa733022
+Filename: main/powerdown-key_1.1.1_arm64.deb
+Size: 1318
+MD5sum: c4895c624568c735b9252359322d0f29
+SHA1: e37c55de524e9a50d5905596738c9acd17f91ed0
+SHA256: ddf78dc6afe21d6e25aa9e6ab628eb3a68cb58df1b56af14465e935060d9fec3
 Section: free
 Priority: optional
 Description: Use the walnutpi-1b on-board button as the shutdown button
