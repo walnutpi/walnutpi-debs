@@ -1,0 +1,3 @@
+#!/bin/bash
+
+systemctl enable T527_enable_amixer.service

@@ -70,6 +70,20 @@ Section: free
 Priority: optional
 Description: setting autologin user is pi
 
+Package: conf-t527-audio
+Version: 1.0.0
+Architecture: all
+Maintainer: sc-bin <3335447573@qq.com>
+Installed-Size: 36
+Filename: main/conf-t527-audio_1.0.0_all.deb
+Size: 1198
+MD5sum: 75a0151406b68a0ffccbc50f7ed32001
+SHA1: bb4e1f28dccbc924e44695e32b2e4a94976d93b6
+SHA256: e5f7045c827d31f6ea4e51dff068dcc290db7571ef2319d6e217fa47b6365f19
+Section: free
+Priority: optional
+Description: conf audio
+
 Package: conf-thonny
 Version: 1.0.0
 Architecture: all

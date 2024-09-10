@@ -1,0 +1,8 @@
+Package: conf-t527-audio
+Description: conf audio
+Version: 1.0.0
+Maintainer: sc-bin <3335447573@qq.com>
+Section: free
+Priority: optional
+Installed-Size: 36
+Architecture: all
