@@ -76,7 +76,7 @@ _delete_all_part() {
         
     fi
 }
-earse-quick() {
+erase-quick() {
     local PATH_OF=$(_get_mmcblk)
     if [ ! -n "${PATH_OF}" ]; then
         echo "ERROR: can not find the emmc"
@@ -91,11 +91,11 @@ earse-quick() {
     _delete_all_part $PATH_OF
     
     dd if=/dev/zero of=${PATH_OF} bs=512 count=2048
-    echo -e "\nearse quick ok"
+    echo -e "\nerase quick ok"
     
 }
 
-earse-overwrite() {
+erase-overwrite() {
     local PATH_OF=$(_get_mmcblk)
     local mountpoint=$(mount | grep $PATH_OF)
     if [ -n "$mountpoint" ]; then
