@@ -369,15 +369,15 @@ Priority: optional
 Description: Modifying the /boot/config.txt file about overlays
 
 Package: set-emmc
-Version: 1.0.1
+Version: 1.0.2
 Architecture: all
 Maintainer: sc-bin <3335447573@qq.com>
 Installed-Size: 32
-Filename: main/set-emmc_1.0.1_all.deb
-Size: 2378
-MD5sum: 03972929c1e631cff04b78234cbbea4b
-SHA1: 7df4f19798e505edca12fcaddd3e08be29847735
-SHA256: 4c74eaa187340453a65e7c8418a9ddd602f53d5a0671cd79fbcccc55d931b4ff
+Filename: main/set-emmc_1.0.2_all.deb
+Size: 2602
+MD5sum: 53d71b27982047a62494682201863079
+SHA1: 0029f1b5764e0131199a4b1b83ec52371ef0a5c9
+SHA256: 74175d30e7aa8408891656db31eabcd087f7669361d8b597cede13254d797682
 Section: free
 Priority: optional
 Description: set-emmc command
@@ -424,17 +424,31 @@ Section: free
 Priority: optional
 Description: Configuration x11 vnc server
 
-Package: walnutpi-lib
-Version: 1.0.3
+Package: t527-fbdev
+Version: 1.0.0
 Architecture: all
 Maintainer: sc-bin <3335447573@qq.com>
-Installed-Size: 9076
+Installed-Size: 24
+Filename: main/t527-fbdev_1.0.0_all.deb
+Size: 670
+MD5sum: e4beb60d60d2b78f18514cde1949b672
+SHA1: 9c8cfe4c13820b6d463a5f85f302b6d5ed8149c1
+SHA256: 1e310b999b1fe77772d2d004ffc2b291cb4cf69186a3813f9d1d4a3b1ecb279e
+Section: free
+Priority: optional
+Description: set xorg use fbdev
+
+Package: walnutpi-lib
+Version: 1.1.0
+Architecture: all
+Maintainer: sc-bin <3335447573@qq.com>
+Installed-Size: 9368
 Depends: make, gcc
-Filename: main/walnutpi-lib_1.0.3_all.deb
-Size: 4065968
-MD5sum: 47d5055dd70b2b001c3a1f24b87f4b35
-SHA1: b06941bb8c6aafe9709d8ca64f17421ce4c062a4
-SHA256: 4d8b6c1e930765764e374a2037c57b6682f56bb2851fcf1d2ee444775f4287b7
+Filename: main/walnutpi-lib_1.1.0_all.deb
+Size: 4147182
+MD5sum: 43b15e4e2e2afd89146229c560c23db5
+SHA1: dd231ad3f5c87a075f3667eed6a5308e346daede
+SHA256: 29be565a7cc7f635847b4f702e8b45f6bc9cba051b6e38ff1972686bf271f290
 Section: free
 Priority: optional
 Description: walnutpi support some lib

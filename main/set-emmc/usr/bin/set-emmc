@@ -1,6 +1,7 @@
 #!/bin/bash
 
 
+
 # 测试时的板子是mmcblk2，但不排除因为不同设备树配置，导致blk号改变
 _get_mmcblk() {
     local PREFLIX_DEV="/dev/mmcblk"
@@ -10,6 +11,22 @@ _get_mmcblk() {
         echo "${PREFLIX_DEV}1"
         elif [ -b "${PREFLIX_DEV}0boot0" ]; then
         echo "${PREFLIX_DEV}0"
+    else
+        
+        declare -a mmcblk_devices
+
+        for file in /dev/mmcblk[0-9]; do
+            num=$(echo $file | grep -o '[0-9]$')
+            mmcblk_devices+=("$file:$num")
+        done
+
+        IFS=$'\n' sorted_devices=($(sort -t: -k2 -n <<<"${mmcblk_devices[*]}"))
+        unset IFS
+
+        if [ "${#sorted_devices[@]}" -ge 2 ]; then
+            echo "${sorted_devices[-1]%:*}"
+
+        fi
     fi
 }
 
@@ -61,10 +78,13 @@ _delete_all_part() {
 }
 earse-quick() {
     local PATH_OF=$(_get_mmcblk)
+    if [ ! -n "${PATH_OF}" ]; then
+        echo "ERROR: can not find the emmc"
+        exit
+    fi
     local mountpoint=$(mount | grep $PATH_OF)
-    
     if [ -n "$mountpoint" ]; then
-        echo "the disk is in used"
+        echo "ERROR: the disk is in used"
         exit
     fi
     
