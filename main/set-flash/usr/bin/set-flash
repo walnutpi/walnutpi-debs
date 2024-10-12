@@ -1,0 +1,167 @@
+#!/bin/bash
+
+
+
+# 测试时的板子是mmcblk2，但不排除因为不同设备树配置，导致blk号改变
+_get_dev_path() {
+    echo "/dev/mtd0"
+}
+_get_flash_size() {
+    size=$(cat /proc/mtd | grep -w mtd0 | awk '{ print $2 }')
+    
+    # 转换为十进制
+    size=$((16#$size))
+    echo "$size"
+    
+    # 转换为MB
+    size_mb=$((size / 1024 / 1024))
+    # echo "$size_mb"
+}
+
+_show_burn_progress() {
+    local progress=$1
+    local speed=$2
+    local time_use=$3
+    local time_may_stop=$4
+    local dd_done=$5
+    local speed_units=$6
+    
+    local term_width=$(tput cols)
+    local bar_width=$((term_width - 40))
+    local filled_part=$((progress * bar_width / 100))
+    local empty_part=$((bar_width - filled_part))
+    local output=$(
+        printf '\r'
+        printf '%ds' $time_use
+        if [ -n "$dd_done" ]; then
+            echo -n  " $dd_done"
+        fi
+        printf '['
+        if [ $filled_part -gt 0 ]; then
+            printf '\033[42m%0.s \033[0m' $(seq 1 $filled_part)
+        fi
+        if [ $empty_part -gt 0 ]; then
+            printf '\033[41m%0.s-\033[0m' $(seq 1 $empty_part)
+        fi
+        # printf ']%3.d%%'  $progress
+        echo "] $progress%"
+        
+        printf '%6.1f%s'  $speed $speed_units
+        printf '  <%ds'  $time_may_stop
+    )
+    
+    echo -e $output "\c"
+}
+
+_delete_all_part() {
+    MMC_DEVICE=$1
+    if ls ${MMC_DEVICE}p* 1> /dev/null 2>&1; then
+        partitions=$(parted -s $MMC_DEVICE print | awk '{if(NF>1 && $1 ~ /^[0-9]+$/) print $1}')
+        for partition in $partitions; do
+            echo "remove part $partition"
+            parted -s $MMC_DEVICE rm $partition
+        done
+        
+    fi
+}
+
+_show_erase_progress() {
+    local prefix_str=$1
+    local progress=$2
+    
+    local term_width=$(tput cols)
+    local bar_width=$((term_width - 30))
+    local filled_part=$((progress * bar_width / 100))
+    local empty_part=$((bar_width - filled_part))
+    local output=$(
+        printf '\r'
+        printf "$prefix_str  "
+        printf '['
+        if [ $filled_part -gt 0 ]; then
+            printf '\033[42m%0.s \033[0m' $(seq 1 $filled_part)
+        fi
+        if [ $empty_part -gt 0 ]; then
+            printf '\033[41m%0.s-\033[0m' $(seq 1 $empty_part)
+        fi
+        echo "] $progress%"
+        
+    )
+    
+    echo -e $output "\c"
+}
+
+_erase_block() {
+    local erase_start=$1
+    local erase_len=$2
+    
+    local block_count=$[$erase_len/0x10000]
+    local PATH_DEV=$(_get_dev_path)
+    echo -e "\nerase start:$erase_start \tend:$[$block_count*0x10000+$erase_start] \tblock:$block_count"
+    
+    for((;erase_start<$block_count;erase_start++));
+    do
+        local offset=$[$erase_start*0x10000]
+        local progress=$[$erase_start*100/$block_count]
+        _show_erase_progress "$[$erase_start+1]/$block_count" $[($erase_start+1)*100/$block_count]
+        mtd_debug erase $PATH_DEV $offset 0x10000 >/dev/null 2>&1
+    done
+    echo ""
+}
+erase-full() {
+    _erase_block 0 $(_get_flash_size)
+}
+
+burn() {
+    local BIN=$1
+    if [ -z $BIN ] || [ ! -f $BIN ]; then
+        echo "Error: $BIN is not a file"
+        exit
+    fi
+    local BIN_SIZE=$(stat -c "%s" $BIN)
+    local PATH_DEV=$(_get_dev_path)
+    
+    echo ""
+    echo "file : $BIN"
+    local num=$BIN_SIZE
+    while [ $num -gt 999 ]; do
+        remainder=$(($num % 1000))
+        if [ $remainder -lt 100 ];then
+            remainder=0"$remainder"
+        fi
+        num=$(($num / 1000))
+        result=",${remainder}${result}"
+    done
+    echo "size : ${num}${result} Byte"
+
+    _erase_block 0 $[$BIN_SIZE/0x10000*0x10000+0x10000]
+    echo -e "\nburn to flash"
+
+    set_flash_burn_speed=0
+    set_flash_burn_time_use=0
+    
+    while IFS= read -r -d $'\r' line
+    do
+        
+        # 15467008 bytes (15 MB, 15 MiB) copied, 1 s, 15.5 MB/s
+        local total_bytes=$(echo $line | awk '{print $1}')
+        set_flash_burn_speed=$(echo $line | awk '{print $10}')
+        set_flash_burn_speed_units=$(echo $line | awk '{print $11}')
+        set_flash_burn_time_use=$(echo $line | awk '{print $8}')
+        set_flash_dd_done="$(echo $line | awk '{print $5}')$(echo $line | awk '{print $4}')"
+        if [ -z  $total_bytes ]; then
+            continue
+        fi
+        local progress=$[ total_bytes * 100 / DISK_SIZE   ]
+        local time_may_stop=$[ (DISK_SIZE - total_bytes ) / $(echo $set_flash_burn_speed | awk '{print int($1)}') / 1000   ]
+        _show_burn_progress $progress $set_flash_burn_speed $set_flash_burn_time_use $time_may_stop ${set_flash_dd_done%?} $set_flash_burn_speed_units
+    done < <(dd if=${BIN} of=${PATH_DEV} status=progress 2>&1)
+    
+    _show_burn_progress 100 $set_flash_burn_speed $set_flash_burn_time_use 0 ${set_flash_dd_done%?} $set_flash_burn_speed_units
+    echo ""
+    
+}
+
+FUNCTION_NAME=$1
+PARA2=$2
+PARA3=$3
+$FUNCTION_NAME $PARA2 $PARA3
