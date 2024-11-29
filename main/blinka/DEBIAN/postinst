@@ -1,0 +1,14 @@
+#!/bin/bash
+
+set -e
+
+
+cd /usr/lib/walnutpi
+echo "Adafruit_Blinka"
+pip3 --no-cache-dir install -e Adafruit_Python_PlatformDetect/ 
+pip3 --no-cache-dir install -e Adafruit_Blinka/ 
+
+
+
+
+echo -e "\nready"
