@@ -1,0 +1,25 @@
+[2024-7-26] - 2.4.1
+    - FIX : Change the ssh command-line character encoding to UTF-8
+
+[2024-7-12] - 2.4
+    - NEW function :  `set-emmc` command, can burn and erase on-board emmc
+    - MODIFY function : The script in the /boot/start directory is automatically run up on startup. Now each script runs independently, not sequentially
+    - FIX : The software pwm is now available on adafruit-blinka
+
+[2024-5-30] - 2.3
+    - MODIFY function : the `gpio` command ,remove the wiringpi number, now can use by the pin number
+    - NEW : new library for C to control gpio, it use the pin number 
+
+[2024-4-29] - 2.2.1
+    - FIX : some boards trigger high temperature protection when starting up
+    
+[2024-4-11] - 2.2.0
+    - FIX : Some packet conflicts
+    - NEW function : startup logo display
+    - NEW function : The script in the /boot/start directory is automatically run up on startup
+    
+[2024-1-18] - 2.1.0
+    - set-lcd add support for new 1.54' lcd
+
+[2023-12-26] - 2.0.0
+    - first version

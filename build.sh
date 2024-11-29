@@ -30,8 +30,7 @@ clone_url() {
 
 
 
-cp release-cn.log ${OUTPUT}/
-cp release-en.log ${OUTPUT}/
+cp -r release-log ${OUTPUT}/
 
 clone_url $URL_TOOL
 cp $DIR_TOOL/$TOOL_NAME  ${OUTPUT}/

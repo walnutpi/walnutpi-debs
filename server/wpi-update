@@ -1,5 +1,5 @@
 #!/bin/bash
-THIS_SCRIPT_VERSION=1.5
+THIS_SCRIPT_VERSION=1.6
 SERVER_DOMAIN="apt.walnutpi.com"
 THIS_SCRIPT_URL="http://${SERVER_DOMAIN}//debian/wpi-update.gz"
 THIS_SCRIPT_SAVE="/tmp/wpi-update.gz"
@@ -9,12 +9,16 @@ SOURCE_STR_WALNUTPI="deb [trusted=yes] http://${SERVER_DOMAIN}//debian/ bookworm
 SOURCE_STR_TSINGHUA="deb http://mirrors.tuna.tsinghua.edu.cn/debian bookworm main"
 if [ -f /proc/device-tree/model ];then
     BOARD_MODEL=$(tr -d '\0' < /proc/device-tree/model)
-    PATCH_LIST_URL="http://${SERVER_DOMAIN}/debian/patch-list/${BOARD_MODEL}.gz"
+else if [ -f /etc/model ];then
+    BOARD_MODEL=$(tr -d '\0' < /etc/model)
+    fi
 fi
+PATCH_LIST_URL="http://${SERVER_DOMAIN}/debian/patch-list/${BOARD_MODEL}.gz"
 TMP_SOURCE_FILE="/tmp/wpi-update-source"
 TMP_SOURCE_FILE_WPI="/tmp/wpi-update-source-wpi"
-LOG_URL_CN="http://${SERVER_DOMAIN}/debian/release-cn.log"
-LOG_URL_EN="http://${SERVER_DOMAIN}/debian/release-en.log"
+LOG_URL_PREFIX="http://${SERVER_DOMAIN}/debian/release-log"
+LOG_URL_CN="${LOG_URL_PREFIX}/${BOARD_MODEL}_cn.log"
+LOG_URL_EN="${LOG_URL_PREFIX}/${BOARD_MODEL}_en.log"
 LOG_URL=""
 RELEASE_FILE="/etc/WalnutPi-release"
 FILE_LOG_SAVE="/tmp/wpi-update-update.log"
@@ -175,7 +179,7 @@ fi
 run_status "download the release log ...."  wget -c $LOG_URL -O $FILE_LOG_SAVE
 NEW_VERSION=$(grep -o '\[[^]]*\] - [^ ]*' $FILE_LOG_SAVE | head -n 1 | awk '{print $3}')
 
-# 计算release.log内是否有更新的log
+# 如果release.log最新一项的日期大于本地log的
 BOARD_DATE_SECONDS=$(date -d"$BOARD_DATE" +%s)
 DATES_IN_LOG=$(grep -o '\[[^]]*\]' $FILE_LOG_SAVE | tr -d '[]')
 LAST_DATE=""
@@ -188,6 +192,18 @@ for DATE in $DATES_IN_LOG; do
     if (( DATE_SECONDS <= BOARD_DATE_SECONDS )); then
         LAST_DATE=$DATE
         break
+    fi
+done
+
+# 如果release.log的版本号大于本地的
+new_version_parts=(${NEW_VERSION//./ })
+board_ver_parts=(${BOARD_VER//./ })
+for ((i=0; i<${#new_version_parts[@]}; i++)); do
+    if [ ${#board_ver_parts[@]} -le $i ]; then
+        board_ver_parts+=(0)
+    fi
+    if [ ${new_version_parts[$i]} -gt ${board_ver_parts[$i]} ]; then
+        HAS_NEW="yes"
     fi
 done
 if [[ $* =~ -N ]]; then
