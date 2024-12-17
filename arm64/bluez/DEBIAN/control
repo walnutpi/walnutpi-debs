@@ -1,8 +1,8 @@
 Package: bluez
-Version: 666.5.66-1+deb12u1
+Version: 666.6.66-1+deb12u1
 Architecture: arm64
 Maintainer: Debian Bluetooth Maintainers <team+pkg-bluetooth@tracker.debian.org>
-Installed-Size: 4468
+Installed-Size: 3484
 Pre-Depends: init-system-helpers (>= 1.54~)
 Depends: libasound2 (>= 1.0.17), libc6 (>= 2.34), libdbus-1-3 (>= 1.9.14), libdw1 (>= 0.127), libglib2.0-0 (>= 2.31.8), libreadline8 (>= 6.0), libudev1 (>= 196), kmod, udev, lsb-base, default-dbus-system-bus | dbus-system-bus
 Suggests: pulseaudio-module-bluetooth
