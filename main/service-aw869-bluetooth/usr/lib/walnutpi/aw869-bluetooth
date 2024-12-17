@@ -1,0 +1,15 @@
+#!/bin/bash
+
+
+PATH_WAKE="/proc/bluetooth/sleep/btwrite"
+while true
+do
+    if [ -f $PATH_WAKE ]; then
+        echo 1 > ${PATH_WAKE}
+        break
+    fi
+    sleep 1
+done
+
+
+hciattach  -s 1500000 /dev/ttyAS1 aic  &

@@ -1,0 +1,17 @@
+[Unit]
+Description=aw859 setting
+After=basic.target
+
+
+[Service]
+RemainAfterExit=yes
+TimeoutStartSec=2min
+ExecStartPre=rfkill unblock all
+ExecStart=/usr/lib/walnutpi/aw869-bluetooth
+
+
+
+[Install]
+WantedBy=basic.target
+
+
