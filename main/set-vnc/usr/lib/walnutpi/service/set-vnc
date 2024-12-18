@@ -1,0 +1,9 @@
+#!/bin/bash
+
+while true
+do
+    x11vnc -display :0 -auth guess  -rfbport 5900 -rfbauth  /etc/x11vnc.pwd -capslock -nomodtweak -repeat -forever
+    sleep 1
+done
+
+

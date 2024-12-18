@@ -18,12 +18,12 @@
     
 }
 enable() {
-    systemctl enable x11vnc.service
+    systemctl enable set-vnc.service
     echo -e "\n\nplease reboot\n"
 }
 
 disable() {
-    systemctl disable x11vnc.service
+    systemctl disable set-vnc.service
     echo -e "\n\nplease reboot\n"
 }
 password() {
@@ -36,7 +36,7 @@ password() {
 port() {
 
     if [[ $1 =~ ^[0-9]{1,5}$ ]]; then
-        sed -i -r "s/(-rfbport[[:space:]]{1,5})[0-9]{1,5}/\1$1/" /lib/systemd/system/x11vnc.service
+        sed -i -r "s/(-rfbport[[:space:]]{1,5})[0-9]{1,5}/\1$1/" /usr/lib/walnutpi/service/set-vnc
         echo "ok"
     else
         echo "Command error!"
