@@ -1,3 +1,18 @@
+Package: blinka
+Version: 0.1
+Architecture: all
+Maintainer: sc-bin <3335447573@qq.com>
+Installed-Size: 5676
+Depends: make, gcc
+Filename: arm64/blinka_0.1_all.deb
+Size: 2617176
+MD5sum: 40aca76e4c6fb002ef9247ecdeedf28d
+SHA1: e77d6acd62dfa95a17cff1eb4dd93e48fbaf5542
+SHA256: 700597e7195842f17ecd46f2b1cdf95c563cc98d113d3091314cad5ee12f626c
+Section: free
+Priority: optional
+Description: control the gpio with python
+
 Package: bluez
 Version: 666.6.66-1+deb12u1
 Architecture: arm64
@@ -23,6 +38,21 @@ Description: Bluetooth tools and daemons
  .
  BlueZ is the official Linux Bluetooth protocol stack. It is an Open Source
  project distributed under GNU General Public License (GPL).
+
+Package: gpioc
+Version: 1.5
+Architecture: all
+Maintainer: sc-bin <3335447573@qq.com>
+Installed-Size: 1488
+Depends: make, gcc
+Filename: arm64/gpioc_1.5_all.deb
+Size: 572066
+MD5sum: 71cba5a4005444926f8aaf4290d64637
+SHA1: ba67d518623116f8082007928f079b96d7f37dd8
+SHA256: 7e41e0b3e798ba903de03a1fac37c5170db6612a17a5c7e225dd24f3acdf0302
+Section: free
+Priority: optional
+Description: control the gpio
 
 Package: hcitools
 Version: 1.0.1
@@ -75,4 +105,19 @@ Description: VNC® Viewer
  RealVNC recommends the realvnc-vnc-server package (VNC Server) for the
  remote computer, for seamless, secure and reliable connections. A free trial
  is available.
+
+Package: walnutpi-lib
+Version: 1.0.3
+Architecture: all
+Maintainer: sc-bin <3335447573@qq.com>
+Installed-Size: 9076
+Depends: make, gcc
+Filename: arm64/walnutpi-lib_1.0.3_all.deb
+Size: 4065968
+MD5sum: 47d5055dd70b2b001c3a1f24b87f4b35
+SHA1: b06941bb8c6aafe9709d8ca64f17421ce4c062a4
+SHA256: 4d8b6c1e930765764e374a2037c57b6682f56bb2851fcf1d2ee444775f4287b7
+Section: free
+Priority: optional
+Description: walnutpi support some lib
 
