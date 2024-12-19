@@ -1,19 +1,19 @@
 Package: bluez
-Version: 666.5.66-1+deb12u1
+Version: 666.6.66-1+deb12u1
 Architecture: arm64
 Maintainer: Debian Bluetooth Maintainers <team+pkg-bluetooth@tracker.debian.org>
-Installed-Size: 4468
+Installed-Size: 3484
 Pre-Depends: init-system-helpers (>= 1.54~)
 Depends: libasound2 (>= 1.0.17), libc6 (>= 2.34), libdbus-1-3 (>= 1.9.14), libdw1 (>= 0.127), libglib2.0-0 (>= 2.31.8), libreadline8 (>= 6.0), libudev1 (>= 196), kmod, udev, lsb-base, default-dbus-system-bus | dbus-system-bus
 Suggests: pulseaudio-module-bluetooth
 Conflicts: bluez-audio (<= 3.36-3), bluez-utils (<= 3.36-3)
 Breaks: udev (<< 170-1)
 Replaces: bluez-audio (<= 3.36-3), bluez-input, bluez-network, bluez-serial, bluez-utils (<= 3.36-3), udev (<< 170-1)
-Filename: arm64/bluez_666.5.66-1+deb12u1_arm64.deb
-Size: 1121612
-MD5sum: 312b0798831d1bbbea0be0c50d03681c
-SHA1: 575b0a7a8a3499b80170849f21b3e59878e30e94
-SHA256: 8d39522358a576ced88afb76c3e3b59b5b09ccf036c054badc1a7258eda33fad
+Filename: arm64/bluez_666.6.66-1+deb12u1_arm64.deb
+Size: 894618
+MD5sum: 68a22885d695ef751b2ff8299c8d0eeb
+SHA1: fcc0ac882d4751bf5ef06d70423d45bf38ef0fc8
+SHA256: d85ecd4b7549e20712eae2fa2c6d695b71c5c7fbc17efa385049b9c0d941caa7
 Section: admin
 Priority: optional
 Multi-Arch: foreign
@@ -25,15 +25,15 @@ Description: Bluetooth tools and daemons
  project distributed under GNU General Public License (GPL).
 
 Package: hcitools
-Version: 1.0.0
+Version: 1.0.1
 Architecture: arm64
 Maintainer: sc-bin <3335447573@qq.com>
-Installed-Size: 992
-Filename: arm64/hcitools_1.0.0_arm64.deb
-Size: 233428
-MD5sum: 7c1db86ab27514c6087f472ba806f908
-SHA1: 9fbdfcf187259ff353eda98b8eb9b8b1bd3ab5bb
-SHA256: 459f085a7e7b502c6e020a052b961a28231ced81f52cfc46315f70244c781229
+Installed-Size: 2316
+Filename: arm64/hcitools_1.0.1_arm64.deb
+Size: 881448
+MD5sum: b2997e3f7fbd3deb4e8f815787c8f72b
+SHA1: f17c932a8d758dd1863adea143aff99fd6858a18
+SHA256: bbc6ac6b30a750f206787702197d4fbf424cafbfabb411fe504877c72d08bcac
 Section: free
 Priority: optional
 Description: hcitools is used to control bluetooth
