@@ -9,10 +9,14 @@ SOURCE_STR_WALNUTPI="deb [trusted=yes] http://${SERVER_DOMAIN}//debian/ bookworm
 SOURCE_STR_TSINGHUA="deb http://mirrors.tuna.tsinghua.edu.cn/debian bookworm main"
 if [ -f /proc/device-tree/model ];then
     BOARD_MODEL=$(tr -d '\0' < /proc/device-tree/model)
-else if [ -f /etc/model ];then
+elif [ -f /etc/model ];then
     BOARD_MODEL=$(tr -d '\0' < /etc/model)
-    fi
+elif [ -f /tmp/walnutpi-board_model ];then
+    BOARD_MODEL=$(tr -d '\0' < /tmp/walnutpi-board_model)
+
 fi
+
+# /tmp/walnutpi-board_model
 PATCH_LIST_URL="http://${SERVER_DOMAIN}/debian/patch-list/${BOARD_MODEL}.gz"
 TMP_SOURCE_FILE="/tmp/wpi-update-source"
 TMP_SOURCE_FILE_WPI="/tmp/wpi-update-source-wpi"
