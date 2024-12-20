@@ -56,6 +56,21 @@ Section: free
 Priority: optional
 Description: enable the eth0
 
+Package: conf-iptables-as-legacy
+Version: 1.0.0
+Architecture: all
+Maintainer: sc-bin <3335447573@qq.com>
+Installed-Size: 4
+Depends: iptables
+Filename: main/conf-iptables-as-legacy_1.0.0_all.deb
+Size: 652
+MD5sum: c722bf2da3999de59aaa9063b975fed3
+SHA1: ec87c5c99def7bcf6103f36352afb73d1bca9f81
+SHA256: 453e57cbaeba984fbe92416afda424e30613ed426d6cc3a2325a88365075febf
+Section: free
+Priority: optional
+Description: conf iptables as legacy
+
 Package: conf-qtenv
 Version: 1.0.0
 Architecture: all

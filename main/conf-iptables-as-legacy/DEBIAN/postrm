@@ -1,0 +1,3 @@
+#!/bin/bash
+update-alternatives --set iptables /usr/sbin/nftables
+update-alternatives --set ip6tables /usr/sbin/nftables-6
