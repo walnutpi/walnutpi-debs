@@ -1,0 +1,8 @@
+Package: initramfs-tools-hook
+Description: initramfs-tools hooks
+Version: 1.0.0
+Maintainer: sc-bin <3335447573@qq.com>
+Section: free
+Priority: optional
+Installed-Size: 32
+Architecture: all

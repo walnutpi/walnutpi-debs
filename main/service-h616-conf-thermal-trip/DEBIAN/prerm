@@ -1,0 +1,3 @@
+#!/bin/bash
+systemctl stop h616_conf_thermal_trip.service
+systemctl disable h616_conf_thermal_trip.service

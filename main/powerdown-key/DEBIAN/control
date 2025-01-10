@@ -1,0 +1,8 @@
+Package: powerdown-key
+Description: Use the walnutpi-1b on-board button as the shutdown button
+Version: 1.1.1
+Maintainer: sc-bin <3335447573@qq.com>
+Section: free
+Priority: optional
+Installed-Size: 36
+Architecture: arm64

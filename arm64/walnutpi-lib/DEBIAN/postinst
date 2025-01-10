@@ -1,0 +1,25 @@
+#!/bin/bash
+
+set -e
+
+cd /usr/lib/walnutpi
+
+echo "WiringPi"
+cd WiringPi/
+./build
+
+cd /usr/lib/walnutpi
+echo "gpioc"
+pip3 --no-cache-dir install -e gpioc/ 
+cd gpioc/
+./install
+
+cd /usr/lib/walnutpi
+echo "Adafruit_Blinka"
+pip3 --no-cache-dir install -e Adafruit_Python_PlatformDetect/ 
+pip3 --no-cache-dir install -e Adafruit_Blinka/ 
+
+
+
+
+echo -e "\nready"

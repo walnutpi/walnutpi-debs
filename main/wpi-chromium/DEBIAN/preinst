@@ -1,0 +1,7 @@
+#!/bin/bash
+if [[ -d /usr/share/chromium ]]; then
+    cp -r /usr/share/chromium /usr/share/bak.chromium
+fi
+if [[ -d /etc/chromium ]]; then
+    cp -r /etc/chromium /etc/bak.chromium
+fi

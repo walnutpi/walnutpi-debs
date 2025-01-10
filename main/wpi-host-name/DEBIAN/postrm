@@ -1,0 +1,13 @@
+#!/bin/bash
+if [ "$1" = "remove" ]  ; then
+    
+    if [[ -f /etc/bak.hostname ]]; then
+        mv /etc/bak.hostname /etc/hostname
+    fi
+    
+    str="127.0.0.1 WalnutPi"
+    if grep -q "$str" /etc/hosts; then
+        sed -i "/$str/d" /etc/hosts
+    fi
+    
+fi

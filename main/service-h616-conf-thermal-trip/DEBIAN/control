@@ -1,0 +1,8 @@
+Package: service-h616-conf-thermal-trip
+Description: service, modify the thermal_zon trips
+Version: 1.0.
+Maintainer: sc-bin <3335447573@qq.com>
+Section: free
+Priority: optional
+Installed-Size: 36
+Architecture: all

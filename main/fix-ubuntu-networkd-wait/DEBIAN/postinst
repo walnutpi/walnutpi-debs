@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# 定义文件路径
+FILE="/lib/systemd/system/systemd-networkd-wait-online.service"
+
+KEY="ExecStart=/lib/systemd/systemd-networkd-wait-online"
+TARGET="${KEY} --any --timeout=30"
+
+# 检查文件是否存在
+if [ -f "$FILE" ]; then
+    sed -i.bak "s|${KEY}|${TARGET}|" "$FILE"
+
+fi

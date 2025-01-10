@@ -1,0 +1,3 @@
+#!/bin/bash
+systemctl stop aw869-bluetooth.service
+systemctl disable aw869-bluetooth.service

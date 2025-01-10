@@ -1,0 +1,15 @@
+#!/bin/bash
+
+echo "update-initramfs: Converting to u-boot format" >&2
+
+# 如果可用空间小于30M
+AVAILABLE_SPACE=$(df -BM /boot | awk 'NR==2 {print substr($4, 1, length($4)-1)}')
+if [ $AVAILABLE_SPACE -lt 30 ]; then
+    mkimage -A arm -O linux -T ramdisk -C gzip -n uInitrd -d $2 /boot/uInitrd
+else
+    tempname="/boot/uInitrd-$1"
+    mkimage -A arm -O linux -T ramdisk -C gzip -n uInitrd -d $2 $tempname
+    ln -sf $(basename $tempname) /boot/uInitrd > /dev/null 2>&1 || mv $tempname /boot/uInitrd
+fi
+
+

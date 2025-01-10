@@ -1,0 +1,14 @@
+#!/bin/bash
+
+systemctl enable service_boot_script.service
+
+if [ ! -d "/boot/start" ]; then
+    mkdir -p /boot/start
+fi
+
+if [ ! -f  "/boot/start/wifi.sh"  ]; then
+    cat > /boot/start/wifi.sh << EOF
+# nmcli dev wifi > /dev/null
+# nmcli dev wifi connect WIFI_NAME password WIFI_PASSWORD
+EOF
+fi

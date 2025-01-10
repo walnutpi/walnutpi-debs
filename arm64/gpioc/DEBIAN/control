@@ -1,0 +1,9 @@
+Package: gpioc
+Description: control the gpio
+Version: 1.5
+Maintainer: sc-bin <3335447573@qq.com>
+Section: free
+Priority: optional
+Installed-Size: 1488
+Architecture: all
+Depends: make, gcc

@@ -1,0 +1,9 @@
+Package: hcitools
+Description: hcitools is used to control bluetooth
+Version: 1.0.1
+Maintainer: sc-bin <3335447573@qq.com>
+Section: free
+Priority: optional
+Installed-Size: 2316
+Architecture: arm64
+

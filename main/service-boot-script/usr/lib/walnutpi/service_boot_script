@@ -1,0 +1,21 @@
+#!/bin/bash
+
+PATH_START="/boot/start"
+
+if [ ! -d $PATH_START ]; then
+    exit 1
+fi
+
+SH_FILES=$(find $PATH_START -type f -name "*.sh")
+if [ ! -n "$SH_FILES" ]; then
+    exit 1
+fi
+
+
+script_list=$(ls ${PATH_START}/*.sh )
+for script in $script_list
+do
+    cd $PATH_START
+    bash $script &
+done
+

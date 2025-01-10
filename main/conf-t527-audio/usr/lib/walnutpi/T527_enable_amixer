@@ -1,0 +1,27 @@
+#!/bin/bash
+
+set_amixer() {
+    # 获取参数
+    local card_number="$1"
+    local name="$2"
+    local value="$3"
+
+    if amixer -c "$card_number" contents | grep -q "$name"; then
+        amixer -c "$card_number" cset name="$name" "$value"
+    fi
+}
+
+
+
+set_amixer 0  'LINEOUTL Switch' on
+set_amixer 0  'LINEOUTR Switch' on
+set_amixer 0  'SPK Switch' on
+set_amixer 0  'HPOUT Switch' on
+
+
+
+# amixer -c 0 cset  numid=27,iface=MIXER,name='LINEOUTL Switch' on
+# amixer -c 0 cset  numid=28,iface=MIXER,name='LINEOUTR Switch' on
+# amixer -c 0 cset  numid=30,iface=MIXER,name='SPK Switch' on
+# amixer -c 0 cset  numid=29,iface=MIXER,name='HPOUT Switch' on
+

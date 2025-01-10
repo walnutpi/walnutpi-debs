@@ -1,0 +1,8 @@
+#!/bin/bash
+
+set -e
+
+cd /usr/lib/walnutpi/hcitools
+
+make
+make install

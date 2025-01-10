@@ -1,0 +1,8 @@
+Package: enable-ssh-root
+Description: enable the ssh login with root
+Version: 1.0.0
+Maintainer: sc-bin <3335447573@qq.com>
+Section: free
+Priority: optional
+Installed-Size: 4
+Architecture: all

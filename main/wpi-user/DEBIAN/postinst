@@ -1,0 +1,30 @@
+#!/bin/bash
+
+# 这部分脚本只在首次安装时运行
+if [ "$1" = "configure" ] && [ -z "$2" ]; then
+    
+    password="root"
+    echo "$USER:$password" | chpasswd
+    
+    useradd -m pi
+    echo "pi:pi" |  chpasswd
+    usermod -aG sudo pi
+    sed -i 's|/home/pi:/bin/sh|/home/pi:/bin/bash|g' /etc/passwd
+    
+    echo "Defaults rootpw" |  tee -a /etc/sudoers
+    echo "pi ALL=(ALL) NOPASSWD:ALL" |  tee -a /etc/sudoers
+    echo "Defaults !env_reset" |  tee -a /etc/sudoers
+    
+    
+    chown pi:pi /home/pi/
+    chmod u+s /bin/su
+    chown pi:pi /home/pi/.bashrc
+    chown root:root /usr/bin/sudo
+    chmod 4755 /usr/bin/sudo
+    
+    
+    chown -R pi:pi /home/pi/.config/
+    chown -R pi:pi /home/pi/.config/Thonny/backend.log
+    chown -R pi:pi /home/pi/.config/Thonny/frontend_faults.log
+fi
+

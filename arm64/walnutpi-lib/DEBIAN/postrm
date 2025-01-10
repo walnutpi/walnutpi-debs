@@ -1,0 +1,12 @@
+#!/bin/bash
+
+rm_if_dir() {
+    path_dir=$1
+    if [ -d $1 ]; then
+        rm -r $1
+    fi
+}
+if [ "$1" = "remove" ]  ; then
+    rm_if_dir /usr/lib/walnutpi/WiringPi
+    rm_if_dir /usr/lib/walnutpi/gpioc
+fi

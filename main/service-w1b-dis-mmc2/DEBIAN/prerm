@@ -1,0 +1,3 @@
+#!/bin/bash
+systemctl stop w1b_dis_mmc2.service
+systemctl disable w1b_dis_mmc2.service

@@ -1,0 +1,15 @@
+#!/bin/bash
+
+set -e
+
+cd /usr/lib/walnutpi
+
+echo "gpioc"
+pip3 --no-cache-dir install -e gpioc/ 
+
+echo "gpioc"
+cd gpioc/
+./install
+
+
+echo -e "\nready"

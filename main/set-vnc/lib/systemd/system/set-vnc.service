@@ -1,0 +1,12 @@
+[Unit]
+Description=Start VNC
+After=lightdm.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/lib/walnutpi/service/set-vnc
+RemainAfterExit=yes
+StandardOutput=null
+
+[Install]
+WantedBy=graphical.target

@@ -1,0 +1,3 @@
+#!/bin/bash
+
+systemctl enable fbcon_dis.service

@@ -1,0 +1,10 @@
+_set-emmc () {
+    local cur=${COMP_WORDS[COMP_CWORD]}
+    if [ $COMP_CWORD -eq 1 ]; then
+        local functions=$(grep -oP '^[^-_][\w-]+\s*\(\)' /usr/bin/set-emmc | sed 's/()//')
+        COMPREPLY=($(compgen -W "$functions" -- $cur))
+    elif [ $COMP_CWORD -eq 2 ]; then
+        COMPREPLY=($(compgen -f -- "$cur"))
+    fi
+}
+complete -F _set-emmc set-emmc

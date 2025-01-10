@@ -1,0 +1,3 @@
+#!/bin/bash
+
+systemctl enable resize_part.service

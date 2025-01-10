@@ -1,0 +1,7 @@
+#!/bin/bash
+if [ "$1" = "remove" ]  ; then
+    
+    if grep -q "^PermitRootLogin yes" /etc/ssh/sshd_config; then
+        sudo sed -i 's/^PermitRootLogin yes/#PermitRootLogin yes/' /etc/ssh/sshd_config
+    fi
+fi

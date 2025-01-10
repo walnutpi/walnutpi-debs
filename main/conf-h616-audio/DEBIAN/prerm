@@ -1,0 +1,8 @@
+#!/bin/bash
+systemctl stop h616_enable_amixer.service
+systemctl disable h616_enable_amixer.service
+
+[[ -f /usr/share/pulseaudio/alsa-mixer/profile-sets/default.conf ]] && sed -i "s/auto-profiles = no/auto-profiles = yes/" /usr/share/pulseaudio/alsa-mixer/profile-sets/default.conf
+[[ -f /etc/pulse/default.pa ]] && sed -i "/device.description='Audio Codec'/d" /etc/pulse/default.pa
+[[ -f /etc/pulse/default.pa ]] && sed -i "/device.description='HDMI Audio'/d" /etc/pulse/default.pa
+echo "ok"

@@ -1,0 +1,12 @@
+[Unit]
+Description=modify the zone trip
+After=basic.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/lib/walnutpi/h616_conf_thermal_trip
+RemainAfterExit=yes
+StandardOutput=null
+
+[Install]
+WantedBy=multi-user.target

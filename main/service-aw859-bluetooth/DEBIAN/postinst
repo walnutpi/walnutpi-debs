@@ -1,0 +1,3 @@
+#!/bin/bash
+
+systemctl enable aw859-bluetooth.service

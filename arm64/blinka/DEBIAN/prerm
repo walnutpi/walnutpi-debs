@@ -1,0 +1,4 @@
+#!/bin/bash
+
+pip3  uninstall Adafruit-PlatformDetect -y
+pip3  uninstall Adafruit-Blinka -y

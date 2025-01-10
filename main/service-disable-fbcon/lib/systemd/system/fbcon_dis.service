@@ -1,0 +1,12 @@
+[Unit]
+Description=close the fbcon
+After=sysinit.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/lib/walnutpi/fbcon_dis
+RemainAfterExit=yes
+StandardOutput=null
+
+[Install]
+WantedBy=multi-user.target

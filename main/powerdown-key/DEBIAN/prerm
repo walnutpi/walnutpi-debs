@@ -1,0 +1,3 @@
+#!/bin/bash
+systemctl stop powerdown-key.service
+systemctl disable powerdown-key.service

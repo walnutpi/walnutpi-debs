@@ -1,0 +1,15 @@
+#!/bin/bash
+
+systemctl enable T527_enable_amixer.service
+if [ -f /usr/share/pulseaudio/alsa-mixer/profile-sets/default.conf ] ;then
+    echo "default.conf"
+    sed -i "s/auto-profiles = yes/auto-profiles = no/" /usr/share/pulseaudio/alsa-mixer/profile-sets/default.conf
+fi
+if [ -f /etc/pulse/default.pa ] ;then
+    echo "default.pa 1"
+    echo "load-module module-alsa-sink device=hw:audiocodec sink_name=AudioCodec-Playback sink_properties=\"device.description='Audio Codec'\"" >> /etc/pulse/default.pa
+fi
+if [ -f /etc/pulse/default.pa ] ;then
+    echo "default.pa 2"
+    echo "load-module module-alsa-sink device=hw:hdmi sink_name=HDMI-Playback sink_properties=\"device.description='HDMI Audio'\"" >>  /etc/pulse/default.pa
+fi

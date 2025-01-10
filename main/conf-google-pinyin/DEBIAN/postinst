@@ -1,0 +1,2 @@
+#!/bin/bash
+im-config -n fcitx

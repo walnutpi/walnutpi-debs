@@ -1,0 +1,8 @@
+Package: service-disable-fbcon
+Description: service, disable the frmebuf console when config.txt has keyword
+Version: 1.0.0
+Maintainer: sc-bin <3335447573@qq.com>
+Section: free
+Priority: optional
+Installed-Size: 36
+Architecture: all

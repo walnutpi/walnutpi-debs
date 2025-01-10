@@ -1,0 +1,9 @@
+Package: conf-h616-eth0
+Description: enable the eth0
+Version: 1.0.0
+Maintainer: sc-bin <3335447573@qq.com>
+Section: free
+Priority: optional
+Installed-Size: 16
+Architecture: all
+Depends: netplan.io

@@ -1,0 +1,8 @@
+Package: fix-ubuntu-networkd-wait
+Description: fix the systemd-networkd-wait-online.service bug
+Version: 1.0.0
+Maintainer: sc-bin <3335447573@qq.com>
+Section: free
+Priority: optional
+Installed-Size: 4
+Architecture: all

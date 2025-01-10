@@ -1,0 +1,20 @@
+#!/bin/bash
+
+
+#!/bin/bash
+
+set_amixer() {
+    # 获取参数
+    local card_number="$1"
+    local name="$2"
+    local value="$3"
+
+    if amixer -c "$card_number" contents | grep -q "$name"; then
+        amixer -c "$card_number" cset name="$name" "$value"
+    fi
+}
+
+set_amixer 0 'Left Output Mixer DACL Switch' on
+set_amixer 0 'Right Output Mixer DACR Switch' on
+# amixer -c 0 cset name='Left Output Mixer DACL Switch' on
+# amixer -c 0 cset name='Right Output Mixer DACR Switch' on

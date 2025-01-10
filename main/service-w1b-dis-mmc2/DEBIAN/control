@@ -1,0 +1,8 @@
+Package: service-w1b-dis-mmc2
+Description: service, run on walnutpi-1b board. set the mmc2 pins as off if mmc2 is disable
+Version: 1.0.0
+Maintainer: sc-bin <3335447573@qq.com>
+Section: free
+Priority: optional
+Installed-Size: 36
+Architecture: all

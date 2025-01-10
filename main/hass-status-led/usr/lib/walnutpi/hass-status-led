@@ -1,0 +1,46 @@
+#!/bin/bash
+
+GPIO_KEY=41
+GPIO_LED=42
+
+read_key() {
+    gpio mode ${GPIO_KEY} in
+    echo $(gpio read ${GPIO_KEY})
+}
+
+led_blink() {
+    gpio mode ${GPIO_LED} output
+    gpio write ${GPIO_LED} 0
+    sleep 0.5
+    gpio write ${GPIO_LED} 1
+    sleep 0.5
+}
+
+
+while true
+do
+    # 检测8123端口是否开放
+    nc -z 127.0.0.1 8123 > /dev/null 2>&1
+    
+    # 检查上一条命令的退出状态
+    if [ ! $? -eq 0 ]; then
+        led_blink
+    else
+        sleep 1
+    fi
+    
+    
+done
+
+
+
+
+
+
+
+
+
+
+
+
+

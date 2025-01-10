@@ -1,0 +1,5 @@
+#!/bin/bash
+
+pip3  uninstall gpioc -y
+pip3  uninstall Adafruit-PlatformDetect -y
+pip3  uninstall Adafruit-Blinka -y
