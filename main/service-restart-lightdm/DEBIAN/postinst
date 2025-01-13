@@ -1,0 +1,3 @@
+#!/bin/bash
+
+systemctl enable service_restart_lightdm.service

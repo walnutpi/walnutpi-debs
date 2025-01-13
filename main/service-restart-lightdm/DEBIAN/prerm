@@ -1,0 +1,3 @@
+#!/bin/bash
+systemctl stop service_restart_lightdm.service
+systemctl disable service_restart_lightdm.service

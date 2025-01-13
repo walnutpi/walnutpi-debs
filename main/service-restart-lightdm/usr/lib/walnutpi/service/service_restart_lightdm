@@ -1,0 +1,22 @@
+#!/bin/bash
+
+
+# while死循环等待直到/dev/fb0这个文件出现
+while [ ! -c /dev/fb0 ]
+do
+    sleep 1
+    echo "等待/dev/fb0"
+done
+
+
+# 检查 lightdm 服务是否正在运行
+if systemctl is-active --quiet lightdm; then
+    echo "lightdm is running."
+    exit 0
+fi
+
+# 检查 lightdm 服务是否存在
+if systemctl list-unit-files --type=service | grep -q '^lightdm.service'; then
+    echo "lightdm is not running. Restarting..."
+    systemctl restart lightdm.service
+fi

@@ -1,0 +1,12 @@
+[Unit]
+Description=auto restart lightdm
+After=lightdm.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/lib/walnutpi/service/service_restart_lightdm
+RemainAfterExit=yes
+StandardOutput=null
+
+[Install]
+WantedBy=multi-user.target
