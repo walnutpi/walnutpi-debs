@@ -1,0 +1,12 @@
+[Unit]
+Description=map device
+After=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/lib/walnutpi/service/map_device
+RemainAfterExit=yes
+StandardOutput=null
+
+[Install]
+WantedBy=multi-user.target

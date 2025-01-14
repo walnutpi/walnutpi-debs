@@ -1,0 +1,3 @@
+#!/bin/bash
+systemctl stop map_device.service
+systemctl disable map_device.service
