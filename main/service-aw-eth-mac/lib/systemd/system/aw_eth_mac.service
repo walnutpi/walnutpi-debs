@@ -1,0 +1,12 @@
+[Unit]
+Description=modify the eth0 mac
+After=NetworkManager.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/lib/walnutpi/service/aw_eth_mac
+RemainAfterExit=yes
+StandardOutput=null
+
+[Install]
+WantedBy=multi-user.target

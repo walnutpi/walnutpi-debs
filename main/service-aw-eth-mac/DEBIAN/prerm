@@ -1,0 +1,3 @@
+#!/bin/bash
+systemctl stop aw_eth_mac.service
+systemctl disable aw_eth_mac.service

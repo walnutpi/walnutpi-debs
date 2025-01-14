@@ -1,0 +1,10 @@
+#!/bin/bash
+file_mac_save="/etc/addr_eth"
+mac_save=$(cat $file_mac_save)
+mac_generate=$(cat /sys/class/addr_mgt/addr_eth)
+
+if [ "$mac_save" != "$mac_generate" ]; then
+    nmcli connection modify "Wired connection 1" 802-3-ethernet.cloned-mac-address $mac_generate
+    echo "$mac_generate" > $file_mac_save
+    reboot
+fi
