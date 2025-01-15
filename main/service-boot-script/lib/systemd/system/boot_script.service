@@ -4,9 +4,10 @@ After=basic.target network-online.target
 
 [Service]
 Type=oneshot
-ExecStart=/usr/lib/walnutpi/service_boot_script
+ExecStart=/usr/lib/walnutpi/service/boot_script
 RemainAfterExit=yes
 StandardOutput=null
+User=pi
 
 [Install]
 WantedBy=multi-user.target

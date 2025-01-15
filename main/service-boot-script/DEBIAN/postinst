@@ -1,6 +1,14 @@
 #!/bin/bash
 
-systemctl enable service_boot_script.service
+
+# 历史遗留，之前一个版本的服务叫这个名字，如果存在则关闭它
+service_name="service_boot_script.service"
+if systemctl list-unit-files --full -t service | grep -q "$service_name"; then
+    systemctl stop --now "$service_name"
+    systemctl disable --now "$service_name"
+fi
+
+systemctl enable boot_script.service
 
 if [ ! -d "/boot/start" ]; then
     mkdir -p /boot/start

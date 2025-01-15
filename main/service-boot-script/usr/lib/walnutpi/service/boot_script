@@ -1,0 +1,42 @@
+#!/bin/bash
+
+PATH_START="/boot/start"
+PATH_LOG_TMP="/tmp/boot_script"
+
+
+if [ ! -d $PATH_LOG_TMP ]; then
+    sudo mkdir $PATH_LOG_TMP
+    sudo chmod -R 777 $PATH_LOG_TMP
+fi
+if [ ! -d $PATH_START ]; then
+    exit 1
+fi
+
+SH_FILES=$(find $PATH_START -type f -name "*.sh")
+if [ ! -n "$SH_FILES" ]; then
+    exit 1
+fi
+
+cd ${PATH_START}
+script_list=$(ls *.sh )
+for script in $script_list
+do
+    cd $PATH_START
+    LOG_FILE_NAME="${script%.sh}.log"
+    LOG_FILE="${PATH_LOG_TMP}/${LOG_FILE_NAME}"
+    date > $LOG_FILE
+    bash $script >> $LOG_FILE 2>&1 &
+    pid=$!
+
+    monitor_process() {
+        local pid=$1
+        local src=$2
+        local target=$3
+        while kill -0 $pid 2>/dev/null; do
+        sudo  cp $src $target
+            sleep 1
+        done
+    }
+
+    monitor_process $pid $LOG_FILE ${PATH_START}/${LOG_FILE_NAME} &
+done

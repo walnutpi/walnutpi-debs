@@ -1,0 +1,3 @@
+#!/bin/bash
+systemctl stop boot_script.service
+systemctl disable boot_script.service
