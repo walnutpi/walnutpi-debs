@@ -14,6 +14,9 @@ if [ $(id -u) -ne 0 ]; then
     exit 1
 fi
 
+[[ ! -d $PATH_APP ]] && mkdir $PATH_APP
+[[ ! -f $LIST_FILE ]] && touch $LIST_FILE
+
 if [ ! -f "$PATH_DTB_BASE"  ]; then
     cp "$PATH_DTB_SYSTEM" "$PATH_DTB_BASE"
 else if ! fdtget -p "$PATH_DTB_SYSTEM" $FLAG_IN_DTB_NODE >/dev/null 2>&1; then
@@ -28,8 +31,6 @@ for file in /boot/overlays/"$prefix"-*.dtbo; do
 done
 
 
-[[ ! -d $PATH_APP ]] && mkdir $PATH_APP
-[[ ! -f $LIST_FILE ]] && touch $LIST_FILE
 
 # 将config.txt内的overlays内设备，写入list文件,并删除config.txt内overlays参数
 ____update_overlays_to_list()
@@ -160,6 +161,11 @@ for name in $(cat $LIST_FILE); do
         dtbo_list="$dtbo_list $dtbo_file"
     fi
 done
-fdtoverlay -i $PATH_DTB_BASE  $dtbo_list -o $PATH_DTB_SYSTEM 
+if [ -z "$dtbo_list" ]; then
+    cp $PATH_DTB_BASE $PATH_DTB_SYSTEM
+else
+    fdtoverlay -i $PATH_DTB_BASE  $dtbo_list -o $PATH_DTB_SYSTEM
+fi
+
 fdtput -p $PATH_DTB_SYSTEM $FLAG_IN_DTB_NODE $FLAG_IN_DTB_PROPERTY
 
