@@ -3,8 +3,7 @@
 # 这部分脚本只在首次安装时运行
 if [ "$1" = "configure" ] && [ -z "$2" ]; then
     
-    password="root"
-    echo "$USER:$password" | chpasswd
+    echo "root:root" | chpasswd
     
     useradd -m pi
     echo "pi:pi" |  chpasswd
