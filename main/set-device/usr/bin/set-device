@@ -1,81 +1,116 @@
 #!/bin/bash
-
-
+PATH_APP="/boot/set-device"
+LIST_FILE="$PATH_APP/list"
 prefix=$(grep "^overlay_prefix=" /boot/config.txt | cut -d'=' -f2)
-# echo $prefix
-dtbo=()
+DTB_NAME=$(grep "^fdtfile=" /boot/config.txt | cut -d'=' -f2)
+PATH_DTB_SYSTEM="/boot/$DTB_NAME.dtb"
+PATH_DTB_BASE="$PATH_APP/$DTB_NAME.dtb"
+FLAG_IN_DTB_NODE="/flag"
+FLAG_IN_DTB_PROPERTY="set-device"
+
+# 检测当前执行这个脚本时是否具有root权限，没有则退出
+if [ $(id -u) -ne 0 ]; then
+    echo "Please run as root"
+    exit 1
+fi
+
+if [ ! -f "$PATH_DTB_BASE"  ]; then
+    cp "$PATH_DTB_SYSTEM" "$PATH_DTB_BASE"
+else if ! fdtget -p "$PATH_DTB_SYSTEM" $FLAG_IN_DTB_NODE >/dev/null 2>&1; then
+        cp "$PATH_DTB_SYSTEM" "$PATH_DTB_BASE"
+    fi
+fi
+
+
+dtbo_list=()
 for file in /boot/overlays/"$prefix"-*.dtbo; do
-    dtbo+=($(basename "$file" .dtbo | sed "s/^$prefix-//"))
+    dtbo_list+=($(basename "$file" .dtbo | sed "s/^$prefix-//"))
 done
 
 
+[[ ! -d $PATH_APP ]] && mkdir $PATH_APP
+[[ ! -f $LIST_FILE ]] && touch $LIST_FILE
 
-
-_is_in_dtbo() {
-    name=$1
-    if [[ " ${dtbo[*]} " == *" $1 "* ]]; then
-        return 1
-    else
-        return 0
-    fi
-}
-
-_is_in_overlays() {
-    name=$1
-    overlays=$(grep "^overlays=" /boot/config.txt | cut -d'=' -f2)
-
-    if [[ $overlays =~ (^|[[:space:]])"$1"($|[[:space:]]) ]]; then
-        return 1
-    else
-        return 0
-    fi
-
-}
-
-status() {
-    if [ ! -z "$1" ]; then
-        _is_in_dtbo $1
-        if [ $? -eq 1 ]; then
-            dtbo=("$1")
-        else
-            exit 1
+# 将config.txt内的overlays内设备，写入list文件,并删除config.txt内overlays参数
+____update_overlays_to_list()
+{
+    local overlays=$(grep "^overlays=" /boot/config.txt | cut -d'=' -f2)
+    for overlay in $overlays; do
+        if ! grep -Fxq "$overlay" $LIST_FILE; then
+            echo "$overlay" >> $LIST_FILE
         fi
-
-    fi
-
-    echo -e "\n-------------------------"
-    overlays=$(grep "^overlays=" /boot/config.txt | cut -d'=' -f2)
-    for d in "${dtbo[@]}"; do
-        len=${#d}
-        tabs=$((15-len))
-
-        _is_in_overlays $d
-        if [ $? -eq 1 ]; then
-            echo -en "\033[32m"
-        else
-            echo -en "\033[31m"
-        fi
-    
-        echo -en "  $d"
-        for ((i = 0; i < tabs; i++)); do
-            echo -ne "="
-        done
-
-        _is_in_overlays $d
-        if [ $? -eq 1 ]; then
-            echo -e "|enable|"
-        else
-            echo -e "| off  |"
-        fi
-        echo -en "\033[0m"
     done
+    sed -i '/^overlays=/ s/overlays=.*/overlays=/' /boot/config.txt
+}
+____update_overlays_to_list
+
+
+_has_dtbo() {
+    local name=$1
+    if [[ " ${dtbo_list[*]} " == *" $1 "* ]]; then
+        return 0
+    else
+        return 1
+    fi
+}
+_is_dtbo_enabled() {
+    local name=$1
+    local overlays=$(cat $LIST_FILE)
+    if [[ $overlays =~ (^|[[:space:]])"$1"($|[[:space:]]) ]]; then
+        return 0
+    else
+        return 1
+    fi
+}
+# 传入一个名字，输出该设备状态
+_show_status() {
+    local name=$1
+    local len=${#name}
+    local tabs=$((15-len))
+    
+    _is_dtbo_enabled $name
+    if [ $? -eq 0 ]; then
+        echo -en "\033[32m"
+    else
+        echo -en "\033[31m"
+    fi
+    
+    _is_dtbo_enabled $name
+    if [ $? -eq 0 ]; then
+        echo -en "<enable>"
+    else
+        echo -en "<  off >"
+    fi
+    
+    echo -en " $name"
+    # for ((i = 0; i < tabs; i++)); do
+    #     echo -ne "="
+    # done
+    
+    echo -e "\033[0m"
+}
+
+# 如果有参数1，则显示该设备状态
+# 如果没有参数1，则显示所有设备状态
+status() {
+    echo -e "\n-------------------------"
+    if [ ! -z "$1" ]; then
+        _has_dtbo $1
+        if [ $? -eq 0 ]; then
+            _show_status $1
+        fi
+    else
+        for d in "${dtbo_list[@]}"; do
+            _show_status $d
+        done
+    fi
     echo -e "-------------------------\n"
 }
-
 enable() {
-    if [ ! -z "$1" ]; then
-        _is_in_dtbo $1
-        if [ ! $? -eq 1 ]; then
+    local dtbo_name="$1"
+    if [ ! -z "$dtbo_name" ]; then
+        _has_dtbo $dtbo_name
+        if [ $? -ne 0 ]; then
             echo "device name error"
             exit 1
         fi
@@ -83,20 +118,19 @@ enable() {
         echo "please choose device"
         exit -1
     fi
-
-    _is_in_overlays $1
-    if [ ! $? -eq 1 ]; then
-        echo -e "enable: $1"
-        sed -i "/^overlays=/ s/$/ $1/" /boot/config.txt
-
+    
+    _is_dtbo_enabled $dtbo_name
+    if [ ! $? -eq 0 ]; then
+        echo -e "enable: $dtbo_name"
+        echo -e "$dtbo_name\n" >> $LIST_FILE
     fi
     
 }
-
 disable() {
-    if [ ! -z "$1" ]; then
-        _is_in_dtbo $1
-        if [ ! $? -eq 1 ]; then
+    local dtbo_name="$1"
+    if [ ! -z "$dtbo_name" ]; then
+        _has_dtbo $dtbo_name
+        if [ $? -ne 0 ]; then
             echo "device name error"
             exit 1
         fi
@@ -104,16 +138,28 @@ disable() {
         echo "please choose device"
         exit -1
     fi
-
-    _is_in_overlays $1
-    if [  $? -eq 1 ]; then
-        echo -e "disable: $1"
-        sed -i "/^overlays=/ s/\b$1\b//g" /boot/config.txt
-
+    
+    _is_dtbo_enabled $dtbo_name
+    if [ $? -eq 0 ]; then
+        echo -e "disable: $dtbo_name"
+        sed -i "/^$dtbo_name$/d" $LIST_FILE
     fi
+    
 }
-
 
 FUNCTION_NAME=$1
 DTB_NAME=$2
 $FUNCTION_NAME $DTB_NAME
+
+
+# 根据list来更新设备树文件
+dtbo_list=""
+for name in $(cat $LIST_FILE); do
+    dtbo_file="/boot/overlays/$prefix-$name.dtbo"
+    if [ -f "$dtbo_file" ]; then
+        dtbo_list="$dtbo_list $dtbo_file"
+    fi
+done
+fdtoverlay -i $PATH_DTB_BASE  $dtbo_list -o $PATH_DTB_SYSTEM 
+fdtput -p $PATH_DTB_SYSTEM $FLAG_IN_DTB_NODE $FLAG_IN_DTB_PROPERTY
+
