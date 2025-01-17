@@ -1,0 +1,76 @@
+#!/bin/bash
+
+# 检测当前执行这个脚本时是否具有root权限，没有则退出
+if [ $(id -u) -ne 0 ]; then
+    echo "Please run as root"
+    exit 1
+fi
+
+# 根据系统当前语言，使用echo输出cn或en的字符串
+_echo_cn_en (){
+    local cn=$1
+    local en=$2
+    
+    if [[ $LANG == *CN* ]]; then
+        echo -e $cn
+    else
+        echo -e $en
+    fi
+}
+_press_to_continue() {
+    local cn=$1
+    local en=$2
+    # 获取键盘上的一个输入值，如果是y则函数返回0，否则返回1
+    _echo_cn_en "\n\t按 y 继续,按其他任意键皆为退出" "\n\tPress y to continue,Pressing any other key exits\n"
+    read  -n 1
+    echo ""
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        return 0
+    else
+        exit
+    fi
+    
+}
+
+_check_nvme() {
+    if [ ! -c /dev/nvme0 ]; then
+        _echo_cn_en "检测不到nvme硬盘" "nvme SSD cannot be detected"
+        _echo_cn_en "1. 检查是否启用pcie功能" "1. Check if pcie is enabled"
+        _echo_cn_en "2. 检查硬件连接是否正常，排线是否松动" "2. Check if the hardware connection is normal, and the cable is not loose"
+        exit 1
+    fi
+    local mountpoint=$(mount | grep "/dev/nvme0")
+    if [ -n "$mountpoint" ]; then
+        _echo_cn_en "请先解除nvme的挂载" "Please unmount the nvme drive first"
+        echo "$mountpoint"
+        exit
+    fi
+}
+
+_delete_all_part() {
+    local MMC_DEVICE=$1
+    if ls ${MMC_DEVICE}p* 1> /dev/null 2>&1; then
+        local partitions=$(parted -s $MMC_DEVICE print | awk '{if(NF>1 && $1 ~ /^[0-9]+$/) print $1}')
+        for partition in $partitions; do
+            parted -s $MMC_DEVICE rm $partition
+        done
+        
+    fi
+}
+
+
+to_disk() {
+    _echo_cn_en "将nvme硬盘格式化为一个ext4的可用磁盘" "Format the nvme SSD as an ext4 filesystem"
+    _press_to_continue
+    local MMC_DEVICE="/dev/nvme0n1"
+    _delete_all_part $MMC_DEVICE
+    parted $MMC_DEVICE --script mklabel msdos
+    parted $MMC_DEVICE --script mkpart primary ext4 1M 100%
+    mkfs.ext4 -F ${MMC_DEVICE}p1
+    
+}
+_check_nvme
+FUNCTION_NAME=$1
+BIN_NAME=$2
+$FUNCTION_NAME $BIN_NAME
+

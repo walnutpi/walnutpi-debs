@@ -1,0 +1,8 @@
+Package: set-nvme
+Description: set-nvme command
+Version: 0.0.1
+Maintainer: sc-bin <3335447573@qq.com>
+Section: free
+Priority: optional
+Installed-Size: 28
+Architecture: all

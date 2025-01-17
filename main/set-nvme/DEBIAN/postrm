@@ -1,0 +1,8 @@
+#!/bin/bash
+if [ "$1" = "remove" ]  ; then
+    
+    bash_str="source /etc/bash_completion.d/set-nvme"
+    
+    grep -v "${bash_str}" /etc/bash.bashrc | sudo tee /etc/bash.bashrc > /dev/null
+    
+fi
