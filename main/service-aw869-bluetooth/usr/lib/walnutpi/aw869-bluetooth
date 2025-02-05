@@ -11,5 +11,7 @@ do
     sleep 1
 done
 
-
-hciattach  -s 1500000 /dev/ttyAS1 aic  &
+Board_model=$(tr -d '\0' < /proc/device-tree/model)
+if [ $Board_model == "walnutpi-2b" ]; then
+    hciattach  -s 1500000 /dev/ttyS1 aic  &
+fi

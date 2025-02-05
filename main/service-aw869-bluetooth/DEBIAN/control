@@ -1,6 +1,6 @@
 Package: service-aw869-bluetooth
 Description: service, enable the aw869 bluetooth
-Version: 1.0.0
+Version: 1.0.1
 Maintainer: sc-bin <3335447573@qq.com>
 Section: free
 Priority: optional
