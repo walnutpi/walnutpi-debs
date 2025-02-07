@@ -1,10 +1,27 @@
 #!/bin/bash
+
 file_mac_save="/etc/addr_eth"
 mac_save=$(cat $file_mac_save)
-mac_generate=$(cat /sys/class/addr_mgt/addr_eth)
 
-if [ "$mac_save" != "$mac_generate" ]; then
-    nmcli connection modify "Wired connection 1" 802-3-ethernet.cloned-mac-address $mac_generate
+file_generate="/sys/class/addr_mgt/addr_eth"
+mac_generate=$(cat $file_generate | tr '[:upper:]' '[:lower:]')
+mac_prefix=${mac_generate%:*}
+mac_suffix=0
+
+# 获取所有符合条件的 UUID
+uuids=$(nmcli -t -f UUID,TYPE connection show | grep 802-3-ethernet | cut -d: -f1)
+
+if [ "x$mac_save" != "x$mac_generate" ]; then
+    for uuid in $uuids; do
+        # 生成新的 MAC 地址
+        mac_new=$(printf "%s:%02x" "$mac_prefix" "$mac_suffix")
+
+        nmcli connection modify "$uuid" 802-3-ethernet.cloned-mac-address "$mac_new"
+        # 增加后缀计数
+        mac_suffix=$((mac_suffix + 1))
+    done
     echo "$mac_generate" > $file_mac_save
     reboot
 fi
+
+
