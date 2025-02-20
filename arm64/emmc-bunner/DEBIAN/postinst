@@ -1,0 +1,7 @@
+#!/bin/bash
+
+set -e
+
+cd /usr/lib/walnutpi/emmc-burner
+./install.sh
+systemctl enable emmc_burner.service

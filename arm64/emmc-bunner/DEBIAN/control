@@ -1,0 +1,9 @@
+Package: emmc-burner
+Description: burn the image to emmc at boot
+Version: 1.0.0
+Maintainer: sc-bin <3335447573@qq.com>
+Section: free
+Priority: optional
+Installed-Size: 1624
+Architecture: all
+Depends:  libfreetype6-dev

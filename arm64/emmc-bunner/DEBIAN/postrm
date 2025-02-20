@@ -1,0 +1,8 @@
+#!/bin/bash
+
+set -e
+
+cd /usr/lib/walnutpi/emmc-burner
+./uninstall.sh
+systemctl stop emmc_burner.service
+systemctl disable emmc_burner.service
