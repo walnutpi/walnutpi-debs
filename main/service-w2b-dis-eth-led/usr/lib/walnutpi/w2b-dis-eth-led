@@ -1,0 +1,40 @@
+#!/bin/bash
+
+Board_model=$(tr -d '\0' < /proc/device-tree/model)
+if [ $Board_model != "walnutpi-2b" ]; then
+    exit
+fi
+
+write_mii(){
+    local reg_addr=$1
+    local value=$2
+    PATH_MII_WRITE="/sys/devices/platform/soc@3000000/4510000.ethernet/mii_write"
+    echo "0 $reg_addr $value" > ${PATH_MII_WRITE}; cat ${PATH_MII_WRITE}
+}
+write_reg12(){
+    local value=$1
+    write_mii 0x1f 0xd04
+    write_mii 0x12 $value
+    write_mii 0x1f 0xa42
+    
+}
+
+
+led_off(){
+    write_reg12 "0"
+}
+led_enable(){
+    write_reg12 "0x03e9"
+}
+
+LASTSTATUS=0
+
+while true; do
+    if [ $(cat /sys/class/net/eth0/carrier) == "1" ];
+    then
+        led_enable
+    else
+        led_off
+    fi
+    sleep 1
+done

@@ -1,0 +1,16 @@
+[Unit]
+Description=aw859 setting
+After=basic.target
+
+
+[Service]
+RemainAfterExit=yes
+TimeoutStartSec=2min
+ExecStart=/usr/lib/walnutpi/w2b-dis-eth-led
+
+
+
+[Install]
+WantedBy=basic.target
+
+

@@ -1,0 +1,3 @@
+#!/bin/bash
+
+systemctl enable w2b-dis-eth-led.service

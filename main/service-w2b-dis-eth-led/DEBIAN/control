@@ -1,0 +1,8 @@
+Package: service-w2b-dis-eth-led
+Description: service, Turn off the led when the cable is not inserted
+Version: 1.0.0
+Maintainer: sc-bin <3335447573@qq.com>
+Section: free
+Priority: optional
+Installed-Size: 36
+Architecture: all

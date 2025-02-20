@@ -1,0 +1,3 @@
+#!/bin/bash
+systemctl stop w2b-dis-eth-led.service
+systemctl disable w2b-dis-eth-led.service
