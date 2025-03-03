@@ -1,0 +1,14 @@
+#!/bin/bash
+source /etc/WalnutPi-release
+
+# 1.0.0 升到 1.1.0
+if [ $version == "1.0.0" ];then
+
+    # 取消掉对mac地址的修改
+    uuids=$(nmcli -t -f UUID,TYPE connection show | grep 802-3-ethernet | cut -d: -f1)
+    for uuid in $uuids; do
+        nmcli connection modify "$uuid" 802-3-ethernet.cloned-mac-address ""
+    done
+
+fi
+
