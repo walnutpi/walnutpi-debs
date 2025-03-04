@@ -126,7 +126,7 @@ disable() {
     _is_dtbo_enabled $dtbo_name
     if [ $? -eq 0 ]; then
         echo -e "disable: $dtbo_name"
-        sed -i "/^overlays=/ s/ $dtbo_name//" /boot/config.txt
+        sed -i "/^overlays=/ s/\<$dtbo_name\>//" /boot/config.txt
     fi
     
 }
