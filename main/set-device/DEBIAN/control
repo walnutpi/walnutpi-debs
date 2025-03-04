@@ -1,6 +1,6 @@
 Package: set-device
 Description: Modifying the /boot/config.txt file about overlays
-Version: 1.1.0
+Version: 1.1.1
 Maintainer: sc-bin <3335447573@qq.com>
 Section: free
 Priority: optional

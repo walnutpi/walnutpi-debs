@@ -1,9 +1,9 @@
 Package: walnutpi-lib
 Description: walnutpi support some lib
-Version: 1.0.3
+Version: 1.1.0
 Maintainer: sc-bin <3335447573@qq.com>
 Section: free
 Priority: optional
-Installed-Size: 9076
+Installed-Size: 9812
 Architecture: all
 Depends: make, gcc
