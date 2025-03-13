@@ -1,0 +1,11 @@
+[Unit]
+Description=set-lcd auto choose the screen
+After=basic.target
+
+[Service]
+Type=simple
+ExecStart=/usr/lib/walnutpi/set-lcd/auto_choose.sh
+StandardOutput=journal
+
+[Install]
+WantedBy=multi-user.target

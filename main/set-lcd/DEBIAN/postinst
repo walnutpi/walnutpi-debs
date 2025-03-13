@@ -4,3 +4,7 @@
 cd /usr/lib/walnutpi/set-lcd
 chmod +x install
 ./install
+
+systemctl enable set_lcd_choose.service
+
+/usr/bin/set-lcd hdmi install
