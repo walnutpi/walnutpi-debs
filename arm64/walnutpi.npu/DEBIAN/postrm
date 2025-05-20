@@ -1,0 +1,3 @@
+#!/bin/bash
+
+pip uninstall walnutpi_npu -y
