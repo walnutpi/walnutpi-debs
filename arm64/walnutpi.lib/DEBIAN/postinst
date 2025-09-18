@@ -1,4 +1,4 @@
 #!/bin/bash
 
 cd /usr/lib/walnutpi
-pip3 --no-cache-dir install -e walnutpi.lib/
+pip3 --no-cache-dir install --break-system-packages -e walnutpi.lib/

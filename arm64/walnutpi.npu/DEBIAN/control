@@ -1,9 +1,9 @@
 Package: walnutpi.npu
 Description: a python lib to control npu
-Version: 1.1.0
+Version: 1.1.1
 Maintainer: sc-bin <3335447573@qq.com>
 Section: free
 Priority: optional
-Installed-Size: 696
+Installed-Size: 708
 Architecture: all
 Depends: walnutpi.npu
