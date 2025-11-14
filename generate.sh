@@ -8,7 +8,6 @@ if [[ ! -d ${OUTPUT_DIR} ]]; then
     mkdir ${OUTPUT_DIR}
 fi
 
-
 # 遍历当前目录下的所有文件夹
 for dir in $(ls -d ${SOURCE_DIR}/*/ ) ; do
     cd $dir
@@ -43,10 +42,11 @@ for dir in $(ls -d ${SOURCE_DIR}/*/ ) ; do
         sed -i "/Installed-Size:/c\Installed-Size: $size" DEBIAN/control
     fi
     
-    
     cd ..
-    dpkg -b "$dir" "$deb_file"
+    # 使用 gzip 压缩格式构建 deb 包
+    dpkg-deb -Zgzip -b "$dir" "$deb_file"
 done
+
 if (( $COUNT_SUCCESS > 0 )); then
     return 0
 fi
