@@ -1,0 +1,9 @@
+Package: mesa-xorg-g57-debian12
+Description: the mali-g57 userspace file for debian12-xorg
+Version: 1.0.0
+Maintainer: sc-bin <3335447573@qq.com>
+Section: free
+Priority: optional
+Installed-Size: 15488
+Architecture: arm64
+Depends: libssl1.1

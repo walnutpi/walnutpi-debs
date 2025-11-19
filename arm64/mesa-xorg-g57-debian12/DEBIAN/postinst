@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# t527-gpu-debian12 postinst script
+# This script runs after the package is installed
+
+set -e
+
+ORIGINAL_XORG="/usr/bin/Xorg"
+BACKUP_XORG="/usr/bin/Xorg.original"
+NEW_XORG="/usr/bin/Xorg-g57"
+
+case "$1" in
+    configure)
+        # Backup original Xorg file if backup doesn't exist yet
+        if [ ! -f "$BACKUP_XORG" ] && [ -f "$ORIGINAL_XORG" ]; then
+            echo "Backing up original Xorg file..."
+            cp "$ORIGINAL_XORG" "$BACKUP_XORG"
+        fi
+        
+        # Replace Xorg with G57 version if our version exists
+        if [ -f "$NEW_XORG" ]; then
+            echo "Replacing Xorg with Mali-G57 version..."
+            cp "$NEW_XORG" "$ORIGINAL_XORG"
+        fi
+        ;;
+    abort-upgrade)
+        # Nothing special needed
+        ;;
+esac
+
+exit 0

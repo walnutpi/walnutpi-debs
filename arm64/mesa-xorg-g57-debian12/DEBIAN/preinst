@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# t527-gpu-debian12 preinst script
+# This script runs before the package is installed
+
+set -e
+
+case "$1" in
+    install|upgrade)
+        # Nothing special needed before installation
+        ;;
+    abort-upgrade)
+        # Nothing special needed
+        ;;
+esac
+
+exit 0

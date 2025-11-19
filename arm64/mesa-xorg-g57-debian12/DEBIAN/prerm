@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# t527-gpu-debian12 prerm script
+# This script runs before the package is removed
+
+set -e
+
+ORIGINAL_XORG="/usr/bin/Xorg"
+BACKUP_XORG="/usr/bin/Xorg.original"
+
+case "$1" in
+    remove|deconfigure)
+        # Restore original Xorg file if backup exists
+        if [ -f "$BACKUP_XORG" ]; then
+            echo "Restoring original Xorg file..."
+            mv "$BACKUP_XORG" "$ORIGINAL_XORG"
+        elif [ -f "$ORIGINAL_XORG" ]; then
+            # In case our replacement is still there
+            echo "Removing replaced Xorg file (no backup found)..."
+            rm -f "$ORIGINAL_XORG"
+        fi
+        ;;
+esac
+
+exit 0

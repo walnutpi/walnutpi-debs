@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# t527-gpu-debian12 postrm script
+# This script runs after the package is removed
+
+set -e
+
+case "$1" in
+    purge|remove|failed-upgrade|abort-install|abort-upgrade|disappear)
+        # Nothing special needed for cleanup
+        ;;
+esac
+
+exit 0
