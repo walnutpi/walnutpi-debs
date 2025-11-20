@@ -1,7 +1,7 @@
 #!/bin/bash
 PATH_PWD="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 SCRIPT_GEN="${PATH_PWD}/generate.sh"
-OUTPUT="${PATH_PWD}/wpi-update-server/web"
+OUTPUT="${PATH_PWD}/wpi-update-server/web/debian"
 SCRIPT_SERVER_BUILD="${PATH_PWD}/wpi-update-server/build.sh"
 if [[ ! -d $OUTPUT ]]; then
     mkdir -p ${OUTPUT}
