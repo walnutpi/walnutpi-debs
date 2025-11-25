@@ -1,0 +1,15 @@
+[Unit]
+Description=Goodix Touchscreen Auto Rotation
+After=lightdm.service
+
+[Service]
+Type=simple
+User=pi
+Environment=DISPLAY=:0
+Environment=XAUTHORITY=/home/pi/.Xauthority
+ExecStart=/usr/lib/walnutpi/goodix-ts-auto-rotation
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=graphical.target

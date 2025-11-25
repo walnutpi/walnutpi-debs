@@ -1,0 +1,16 @@
+#!/bin/bash
+
+set -e
+
+case "$1" in
+    remove|purge)
+        # Stop and disable the service
+        systemctl stop goodix-ts-auto-rotation.service || true
+        systemctl disable goodix-ts-auto-rotation.service || true
+        
+        # Reload systemd to remove the service
+        systemctl daemon-reload || true
+        ;;
+esac
+
+exit 0

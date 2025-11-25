@@ -1,0 +1,9 @@
+Package: goodix-ts-auto-rotation
+Description: Automatic rotation of screen touch direction
+Version: 1.0.0
+Maintainer: sc-bin <3335447573@qq.com>
+Section: free
+Priority: optional
+Installed-Size: 36
+Architecture: all
+Depends: xinput

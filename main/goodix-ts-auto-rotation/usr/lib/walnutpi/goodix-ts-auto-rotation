@@ -1,0 +1,64 @@
+#!/bin/bash
+export DISPLAY=:0
+
+# 传入一个方向字符串，执行旋转
+auto_rotate() {
+    local rotation=$1
+    case $rotation in
+    normal | \(*normal*)
+        # 正常
+        xinput set-prop "goodix-ts" --type=float "Coordinate Transformation Matrix" 1 0 0 0 1 0 0 0 1
+        ;;
+    left)
+        # 左（90°逆时针）
+        xinput set-prop "goodix-ts" --type=float "Coordinate Transformation Matrix" 0 -1 1 1 0 0 0 0 1
+        ;;
+    right)
+        # 右 (90°顺时针)
+        xinput set-prop "goodix-ts" --type=float "Coordinate Transformation Matrix" 0 1 0 -1 0 1 0 0 1
+        ;;
+    inverted)
+        # 倒置（180°）
+        xinput set-prop "goodix-ts" --type=float "Coordinate Transformation Matrix" -1 0 1 0 -1 1 0 0 1
+        ;;
+    esac
+}
+
+bind_ts_to_dsi1() {
+    export DISPLAY=:0
+    TS_DEVICE_ID=$(xinput list --id-only 'goodix-ts')
+    if [ $? -ne 0 ]; then
+        echo "Failed to get TS device ID"
+        return
+    fi
+    xinput map-to-output ${TS_DEVICE_ID} DSI-1
+}
+
+# 等待直到x11启动
+wait_for_x11() {
+    while ! xrandr --query &>/dev/null; do
+        sleep 1
+    done
+}
+
+main() {
+    local last_rotation=""
+    local current_rotation=""
+    wait_for_x11
+    Board_model=$(tr -d '\0' </proc/device-tree/model)
+    source /etc/WalnutPi-release
+    if [ "x$lcd" == "xdsi-1920x1080" ]; then
+        while true; do
+            current_rotation=$(xrandr --query | grep DSI-1 | awk '{print $4}')
+            if [ "$current_rotation" != "$last_rotation" ]; then
+                auto_rotate "$current_rotation"
+                last_rotation="$current_rotation"
+            fi
+            if [ "x$Board_model" == "xwalnutpi-2b" ]; then
+                bind_ts_to_dsi1
+            fi
+            sleep 1
+        done
+    fi
+}
+main
