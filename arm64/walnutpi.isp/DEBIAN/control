@@ -1,0 +1,8 @@
+Package: walnutpi.isp
+Description: a python lib to control isp
+Version: 1.0.0
+Maintainer: sc-bin <3335447573@qq.com>
+Section: free
+Priority: optional
+Installed-Size: 260
+Architecture: all
