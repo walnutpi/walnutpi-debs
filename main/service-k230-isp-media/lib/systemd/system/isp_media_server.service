@@ -1,0 +1,16 @@
+[Unit]
+Description=ISP Media Server for Debian
+After=basic.target
+
+[Service]
+Type = oneshot
+RemainAfterExit=yes
+User=root
+Group=root
+ExecStart=/usr/lib/walnutpi/run_isp_media.sh
+TimeoutStartSec=1min
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=basic.target

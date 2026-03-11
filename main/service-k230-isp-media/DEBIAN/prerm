@@ -1,0 +1,33 @@
+#!/bin/bash
+set -e
+
+case "$1" in
+    remove|deconfigure)
+        # 在包被移除或重新配置前停止服务
+        if systemctl is-active --quiet isp_media_server.service; then
+            systemctl stop isp_media_server.service
+        fi
+        
+        if systemctl is-enabled --quiet isp_media_server.service; then
+            systemctl disable isp_media_server.service
+        fi
+        ;;
+        
+    upgrade)
+        # 包升级时：停止当前服务，等待postinst重新启用
+        if systemctl is-active --quiet isp_media_server.service; then
+            systemctl stop isp_media_server.service
+        fi
+        ;;
+        
+    failed-upgrade|abort-install|abort-upgrade)
+        # 处理升级失败的情况，不需要做特殊操作
+        ;;
+        
+    *)
+        echo "prerm called with unknown argument: $1" >&2
+        exit 1
+        ;;
+esac
+
+exit 0
