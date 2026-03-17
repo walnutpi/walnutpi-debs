@@ -1,0 +1,8 @@
+Package: walnutpi.kpu
+Description: a python lib to control k230 kpu
+Version: 1.0.0
+Maintainer: sc-bin <3335447573@qq.com>
+Section: free
+Priority: optional
+Installed-Size: 12112
+Architecture: all

@@ -1,0 +1,104 @@
+#!/bin/bash
+set -e  # 遇到错误立即退出
+
+# 定义颜色输出
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
+
+log_info() {
+    echo -e "${GREEN}[INFO]${NC} $1"
+}
+
+log_warn() {
+    echo -e "${YELLOW}[WARN]${NC} $1"
+}
+
+log_error() {
+    echo -e "${RED}[ERROR]${NC} $1" >&2
+}
+
+# 检查包是否实际安装
+is_package_installed() {
+    pip show walnutpi.kpu > /dev/null 2>&1
+    return $?
+}
+
+# 卸载包
+uninstall_package() {
+    log_info "Uninstalling walnutpi.kpu package..."
+    
+    if is_package_installed; then
+        if pip uninstall walnutpi.kpu -y; then
+            log_info "walnutpi.kpu package uninstalled successfully"
+        else
+            log_error "Failed to uninstall walnutpi.kpu package"
+            exit 1
+        fi
+    else
+        log_warn "walnutpi.kpu package is not installed, skipping uninstall"
+    fi
+}
+
+# 清理临时文件（可选）
+cleanup_temp_files() {
+    log_info "Cleaning up temporary files..."
+    # 可以在这里添加清理临时文件的逻辑
+    # 例如：rm -rf /tmp/walnutpi.kpu.* 或其他临时文件
+}
+
+# 保留配置文件（在升级场景中）
+preserve_config_for_upgrade() {
+    log_info "Preserving configuration for upgrade..."
+    # 如果有配置文件需要在升级过程中保留，可以在这里处理
+    # 通常不需要在此脚本中处理，因为配置文件管理一般在 prerm 中处理
+}
+
+# 完全清理（删除所有相关文件）
+complete_cleanup() {
+    log_info "Performing complete cleanup..."
+    
+    # 删除可能残留的文件或目录
+    if [ -d "/usr/lib/walnutpi/walnutpi.kpu" ]; then
+        log_info "Removing source directory /usr/lib/walnutpi/walnutpi.kpu"
+        rm -rf "/usr/lib/walnutpi/walnutpi.kpu"
+    fi
+    
+    # 清理其他可能的残留文件
+    # 注意：谨慎操作，避免删除共享文件
+}
+
+main() {
+    case "$1" in
+        remove|deconfigure)
+            # 包被移除或重新配置时执行
+            uninstall_package
+            ;;
+        failed-upgrade)
+            # 升级失败时执行
+            log_info "Handling failed upgrade scenario..."
+            # 在升级失败的情况下，可能需要特殊的清理逻辑
+            uninstall_package
+            ;;
+        disappear)
+            # 包从系统中消失（如从仓库中移除）
+            log_info "Package disappearing from repository..."
+            uninstall_package
+            ;;
+        purge)
+            # 彻底清除（包括配置文件）
+            uninstall_package
+            complete_cleanup
+            cleanup_temp_files
+            ;;
+        *)
+            log_warn "Unknown parameter: $1, proceeding with standard uninstall"
+            uninstall_package
+            ;;
+    esac
+    
+    log_info "Post-removal script completed successfully"
+}
+
+main "$@"
