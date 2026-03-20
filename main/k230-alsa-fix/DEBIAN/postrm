@@ -1,0 +1,45 @@
+#!/bin/bash
+set -e
+
+ALSACTL_PATH="/usr/sbin/alsactl"
+BACKUP_PATH="/usr/sbin/alsactl.backup"
+
+case "$1" in
+    remove|deconfigure|failed-upgrade|abort-install|abort-upgrade|disappear)
+        if [ -f "$BACKUP_PATH" ]; then
+            echo "Restoring $ALSACTL_PATH from $BACKUP_PATH"
+            
+            # Remove the dummy file/symlink
+            rm -f "$ALSACTL_PATH"
+            
+            # Restore the original file
+            mv "$BACKUP_PATH" "$ALSACTL_PATH"
+            
+            echo "Successfully restored $ALSACTL_PATH"
+        else
+            echo "Backup file $BACKUP_PATH does not exist, cannot restore"
+        fi
+        ;;
+    
+    purge)
+        # In case of purge, we also want to restore the original file
+        if [ -f "$BACKUP_PATH" ]; then
+            echo "Purging package, restoring $ALSACTL_PATH from $BACKUP_PATH"
+            
+            # Remove the dummy file/symlink
+            rm -f "$ALSACTL_PATH"
+            
+            # Restore the original file
+            mv "$BACKUP_PATH" "$ALSACTL_PATH"
+            
+            echo "Successfully restored $ALSACTL_PATH during purge"
+        fi
+        ;;
+    
+    *)
+        echo "Unknown command: $1"
+        exit 1
+        ;;
+esac
+
+exit 0

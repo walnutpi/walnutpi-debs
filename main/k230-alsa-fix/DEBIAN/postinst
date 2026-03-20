@@ -1,0 +1,35 @@
+#!/bin/bash
+set -e
+
+ALSACTL_PATH="/usr/sbin/alsactl"
+BACKUP_PATH="/usr/sbin/alsactl.backup"
+
+case "$1" in
+    configure)
+        if [ -f "$ALSACTL_PATH" ]; then
+            echo "Found $ALSACTL_PATH, backing up to $BACKUP_PATH"
+            
+            # Move the original file to backup location
+            mv "$ALSACTL_PATH" "$BACKUP_PATH"
+            
+            # Create a dummy file or symlink as replacement
+            touch "$ALSACTL_PATH"
+            chmod +x "$ALSACTL_PATH"
+            
+            echo "Successfully backed up and masked $ALSACTL_PATH"
+        else
+            echo "File $ALSACTL_PATH does not exist, nothing to backup"
+        fi
+        ;;
+    
+    abort-upgrade|abort-remove|abort-deconfigure)
+        echo "Aborting action: $1"
+        ;;
+    
+    *)
+        echo "Unknown command: $1"
+        exit 1
+        ;;
+esac
+
+exit 0
