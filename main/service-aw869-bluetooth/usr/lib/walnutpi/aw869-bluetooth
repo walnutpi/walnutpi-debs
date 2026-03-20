@@ -1,17 +1,16 @@
 #!/bin/bash
 
-
-PATH_WAKE="/proc/bluetooth/sleep/btwrite"
-while true
-do
-    if [ -f $PATH_WAKE ]; then
-        echo 1 > ${PATH_WAKE}
-        break
-    fi
-    sleep 1
-done
-
-Board_model=$(tr -d '\0' < /proc/device-tree/model)
+Board_model=$(tr -d '\0' </proc/device-tree/model)
 if [ $Board_model == "walnutpi-2b" ]; then
-    hciattach  -s 1500000 /dev/ttyS1 aic  &
+    rfkill unblock all
+    PATH_WAKE="/proc/bluetooth/sleep/btwrite"
+    while true; do
+        if [ -f $PATH_WAKE ]; then
+            echo 1 >${PATH_WAKE}
+            break
+        fi
+        sleep 1
+    done
 fi
+
+hciattach -s 1500000 /dev/ttyS1 aic &
