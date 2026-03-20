@@ -4,5 +4,5 @@ set -e
 
 cd /usr/lib/walnutpi/hcitools
 
-make
+make -j$(nproc)
 make install
