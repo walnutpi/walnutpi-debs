@@ -2,6 +2,8 @@
 
 set -e
 
+git config --global --add safe.directory /usr/lib/walnutpi/Adafruit_Python_PlatformDetect
+git config --global --add safe.directory /usr/lib/walnutpi/Adafruit_Blinka
 
 cd /usr/lib/walnutpi
 echo "Adafruit_Blinka"
