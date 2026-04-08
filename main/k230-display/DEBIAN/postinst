@@ -1,0 +1,11 @@
+#!/bin/bash
+
+set -e
+
+cd /usr/lib/walnutpi
+pip3 --no-cache-dir install k230_display-0.1.0-py3-none-any.whl --break-system-packages
+
+cd k230_libdisplay
+make -j$(nproc)
+make install
+echo -e "\nready"
