@@ -1,9 +1,20 @@
 #!/bin/bash
 
-
 bash_str="source /etc/bash_completion.d/set-language"
-if ! grep -q  "${bash_str}"  /etc/bash.bashrc; then
-    echo ${bash_str} >> /etc/bash.bashrc
+if ! grep -q "${bash_str}" /etc/bash.bashrc; then
+    echo ${bash_str} >>/etc/bash.bashrc
 fi
 
+# debian13内有这个限制文件，删除后重启服务
+dbus_conf="/usr/share/dbus-1/system.d/systemd-localed-read-only.conf"
+if [[ -f "$dbus_conf" ]]; then
+    rm -f "$dbus_conf"
+    systemctl reload dbus
+fi
 
+# 启用对应语言的locale
+LOCALE_GEN_FILE="/etc/locale.gen"
+if grep -q "^# zh_CN.UTF-8 UTF-8" "$LOCALE_GEN_FILE"; then
+    sed -i 's/^# zh_CN.UTF-8 UTF-8/zh_CN.UTF-8 UTF-8/' "$LOCALE_GEN_FILE"
+    locale-gen zh_CN.UTF-8
+fi
