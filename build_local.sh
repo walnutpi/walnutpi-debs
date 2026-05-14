@@ -65,7 +65,7 @@ _generate_deb_packages() {
 # 主构建函数
 _build_directory() {
     local directory=$1
-    _generate_deb_packages ${PATH_PWD}/$directory ${OUTPUT}/
+    _generate_deb_packages ${PATH_PWD}/$directory ${OUTPUT}/$directory
     if [[ $? == 0 ]]; then
         echo "${directory} 构建成功"
     else
