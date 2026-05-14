@@ -9,6 +9,11 @@ OUTPUT_DIR="$PROJECT_ROOT/output"
 # 创建输出目录（如果不存在）
 mkdir -p "$OUTPUT_DIR"
 
+PATH_WPI_SERVER="${PROJECT_ROOT}/wpi-update-server/web/debian/pool/main"
+if [ -d ${PATH_WPI_SERVER} ]; then
+    OUTPUT_DIR=${PATH_WPI_SERVER}
+fi
+
 # 检查source目录是否存在
 if [ ! -d "$SOURCE_DIR" ]; then
     echo "错误: source目录不存在: $SOURCE_DIR"

@@ -4,7 +4,10 @@ OUTPUT="${PATH_PWD}/output"
 if [[ ! -d $OUTPUT ]]; then
     mkdir -p ${OUTPUT}
 fi
-
+PATH_WPI_SERVER="${PATH_PWD}/wpi-update-server/web/debian/pool"
+if [ -d ${PATH_WPI_SERVER} ]; then
+    OUTPUT=${PATH_WPI_SERVER}
+fi
 # 生成deb包的函数
 _generate_deb_packages() {
     local SOURCE_DIR=$1
