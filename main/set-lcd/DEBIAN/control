@@ -1,8 +1,8 @@
 Package: set-lcd
 Description: Configuration lcd
-Version: 1.5.0
+Version: 1.6.0
 Maintainer: sc-bin <3335447573@qq.com>
 Section: free
 Priority: optional
-Installed-Size: 2392
+Installed-Size: 2828
 Architecture: all
