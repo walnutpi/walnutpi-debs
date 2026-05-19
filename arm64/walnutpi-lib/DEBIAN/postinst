@@ -16,6 +16,11 @@ cd gpioc/
 
 cd /usr/lib/walnutpi
 echo "Adafruit_Blinka"
+
+# 修复 Git 所有权检测问题
+git config --global --add safe.directory /usr/lib/walnutpi/Adafruit_Python_PlatformDetect 2>/dev/null || true
+git config --global --add safe.directory /usr/lib/walnutpi/Adafruit_Blinka 2>/dev/null || true
+
 pip3 --no-cache-dir install -e Adafruit_Python_PlatformDetect/ 
 pip3 --no-cache-dir install -e Adafruit_Blinka/ 
 
