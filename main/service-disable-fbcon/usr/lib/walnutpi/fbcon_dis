@@ -1,5 +1,12 @@
 #!/bin/bash
 
+# 如果是桌面系统，则直接退出本脚本
+source /etc/WalnutPi-release
+if [ "$os_type" = "desktop" ]; then
+    exit 0
+fi
+
+
 OVERRIDE_DIR="/etc/systemd/system/getty@tty1.service.d"
 OVERRIDE_FILE="${OVERRIDE_DIR}/override.conf"
 
