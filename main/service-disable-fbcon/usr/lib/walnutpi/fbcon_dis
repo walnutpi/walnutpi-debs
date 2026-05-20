@@ -1,6 +1,36 @@
 #!/bin/bash
 
+OVERRIDE_DIR="/etc/systemd/system/getty@tty1.service.d"
+OVERRIDE_FILE="${OVERRIDE_DIR}/override.conf"
+
+# 如果 console_display=enable，则停止 getty@tty1.service 并隐藏光标
 if ! grep -q "^console_display=enable" /boot/config.txt; then
     systemctl stop getty@tty1.service
     echo 0 > /sys/class/graphics/fbcon/cursor_blink
+
+# 如果 autologin=enable，则配置tty1为自动登录
+elif grep -q "^autologin=enable" /boot/config.txt; then
+    mkdir -p "${OVERRIDE_DIR}"
+    
+    cat > "${OVERRIDE_FILE}" << 'EOF'
+[Service]
+ExecStart=
+ExecStart=-/sbin/agetty --autologin pi --noclear %I $TERM
+EOF
+    
+    systemctl daemon-reload
+    systemctl start getty@tty1.service
+
+else
+    # 如果tty1有自定义配置，则删除
+    if [ -f "${OVERRIDE_FILE}" ]; then
+        rm -f "${OVERRIDE_FILE}"
+        
+        if [ -d "${OVERRIDE_DIR}" ] && [ -z "$(ls -A "${OVERRIDE_DIR}")" ]; then
+            rmdir "${OVERRIDE_DIR}" 2>/dev/null
+        fi
+        
+        systemctl daemon-reload
+        systemctl restart getty@tty1.service
+    fi
 fi
