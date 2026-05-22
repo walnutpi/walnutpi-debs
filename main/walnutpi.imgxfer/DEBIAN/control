@@ -1,0 +1,8 @@
+Package: walnutpi.imgxfer
+Description: a python lib of the front-end interface for sending images to usb
+Version: 1.0.0
+Maintainer: sc-bin <3335447573@qq.com>
+Section: free
+Priority: optional
+Installed-Size: 280
+Architecture: all
