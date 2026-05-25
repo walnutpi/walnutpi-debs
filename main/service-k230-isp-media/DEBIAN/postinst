@@ -7,7 +7,7 @@ configure)
     systemctl enable isp_media_server.service || exit 1
 
     cd /usr/lib/walnutpi/vvcam-lib
-    make -j $(nproc) clean all install
+    ./install.sh
 
     # 如果之前没有运行或者是在升级，重启服务以应用新配置
     if [ "$2" = "" ] || [ -n "$2" ]; then
