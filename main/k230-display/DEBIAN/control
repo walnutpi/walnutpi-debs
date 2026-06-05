@@ -1,9 +1,9 @@
 Package: k230-display
 Description: display on k230
-Version: 1.0.0
+Version: 1.0.1
 Maintainer: sc-bin <3335447573@qq.com>
 Section: free
 Priority: optional
-Installed-Size: 2300
+Installed-Size: 708
 Architecture: all
 Depends: make, gcc
