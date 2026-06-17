@@ -41,3 +41,4 @@ else
         systemctl restart getty@tty1.service
     fi
 fi
+exit 0
