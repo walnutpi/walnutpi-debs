@@ -5,4 +5,7 @@ set -e
 cd /usr/lib/walnutpi/k230_libdisplay
 make -j$(nproc)
 make install
+cd /usr/lib/walnutpi/k230_libdisplay/py_lib
+pip3 --no-cache-dir install --break-system-packages -e .
+
 echo -e "\nready"
