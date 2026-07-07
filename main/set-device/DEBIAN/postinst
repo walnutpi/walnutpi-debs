@@ -1,8 +1,46 @@
 #!/bin/bash
 
+# 注册 bash 补全
 bash_str="source /etc/bash_completion.d/set-device"
 if ! grep -q  "${bash_str}"  /etc/bash.bashrc; then
     echo ${bash_str} >> /etc/bash.bashrc
+fi
+
+# ---------- 从 v1.x 升级迁移：恢复被旧版覆盖的原始 DTB ----------
+# 旧版 set-device 会在 /boot/xxx.dtb 中写入 /flag/set-device 标记
+# 如果检测到该标记，说明 DTB 已被旧版覆盖，需要从备份恢复
+FLAG_NODE="/flag"
+FLAG_PROP="set-device"
+
+prefix=$(grep "^overlay_prefix=" /boot/config.txt 2>/dev/null | cut -d'=' -f2)
+DTB_NAME=$(grep "^fdtfile=" /boot/config.txt 2>/dev/null | cut -d'=' -f2)
+
+if [ -n "$DTB_NAME" ] && [ -f "/boot/$DTB_NAME.dtb" ]; then
+    if fdtget -p "/boot/$DTB_NAME.dtb" $FLAG_NODE >/dev/null 2>&1; then
+        echo "set-device: Detected upgraded from v1.x, restoring original device tree..."
+
+        # 优先从旧版备份目录恢复
+        if [ -f "/boot/set-device/$DTB_NAME.dtb" ]; then
+            cp "/boot/set-device/$DTB_NAME.dtb" "/boot/$DTB_NAME.dtb"
+            echo "set-device: Restored from /boot/set-device/$DTB_NAME.dtb"
+        else
+            echo "set-device: WARNING - Backup not found at /boot/set-device/$DTB_NAME.dtb"
+            echo "set-device: The current DTB may have been modified by old set-device."
+            echo "set-device: Please reinstall the system device tree manually if needed."
+        fi
+    fi
+fi
+
+# 清理旧版备份目录（已废弃）
+if [ -d "/boot/set-device" ]; then
+    rm -rf "/boot/set-device"
+    echo "set-device: Removed obsolete /boot/set-device backup directory"
+fi
+
+# 安装完成后自动运行一次，确保 fdtfile 修正和 DTB 合并
+# 构建镜像时可能没有 /boot/config.txt，跳过即可
+if [ -f /boot/config.txt ]; then
+    set-device
 fi
 
 

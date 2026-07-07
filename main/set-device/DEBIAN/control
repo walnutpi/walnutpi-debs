@@ -1,8 +1,8 @@
 Package: set-device
-Description: Modifying the /boot/config.txt file about overlays
-Version: 1.1.1
+Description: Enable/disable device tree overlays, merge to overlays-xxx.dtb
+Version: 2.0.0
 Maintainer: sc-bin <3335447573@qq.com>
 Section: free
 Priority: optional
-Installed-Size: 28
+Installed-Size: 32
 Architecture: all

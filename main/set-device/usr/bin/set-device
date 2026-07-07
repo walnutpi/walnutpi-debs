@@ -1,11 +1,4 @@
 #!/bin/bash
-PATH_APP="/boot/set-device"
-prefix=$(grep "^overlay_prefix=" /boot/config.txt | cut -d'=' -f2)
-DTB_NAME=$(grep "^fdtfile=" /boot/config.txt | cut -d'=' -f2)
-PATH_DTB_SYSTEM="/boot/$DTB_NAME.dtb"
-PATH_DTB_BASE="$PATH_APP/$DTB_NAME.dtb"
-FLAG_IN_DTB_NODE="/flag"
-FLAG_IN_DTB_PROPERTY="set-device"
 
 # 检测当前执行这个脚本时是否具有root权限，没有则退出
 if [ $(id -u) -ne 0 ]; then
@@ -13,21 +6,41 @@ if [ $(id -u) -ne 0 ]; then
     exit 1
 fi
 
-[[ ! -d $PATH_APP ]] && mkdir $PATH_APP
+# 在构建镜像的场景下可能没有 /boot/config.txt，静默退出
+if [ ! -f /boot/config.txt ]; then
+    exit 0
+fi
 
-if [ ! -f "$PATH_DTB_BASE"  ]; then
-    cp "$PATH_DTB_SYSTEM" "$PATH_DTB_BASE"
-else if ! fdtget -p "$PATH_DTB_SYSTEM" $FLAG_IN_DTB_NODE >/dev/null 2>&1; then
-        cp "$PATH_DTB_SYSTEM" "$PATH_DTB_BASE"
+prefix=$(grep "^overlay_prefix=" /boot/config.txt | cut -d'=' -f2)
+DTB_NAME=$(grep "^fdtfile=" /boot/config.txt | cut -d'=' -f2)
+
+# 检测 DTB 是否被旧版 set-device 覆盖过（含 /flag/set-device 标记）
+# 正常情况下 postinst 已处理迁移，这里做二次防御
+if [ -n "$DTB_NAME" ] && [ -f "/boot/$DTB_NAME.dtb" ]; then
+    if fdtget -p "/boot/$DTB_NAME.dtb" /flag >/dev/null 2>&1; then
+        echo "WARNING: /boot/$DTB_NAME.dtb appears to have been modified by old set-device."
+        echo "The base DTB may contain stale overlay data. Please reinstall the system DTB."
     fi
 fi
 
+# 确保 fdtfile 以 overlays- 开头
+if [[ ! "$DTB_NAME" == overlays-* ]]; then
+    DTB_BASE_NAME="$DTB_NAME"
+    sed -i "s/^fdtfile=${DTB_NAME}/fdtfile=overlays-${DTB_NAME}/" /boot/config.txt
+    DTB_NAME="overlays-${DTB_NAME}"
+else
+    # 从 overlays-xxx 还原原始名称 xxx
+    DTB_BASE_NAME="${DTB_NAME#overlays-}"
+fi
 
+PATH_DTB_ORIG="/boot/$DTB_BASE_NAME.dtb"
+PATH_DTB_OUT="/boot/$DTB_NAME.dtb"
+
+# 扫描所有可用的 dtbo
 dtbo_list=()
 for file in /boot/overlays/"$prefix"-*.dtbo; do
     dtbo_list+=($(basename "$file" .dtbo | sed "s/^$prefix-//"))
 done
-
 
 _has_dtbo() {
     local name=$1
@@ -49,8 +62,6 @@ _is_dtbo_enabled() {
 # 传入一个名字，输出该设备状态
 _show_status() {
     local name=$1
-    local len=${#name}
-    local tabs=$((15-len))
     
     _is_dtbo_enabled $name
     if [ $? -eq 0 ]; then
@@ -67,10 +78,6 @@ _show_status() {
     fi
     
     echo -en " $name"
-    # for ((i = 0; i < tabs; i++)); do
-    #     echo -ne "="
-    # done
-    
     echo -e "\033[0m"
 }
 
@@ -136,18 +143,27 @@ DTB_NAME=$2
 $FUNCTION_NAME $DTB_NAME
 
 
-# 根据overlays来更新设备树文件
-dtbo_list=""
+# 重新读取可能被 enable/disable 修改后的 fdtfile
+DTB_NAME=$(grep "^fdtfile=" /boot/config.txt | cut -d'=' -f2)
+if [[ "$DTB_NAME" == overlays-* ]]; then
+    DTB_BASE_NAME="${DTB_NAME#overlays-}"
+else
+    DTB_BASE_NAME="$DTB_NAME"
+fi
+PATH_DTB_ORIG="/boot/$DTB_BASE_NAME.dtb"
+PATH_DTB_OUT="/boot/$DTB_NAME.dtb"
+
+# 根据 overlays 合并生成设备树文件
+dtbo_files=""
 for name in $(grep "^overlays=" /boot/config.txt | cut -d'=' -f2); do
     dtbo_file="/boot/overlays/$prefix-$name.dtbo"
     if [ -f "$dtbo_file" ]; then
-        dtbo_list="$dtbo_list $dtbo_file"
+        dtbo_files="$dtbo_files $dtbo_file"
     fi
 done
-if [ -z "$dtbo_list" ]; then
-    cp $PATH_DTB_BASE $PATH_DTB_SYSTEM
-else
-    fdtoverlay -i $PATH_DTB_BASE  $dtbo_list -o $PATH_DTB_SYSTEM
-fi
 
-fdtput -p $PATH_DTB_SYSTEM $FLAG_IN_DTB_NODE $FLAG_IN_DTB_PROPERTY
+if [ -z "$dtbo_files" ]; then
+    cp "$PATH_DTB_ORIG" "$PATH_DTB_OUT"
+else
+    fdtoverlay -i "$PATH_DTB_ORIG" $dtbo_files -o "$PATH_DTB_OUT"
+fi
