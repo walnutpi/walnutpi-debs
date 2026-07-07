@@ -1,8 +1,8 @@
 Package: k230-alsa-fix
-Description: Fix the problem of audio playback failure caused by alsa-utils
-Version: 1.0.0
+Description: Fix alsa audio issues on K230: mask alsactl and set PCM volume to 73% on boot
+Version: 1.1.0
 Maintainer: sc-bin <3335447573@qq.com>
 Section: free
 Priority: optional
-Installed-Size: 4
+Installed-Size: 36
 Architecture: all

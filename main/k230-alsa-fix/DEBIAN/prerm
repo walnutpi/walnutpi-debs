@@ -1,0 +1,21 @@
+#!/bin/bash
+
+set -e
+
+SERVICE_NAME="k230-alsa-fix.service"
+
+case "$1" in
+    remove|deconfigure|upgrade|failed-upgrade)
+        if [ -d /run/systemd/system ]; then
+            deb-systemd-helper stop "$SERVICE_NAME" >/dev/null || true
+            deb-systemd-helper disable "$SERVICE_NAME" >/dev/null || true
+        fi
+        ;;
+
+    *)
+        echo "prerm: unknown command '$1'"
+        exit 1
+        ;;
+esac
+
+exit 0

@@ -1,43 +1,51 @@
 #!/bin/bash
+
 set -e
+
+SERVICE_NAME="k230-alsa-fix.service"
 
 ALSACTL_PATH="/usr/sbin/alsactl"
 BACKUP_PATH="/usr/sbin/alsactl.backup"
 
 case "$1" in
     remove|deconfigure|failed-upgrade|abort-install|abort-upgrade|disappear)
+        # --- 服务管理 ---
+        if [ -d /run/systemd/system ]; then
+            deb-systemd-helper stop "$SERVICE_NAME" >/dev/null || true
+            deb-systemd-helper disable "$SERVICE_NAME" >/dev/null || true
+            deb-systemd-helper mask "$SERVICE_NAME" >/dev/null || true
+        fi
+
+        # --- alsactl 还原 ---
         if [ -f "$BACKUP_PATH" ]; then
             echo "Restoring $ALSACTL_PATH from $BACKUP_PATH"
-            
-            # Remove the dummy file/symlink
             rm -f "$ALSACTL_PATH"
-            
-            # Restore the original file
             mv "$BACKUP_PATH" "$ALSACTL_PATH"
-            
             echo "Successfully restored $ALSACTL_PATH"
         else
             echo "Backup file $BACKUP_PATH does not exist, cannot restore"
         fi
         ;;
-    
+
     purge)
-        # In case of purge, we also want to restore the original file
+        # --- 服务管理 ---
+        if [ -d /run/systemd/system ]; then
+            deb-systemd-helper stop "$SERVICE_NAME" >/dev/null || true
+            deb-systemd-helper disable "$SERVICE_NAME" >/dev/null || true
+            deb-systemd-helper mask "$SERVICE_NAME" >/dev/null || true
+        fi
+
+        # --- alsactl 还原 ---
         if [ -f "$BACKUP_PATH" ]; then
             echo "Purging package, restoring $ALSACTL_PATH from $BACKUP_PATH"
-            
-            # Remove the dummy file/symlink
             rm -f "$ALSACTL_PATH"
-            
-            # Restore the original file
             mv "$BACKUP_PATH" "$ALSACTL_PATH"
-            
             echo "Successfully restored $ALSACTL_PATH during purge"
         fi
         ;;
-    
+
     *)
-        echo "Unknown command: $1"
+        echo "postrm: unknown command '$1'"
         exit 1
         ;;
 esac
