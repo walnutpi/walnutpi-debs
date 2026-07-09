@@ -1,0 +1,4 @@
+#!/bin/bash
+
+systemctl stop cybercam_map_device.service
+systemctl disable cybercam_map_device.service

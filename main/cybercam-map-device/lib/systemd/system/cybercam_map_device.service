@@ -1,0 +1,14 @@
+[Unit]
+Description=cybercam map device
+After=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/lib/walnutpi/service/wpi_map_client_cybercam_k230
+ExecStop=/bin/kill -s TERM $MAINPID
+Restart=on-failure
+RestartSec=5
+StandardOutput=null
+
+[Install]
+WantedBy=multi-user.target
