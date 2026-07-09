@@ -6,11 +6,8 @@
 
 set -e
 
-# 等待 ALSA 设备就绪（最多等待 5 秒）
-for i in $(seq 1 5); do
-    if amixer -c 0 info &>/dev/null; then
-        break
-    fi
+# 等待 ALSA 设备就绪（无限等待）
+while ! amixer -c 0 info &>/dev/null; do
     sleep 1
 done
 
