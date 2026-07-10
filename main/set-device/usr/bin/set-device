@@ -59,6 +59,23 @@ _is_dtbo_enabled() {
         return 1
     fi
 }
+
+# 读取指定 dtbo 的 conflicts-with 属性（支持字符串列表）
+# 返回：空格分隔的冲突项列表
+_get_dtbo_conflicts() {
+    local dtbo_file="$1"
+    local conflicts=""
+    
+    # 检查 __set_device_meta__ 节点是否存在
+    if fdtget -p "$dtbo_file" /__set_device_meta__ >/dev/null 2>&1; then
+        # 读取 conflicts-with 属性（stringlist 类型，每个值一行）
+        # fdtget 对 stringlist 会每行输出一个字符串
+        conflicts=$(fdtget -t s "$dtbo_file" /__set_device_meta__ conflicts-with 2>/dev/null | tr '\n' ' ' | sed 's/ *$//')
+    fi
+    
+    echo "$conflicts"
+}
+
 # 传入一个名字，输出该设备状态
 _show_status() {
     local name=$1
@@ -97,6 +114,28 @@ status() {
     fi
     echo -e "-------------------------\n"
 }
+
+# 传入要启用的 dtbo 名称，自动禁用其冲突项
+_resolve_conflicts() {
+    local dtbo_name="$1"
+    local dtbo_file="/boot/overlays/$prefix-$dtbo_name.dtbo"
+    
+    # 读取该 dtbo 的 conflicts-with 属性
+    local conflicts=$(_get_dtbo_conflicts "$dtbo_file")
+    
+    if [ -n "$conflicts" ]; then
+        for conflict in $conflicts; do
+            # 去掉可能存在的引号
+            conflict=$(echo "$conflict" | tr -d '"')
+            # 检查冲突项是否已启用
+            _is_dtbo_enabled "$conflict"
+            if [ $? -eq 0 ]; then
+                disable "$conflict"
+            fi
+        done
+    fi
+}
+
 enable() {
     local dtbo_name="$1"
     if [ ! -z "$dtbo_name" ]; then
@@ -110,13 +149,18 @@ enable() {
         exit -1
     fi
     
+    # 处理互斥冲突
+    _resolve_conflicts "$dtbo_name"
+    
     _is_dtbo_enabled $dtbo_name
     if [ ! $? -eq 0 ]; then
         echo -e "enable: $dtbo_name"
         sed -i "/^overlays=/ s/$/ $dtbo_name/" /boot/config.txt
+    else
+        echo -e "already enabled: $dtbo_name"
     fi
-    
 }
+
 disable() {
     local dtbo_name="$1"
     if [ ! -z "$dtbo_name" ]; then
@@ -135,7 +179,6 @@ disable() {
         echo -e "disable: $dtbo_name"
         sed -i "/^overlays=/ s/\<$dtbo_name\>//" /boot/config.txt
     fi
-    
 }
 
 FUNCTION_NAME=$1
@@ -167,3 +210,9 @@ if [ -z "$dtbo_files" ]; then
 else
     fdtoverlay -i "$PATH_DTB_ORIG" $dtbo_files -o "$PATH_DTB_OUT"
 fi
+
+# 多个 dtbo 都带 __set_device_meta__ 时，fdtoverlay 合并后只保留最后一个
+# 这里统一清理掉，避免内核看到垃圾节点
+while fdtget -p "$PATH_DTB_OUT" /__set_device_meta__ >/dev/null 2>&1; do
+    fdtput -r "$PATH_DTB_OUT" /__set_device_meta__ 2>/dev/null || break
+done
