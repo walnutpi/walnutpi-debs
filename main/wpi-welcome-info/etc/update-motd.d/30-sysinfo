@@ -137,13 +137,18 @@ users=${users//' '}
 time=${UPT2%','*}
 time=${time//','}
 time=$(echo $time | xargs)
-load=${UPTIME#*'load average: '}
-load=${load//','}
-load=$(echo $load | cut -d" " -f1)
-[[ $load == 0.0* ]] && load=0.10
 cpucount=$(grep -c processor /proc/cpuinfo)
 
-load=$(awk '{printf("%.0f",($1/$2) * 100)}' <<< "$load $cpucount")
+# 真正的 CPU 占用率：两次读取 /proc/stat（间隔 ~0.2s），计算 idle 时间差
+read cpu user nice sys idle iowait irq softirq steal guest guest_nice <<< "$(awk '/^cpu / {print $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11}' /proc/stat)"
+sleep 0.2
+read cpu2 user2 nice2 sys2 idle2 iowait2 irq2 softirq2 steal2 guest2 guest_nice2 <<< "$(awk '/^cpu / {print $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11}' /proc/stat)"
+
+total1=$((user + nice + sys + idle + iowait + irq + softirq + steal))
+total2=$((user2 + nice2 + sys2 + idle2 + iowait2 + irq2 + softirq2 + steal2))
+delta_total=$((total2 - total1))
+delta_idle=$((idle2 - idle))
+load=$(awk -v dt="$delta_total" -v di="$delta_idle" 'BEGIN{if(dt>0) printf("%.0f", (dt-di)/dt*100); else print "0"}')
 
 # memory and swap
 mem_info=$(LC_ALL=C free -w 2>/dev/null | grep "^Mem" || LC_ALL=C free | grep "^Mem")

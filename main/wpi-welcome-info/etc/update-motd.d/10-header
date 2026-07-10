@@ -1,7 +1,45 @@
 #!/bin/bash
 
-# toilet -f standard -F metal $(cat /proc/device-tree/model | sed 's/Walnut Pi/WPi/')
+release_file="/etc/WalnutPi-release"
+
+# 从 release_file文件中获取指定 key 的值
+get_walnutpi_config() {
+    local key="$1"
+    local value=$(grep "^${key}=" "$release_file" | sed "s/^${key}=//")
+    
+    # 如果找到值则输出
+    if [[ -n "$value" ]]; then
+        printf "$value"
+    fi
+}
+
+# 函数：检测系统类型
+get_system_type() {
+     if [ -f /etc/os-release ]; then
+        . /etc/os-release
+        [ "$ID" = "ubuntu" ] && echo "Ubuntu" && return 0
+        [ "$ID" = "debian" ] && echo "Debian" && return 0
+        [[ "$ID_LIKE" =~ ubuntu ]] && echo "Ubuntu" && return 0
+        [[ "$ID_LIKE" =~ debian ]] && echo "Debian" && return 0
+    fi
+    
+    echo "Unknown"
+    return 1
+}
+
+
 toilet -f standard -F metal Walnut Pi
 
 KERNELID=$(uname -r)
-echo  -e "\e[0;91mLinux $KERNELID\x1B[0m\n "
+if [[ -f "$release_file" ]]; then
+    printf "\e[0;91mLinux $KERNELID "
+    rootfs_type=$(get_system_type)
+    os_type=$(get_walnutpi_config "os_type")
+    version=$(get_walnutpi_config "version")
+    model=$(tr -d '\0' < /proc/device-tree/model)
+    printf "$rootfs_type $os_type v$version / $model\x1B[0m "
+    echo ""
+    echo ""
+else
+    echo  -e "\e[0;91mLinux $KERNELID\x1B[0m\n "
+fi
