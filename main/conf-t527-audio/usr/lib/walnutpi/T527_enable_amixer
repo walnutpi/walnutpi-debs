@@ -17,11 +17,5 @@ set_amixer 0  'LINEOUTL Switch' on
 set_amixer 0  'LINEOUTR Switch' on
 set_amixer 0  'SPK Switch' on
 set_amixer 0  'HPOUT Switch' on
-
-
-
-# amixer -c 0 cset  numid=27,iface=MIXER,name='LINEOUTL Switch' on
-# amixer -c 0 cset  numid=28,iface=MIXER,name='LINEOUTR Switch' on
-# amixer -c 0 cset  numid=30,iface=MIXER,name='SPK Switch' on
-# amixer -c 0 cset  numid=29,iface=MIXER,name='HPOUT Switch' on
+set_amixer 0  'MIC1 Switch' 1
 
