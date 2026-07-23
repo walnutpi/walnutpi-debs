@@ -1,6 +1,6 @@
 Package: service-k230-isp-media
 Description: service, enable isp_media_server
-Version: 1.1.0
+Version: 1.1.1
 Maintainer: sc-bin <3335447573@qq.com>
 Section: free
 Priority: optional

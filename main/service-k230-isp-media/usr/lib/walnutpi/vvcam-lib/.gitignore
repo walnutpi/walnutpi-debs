@@ -1,0 +1,5 @@
+*.o
+*.so
+detect_sensor
+*.pyc
+*.egg*

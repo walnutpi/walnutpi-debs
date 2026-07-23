@@ -1,0 +1,22 @@
+# 编译生成的目标文件和可执行文件
+*.o
+capture_frame
+get_raw_video
+nv12_to_jpg
+get_raw
+
+# 测试生成的图像文件
+*.nv12
+*.jpg
+*.jpeg
+*.png
+*.ppm
+*.mp4
+*.avi
+*.bin
+
+# 临时文件
+*~
+*.swp
+*.swo
+.DS_Store
