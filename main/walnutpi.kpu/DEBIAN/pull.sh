@@ -28,7 +28,7 @@ clone() {
         exit 1
     fi
 
-    rm -r "$target_path/$project_name/.git"
+    rm -rf "$target_path/$project_name/.git"
 
 }
 
