@@ -1,17 +1,4 @@
-"""
-OCR 检测 + 识别模块
-
-用法:
-    # 仅检测
-    from walnutpi_kpu.OCR import OCR_DET
-    det = OCR_DET()
-    results = det.run(img)
-
-    # 检测+识别
-    from walnutpi_kpu.OCR import OCR
-    ocr = OCR()
-    results = ocr.run(img)  # List[OCR_RESULT], 含 text
-"""
+'''OCR，识别图片中的文字'''
 import os
 import numpy as np
 import cv2
@@ -85,8 +72,21 @@ def _ctc_decode(pred, chars, blank_idx):
 # ================================================================
 
 class OCR_DET_RESULT:
-    """OCR 检测结果"""
-    x: int; y: int; w: int; h: int
+    """OCR 检测结果
+
+    Attributes:
+        x: 文字区域左上角 x 坐标（像素）
+        y: 文字区域左上角 y 坐标（像素）
+        w: 文字区域宽度（像素）
+        h: 文字区域高度（像素）
+        reliability: 检测置信度，范围 [0, 1]
+        polygon: 四边形顶点列表 [[x0,y0],[x1,y1],[x2,y2],[x3,y3]]
+    """
+
+    x: int
+    y: int
+    w: int
+    h: int
     reliability: float
     polygon: List
 
@@ -102,8 +102,22 @@ class OCR_DET_RESULT:
 
 
 class OCR_RESULT:
-    """OCR 完整结果（检测+识别）"""
-    x: int; y: int; w: int; h: int
+    """OCR 完整结果（检测+识别）
+
+    Attributes:
+        x: 文字区域左上角 x 坐标（像素）
+        y: 文字区域左上角 y 坐标（像素）
+        w: 文字区域宽度（像素）
+        h: 文字区域高度（像素）
+        text: 识别文本
+        reliability: 检测置信度，范围 [0, 1]
+        polygon: 四边形顶点列表 [[x0,y0],[x1,y1],[x2,y2],[x3,y3]]
+    """
+
+    x: int
+    y: int
+    w: int
+    h: int
     text: str
     reliability: float
     polygon: List
@@ -125,14 +139,20 @@ class OCR_RESULT:
 # ================================================================
 
 class OCR_DET:
-    """检测文字区域，返回四边形坐标"""
+    """文字检测"""
 
-    _DET_SIZE = 640       # 模型输入尺寸
-    _PROC_W = 640          # 预处理宽度（模拟 rgb888p_size）
-    _PROC_H = 360          # 预处理高度
+    _DET_SIZE = 640
+    _PROC_W = 640
+    _PROC_H = 360
 
     def __init__(self, kmodel_path=None, det_size=None,
                  nncase_version: NNCASEVersionType = "2.11"):
+        """
+        Args:
+            kmodel_path: ocr_det_int16.kmodel 文件路径
+            det_size: 模型输入尺寸
+            nncase_version: nncase 版本，\"2.10\" 或 \"2.11\"
+        """
         if det_size is None:
             det_size = self._DET_SIZE
         _RES_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -161,12 +181,7 @@ class OCR_DET:
     # ---------------------------------------------------------------
 
     def _postprocess(self, seg_map):
-        """
-        分割图 → 四边形列表
-
-        模型输出 640x640 中有效图像在中间 360 行（顶部 pad_top）。
-        映射到 640x360 空间：x不变，y -= pad_top
-        """
+        """分割图 → 四边形列表"""
         pt = self._pad_top
         contours, _ = cv2.findContours(
             (seg_map>self.mask_threshold).astype(np.uint8)*255,
@@ -216,18 +231,15 @@ class OCR_DET:
     # ---------------------------------------------------------------
 
     def run(self, img, mask_threshold=None, box_threshold=None):
-        """
-        检测文字区域
+        """检测图片中的文字区域
 
-        流程:
-          1. 将原图缩放为 640x360（模拟 RTOS 的 rgb888p_size）
-          2. AI2D 居中 padding + resize 到 640x640
-          3. KPU 推理
-          4. 后处理（在 640x360 空间）
-          5. 坐标映射回原图
+        Args:
+            img: BGR 图片 (HWC)
+            mask_threshold: 分割掩码阈值
+            box_threshold: 文字框置信度阈值
 
-        @param img: BGR 图像
-        @return: List[OCR_DET_RESULT]（坐标在原图空间）
+        Returns:
+            List[OCR_DET_RESULT]
         """
         if mask_threshold is not None: self.mask_threshold = mask_threshold
         if box_threshold is not None: self.box_threshold = box_threshold
@@ -292,24 +304,17 @@ class OCR_DET:
 # ================================================================
 
 class OCR_REC:
-    """
-    文字识别类
-
-    对裁剪出的文字区域图片做识别，输出文字字符串。
-    使用 ocr_rec_int16.kmodel 模型。
-
-    用法:
-        rec = OCR_REC()
-        text = rec.run(crop_img)  # crop_img: BGR 图像
-    """
+    """文字识别"""
 
     def __init__(self, kmodel_path=None, dict_path=None,
                  rec_size=(512, 32),
                  nncase_version: NNCASEVersionType = "2.11"):
         """
-        @param kmodel_path: 识别模型路径（默认自动查找）
-        @param dict_path: 字典文件路径（默认自动查找）
-        @param rec_size: (w, h) 模型输入尺寸，默认 (512, 32)
+        Args:
+            kmodel_path: ocr_rec_int16.kmodel 文件路径
+            dict_path: 字典文件路径
+            rec_size: 模型输入尺寸 (w, h)
+            nncase_version: nncase 版本，\"2.10\" 或 \"2.11\"
         """
         _RES_DIR = os.path.dirname(os.path.abspath(__file__))
         if kmodel_path is None:
@@ -340,13 +345,13 @@ class OCR_REC:
     # ---------------------------------------------------------------
 
     def run(self, crop_img):
-        """
-        识别单张裁剪图片
+        """识别单张裁剪图片中的文字
 
-        手动预处理（resize + 右下对齐 pad），padding 方式与 RTOS letterbox_pad_param 一致。
+        Args:
+            crop_img: BGR 裁剪图 (H, W, 3)
 
-        @param crop_img: BGR 图像 (H,W,3)
-        @return: 识别的文字字符串
+        Returns:
+            str: 识别的文字
         """
         rh, rw = crop_img.shape[:2]
         tw, th = self.rec_w, self.rec_h
@@ -383,17 +388,7 @@ class OCR_REC:
 # ================================================================
 
 class OCR:
-    """
-    OCR 检测+识别完整类
-
-    先用检测模型找文字区域，再用识别模型逐个识别。
-
-    用法:
-        ocr = OCR()
-        results = ocr.run(img)  # List[OCR_RESULT]
-        for r in results:
-            print(r.text, r.x, r.y, r.w, r.h)
-    """
+    """OCR 识别"""
 
     results: List[OCR_RESULT] = []
     is_running: bool = False
@@ -406,6 +401,15 @@ class OCR:
                  det_size=640,
                  rec_size=(512, 32),
                  nncase_version: NNCASEVersionType = "2.11"):
+        """
+        Args:
+            det_model_path: 检测模型文件路径
+            rec_model_path: 识别模型文件路径
+            dict_path: 字典文件路径
+            det_size: 检测模型输入尺寸
+            rec_size: 识别模型输入尺寸 (w, h)
+            nncase_version: nncase 版本，\"2.10\" 或 \"2.11\"
+        """
         self.det = OCR_DET(det_model_path, det_size or OCR_DET._DET_SIZE, nncase_version)
         self.rec = OCR_REC(rec_model_path, dict_path, rec_size, nncase_version)
 
@@ -416,19 +420,14 @@ class OCR:
         self._worker_thread.start()
 
     def run(self, img, confidence=0.5):
-        """
-        检测+识别图片中的文字（同步，阻塞直到完成）
+        """检测并识别图片中的文字（同步）
 
-        流程:
-          1. 检测模型找文字区域，低于 confidence 的框直接丢弃
-          2. 对剩余框执行识别
-          3. 识别结果中置信度低于 confidence 的不显示文字
+        Args:
+            img: BGR 图片 (HWC)
+            confidence: 置信度阈值，低于此值的检测框被丢弃
 
-        @param img: BGR 图像
-        @param confidence: 置信度门槛 (0~1)，默认 0.5。
-                           检测置信度低于此值的框被丢弃；
-                           识别结果中低于此值的 text 置为空字符串。
-        @return: List[OCR_RESULT]
+        Returns:
+            List[OCR_RESULT]: 识别结果列表
         """
         # 先跑检测
         det_results = self.det.run(img)
@@ -468,14 +467,11 @@ class OCR:
         return results
 
     def run_async(self, img, confidence=0.5):
-        """
-        检测+识别图片中的文字（异步，立即返回不阻塞）
+        """检测并识别图片中的文字（异步，立即返回）
 
-        调用后通过 get_result() 获取结果，通过 has_result 判断是否就绪。
-        如果上次异步任务尚未完成，则丢弃本次请求。
-
-        @param img: BGR 图像
-        @param confidence: 置信度门槛 (0~1)，默认 0.5。
+        Args:
+            img: BGR 图片 (HWC)
+            confidence: 置信度阈值
         """
         if not self.is_running:
             self.is_running = True
@@ -485,10 +481,10 @@ class OCR:
             print("OCR 正在运行中，请等待当前任务完成")
 
     def get_result(self):
-        """
-        获取最近一次异步推理的结果。
+        """获取最近一次异步推理的结果
 
-        @return: List[OCR_RESULT]（若无结果则返回空列表）
+        Returns:
+            List[OCR_RESULT]: 若无结果则返回空列表
         """
         self.has_result = False
         return self.results

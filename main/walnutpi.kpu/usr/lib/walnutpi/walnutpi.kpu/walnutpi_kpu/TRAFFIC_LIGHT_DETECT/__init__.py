@@ -1,19 +1,18 @@
-"""
-交通信号灯检测模块 (YOLOv5, 3 类: red/green/yellow)
-基于 YOLOv5 anchor-based 架构，检测图片中的红/绿/黄交通信号灯。
-移植自 Canaan K230 linux_sdk/traffic_light_detect 示例。
-
-默认输入尺寸 640×640，灰色 letterbox 填充(114)，RGB 输入（与 C++ 图片模式一致:
-traffic_light_detect.cc 在 pre_process 中显式 cvtColor(BGR2RGB)）。
-"""
+'''交通信号灯检测，输出红绿灯的bbox与颜色'''
 import numpy as np
 from typing import List
 from walnutpi_kpu.__yolo5 import YOLO5_BASE, YOLO5_RESULT
 
 
 class TRAFFIC_LIGHT_DETECT_RESULT(YOLO5_RESULT):
-    """交通信号灯检测结果"""
-    label_names = ["red", "green", "yellow"]   # index 0/1/2，对齐 C++ labels
+    """交通信号灯检测结果
+
+    Attributes:
+        label_names: 类别名列表 [\"red\", \"green\", \"yellow\"]
+        label_name: (property) 根据 label 索引返回类别名
+    """
+
+    label_names = ["red", "green", "yellow"]
 
     @property
     def label_name(self) -> str:
@@ -28,22 +27,7 @@ class TRAFFIC_LIGHT_DETECT_RESULT(YOLO5_RESULT):
 
 
 class TRAFFIC_LIGHT_DETECT(YOLO5_BASE):
-    """
-    交通信号灯检测类，基于 YOLOv5 架构（3 类: red/green/yellow）
-
-    用法:
-        detector = TRAFFIC_LIGHT_DETECT()                    # 默认 640 输入
-        results = detector.run(img)                          # 同步检测
-        detector.run_async(img)                              # 异步检测
-        results = detector.get_result()                      # 获取异步结果
-
-    说明:
-        - 默认输入尺寸 640×640
-        - 预处理填充色为灰色 114（对齐 C++ 端 Utils::padding_resize(114,114,114)）
-        - 输入按 RGB 顺序（图片模式下 C++ 显式 BGR→RGB，与基类默认行为一致，故不覆盖 run）
-        - 使用小目标自定义锚框（交通灯为远距离小目标）
-        - 推理耗时可经 detector.speed.ms_inference / ms_post_process 读取
-    """
+    """交通信号灯检测"""
 
     results: List[TRAFFIC_LIGHT_DETECT_RESULT] = []
 
@@ -74,10 +58,10 @@ class TRAFFIC_LIGHT_DETECT(YOLO5_BASE):
                  size: int = 640,
                  nncase_version: str = "2.11"):
         """
-        初始化交通信号灯检测器
-        @param size: 模型输入尺寸，默认 640
-        @param kmodel_path: 模型路径，不传则使用自带 kmodel_name
-        @param nncase_version: nncase 版本
+        Args:
+            kmodel_path: traffic.kmodel 文件路径
+            size: 模型输入尺寸
+            nncase_version: nncase 版本，\"2.10\" 或 \"2.11\"
         """
         super().__init__(kmodel_path, size, nncase_version)
         self._print_init_hint()

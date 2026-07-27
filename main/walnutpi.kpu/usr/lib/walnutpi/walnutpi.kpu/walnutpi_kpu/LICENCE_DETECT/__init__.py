@@ -1,18 +1,4 @@
-"""
-车牌检测模块 (Licence Plate Detection)
-
-基于 RetinaFace 风格的单模型检测，直接输出 4 个角点坐标。
-
-模型: licence_det.kmodel, 输入 640x640, 输出 9 个张量:
-  loc_0..2    — bbox 偏移 (每尺度 4 值)
-  conf_0..2   — 置信度 (每尺度 2 类, softmax)
-  landms_0..2 — 角点偏移 (每尺度 8 值, 4 个角点)
-
-用法:
-    det = LICENCE_DETECT()
-    results = det.run(img)
-    LICENCE_DETECT.draw_results(img, results)
-"""
+'''车牌识别，输出 4 个角点 + 识别文本'''
 import os
 import cv2
 import re
@@ -23,17 +9,24 @@ from walnutpi_kpu import get_nncase, NNCASEVersionType
 
 # ================================================================
 class LICENCE_RESULT:
-    """车牌检测+识别结果"""
-    corners: list          # [[x0,y0],[x1,y1],[x2,y2],[x3,y3]] 整数像素坐标
-    reliability: float           # 检测置信度
-    text: str = ""         # 识别文本
+    """车牌检测+识别结果
+
+    Attributes:
+        corners: 4 个角点坐标 [[x0,y0],[x1,y1],[x2,y2],[x3,y3]]（像素）
+        reliability: 检测置信度，范围 [0, 1]
+        text: 识别文本，未识别时为空字符串
+    """
+
+    corners: list
+    reliability: float
+    text: str = ""
 
     def __repr__(self):
         return f"LICENCE_RESULT(text='{self.text}', reliability={self.reliability:.3f})"
 
 # ================================================================
 def _load_anchors(anchors_path: str) -> np.ndarray:
-    """加载锚框, 若传入 .bin 文件路径则直接加载, 否则从目录内查找"""
+    """加载 anchors，支持 .bin 和 .cpp 格式"""
     if anchors_path.endswith(".bin"):
         return np.fromfile(anchors_path, dtype=np.float32).reshape(16800, 4)
     # 目录: 优先 .bin
@@ -56,14 +49,17 @@ def _load_anchors(anchors_path: str) -> np.ndarray:
 
 # ================================================================
 class LICENCE_DETECTOR:
-    """模型1: 车牌检测（输出4个角点）"""
+    """车牌检测模型（内部使用，输出 4 个角点）"""
 
     def __init__(self, kmodel_path: str = None, size: int = 640,
                  anchors_path: str = None,
                  nncase_version: NNCASEVersionType = "2.10"):
         """
-        @param kmodel_path: licence_det.kmodel 路径, 默认使用模块自带
-        @param anchors_path: anchors_640.bin 路径, 默认使用模块自带
+        Args:
+            kmodel_path: licence_det.kmodel 文件路径
+            size: 模型输入尺寸
+            anchors_path: anchors 文件路径
+            nncase_version: nncase 版本，\"2.10\" 或 \"2.11\"
         """
         self.model_w = size
         self.model_h = size
@@ -287,12 +283,14 @@ class LICENCE_DETECTOR:
 # ================================================================
 
 def warp_plate(img: np.ndarray, corners: np.ndarray) -> np.ndarray:
-    """
-    从原图中透视变换裁剪车牌区域
+    """透视变换裁剪车牌区域
 
-    @param img: BGR 原图 (H, W, 3)
-    @param corners: (4, 2) 四个角点像素坐标 (顺序由检测模型给出)
-    @return: 裁剪+校正后的车牌 BGR 图
+    Args:
+        img: BGR 原图 (H, W, 3)
+        corners: (4, 2) 四个角点像素坐标
+
+    Returns:
+        np.ndarray: 校正后的车牌 BGR 图
     """
     # minAreaRect + 排序角点
     rect = cv2.minAreaRect(np.float32(corners))
@@ -338,16 +336,12 @@ RECO_DICT = [
 
 
 class licence_rec:
-    """车牌识别类（OCR 第二阶段）"""
+    """车牌识别模型（内部使用，CTC 解码）"""
 
     def __init__(self, kmodel_path: str = None,
                  model_w: int = 220, model_h: int = 32,
                  dict_list: List[str] = None,
                  nncase_version: NNCASEVersionType = "2.10"):
-        """
-        @param kmodel_path: licence_rec.kmodel 路径, 默认使用模块自带
-        @param dict_list: 字符字典列表, 默认使用 RECO_DICT
-        """
         _mod_dir = os.path.dirname(os.path.abspath(__file__))
         if kmodel_path is None:
             kmodel_path = os.path.join(_mod_dir, "licence_rec.kmodel")
@@ -367,11 +361,7 @@ class licence_rec:
             np.ones((1, 1, model_h, model_w), dtype=np.uint8)))
 
     def pre_process(self, plate_img: np.ndarray):
-        """
-        BGR → Gray → stretch resize → 模型输入
-
-        C++ Utils::resize 对 reco 模型直接拉伸到 220×32，不做 letterbox
-        """
+        """BGR→Gray→拉伸 resize→模型输入"""
         gray = cv2.cvtColor(plate_img, cv2.COLOR_BGR2GRAY)
         resized = cv2.resize(gray, (self._in_w, self._in_h),
                              interpolation=cv2.INTER_LINEAR)
@@ -405,16 +395,7 @@ class licence_rec:
 # ================================================================
 
 class LICENCE_DETECT:
-    """
-    车牌识别器 — 检测 + 识别二合一
-
-    用法:
-        lpr = LICENCE_DETECT()
-        results = lpr.run(img)
-        for r in results:
-            print(r.text)
-        LICENCE_DETECT.draw_results(img, results)
-    """
+    """车牌识别"""
 
     def __init__(self,
                  det_kmodel: str = None,
@@ -424,12 +405,13 @@ class LICENCE_DETECT:
                  det_size: int = 640,
                  rec_size: tuple = (220, 32)):
         """
-        @param det_kmodel:   licence_det.kmodel 路径
-        @param rec_kmodel:  licence_rec.kmodel 路径
-        @param anchors_path: anchors_640.bin 路径
-        @param dict_list:    字符字典列表
-        @param det_size:     检测模型输入尺寸，默认 640
-        @param rec_size:     识别模型输入尺寸 (w, h)，默认 (220, 32)
+        Args:
+            det_kmodel: licence_det.kmodel 文件路径
+            rec_kmodel: licence_rec.kmodel 文件路径
+            anchors_path: anchors 文件路径
+            dict_list: 字符字典列表
+            det_size: 检测模型输入尺寸
+            rec_size: 识别模型输入尺寸 (w, h)
         """
         self._detector = LICENCE_DETECTOR(
             kmodel_path=det_kmodel, anchors_path=anchors_path, size=det_size)
@@ -440,10 +422,15 @@ class LICENCE_DETECT:
     def run(self, img: np.ndarray,
             obj_thresh: float = 0.5,
             nms_thresh: float = 0.4) -> List[LICENCE_RESULT]:
-        """
-        @param obj_thresh: 检测置信度阈值
-        @param nms_thresh: 检测 NMS 阈值
-        @return: LICENCE_RESULT 列表（含 text）
+        """检测并识别图片中的车牌
+
+        Args:
+            img: BGR 图片 (HWC)
+            obj_thresh: 检测置信度阈值
+            nms_thresh: 检测 NMS 阈值
+
+        Returns:
+            List[LICENCE_RESULT]: 车牌结果列表（含识别文本）
         """
         results = []
         dets = self._detector.run(img, obj_thresh, nms_thresh)

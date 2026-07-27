@@ -1,8 +1,4 @@
-"""
-手掌关键点检测模块
-二阶段流水线：YOLOv5 手掌检测 + 关键点回归模型
-输出 21 个手部关键点坐标
-"""
+'''手掌关键点检测，输出 21 个手部关键点'''
 import os
 import numpy as np
 import cv2
@@ -12,11 +8,22 @@ from walnutpi_kpu.HAND_DETECT import HAND_DETECT
 
 
 class Keypoint:
-    """单个关键点"""
+    """单个关键点
+
+    Attributes:
+        x: 关键点 x 坐标（像素）
+        y: 关键点 y 坐标（像素）
+    """
+
     x: int
     y: int
 
     def __init__(self, x: int = 0, y: int = 0):
+        """
+        Args:
+            x: x 坐标
+            y: y 坐标
+        """
         self.x = x
         self.y = y
 
@@ -25,13 +32,23 @@ class Keypoint:
 
 
 class HAND_KEYPOINT_RESULT:
-    """手掌关键点检测结果"""
-    x: int                    # 手掌 bbox 左上角 x
-    y: int                    # 手掌 bbox 左上角 y
-    w: int                    # 手掌 bbox 宽度
-    h: int                    # 手掌 bbox 高度
-    reliability: float        # 检测置信度
-    keypoints: List[Keypoint]  # 21 个手部关键点
+    """单只手的关键点检测结果
+
+    Attributes:
+        x: 手掌 bbox 左上角 x 坐标（像素）
+        y: 手掌 bbox 左上角 y 坐标（像素）
+        w: 手掌 bbox 宽度（像素）
+        h: 手掌 bbox 高度（像素）
+        reliability: 检测置信度，范围 [0, 1]
+        keypoints: 21 个手部关键点
+    """
+
+    x: int
+    y: int
+    w: int
+    h: int
+    reliability: float
+    keypoints: List[Keypoint]
 
     def __repr__(self):
         return (f"HAND_KEYPOINT_RESULT(x={self.x}, y={self.y}, "
@@ -39,12 +56,7 @@ class HAND_KEYPOINT_RESULT:
 
 
 class HandKPModel():
-    """
-    手掌关键点回归模型封装
-
-    与普通检测模型不同，此模型需要先 crop 再推理。
-    直接用 nncase Interpreter，不继承 KPU_BASE（避免不必要的线程/AI2D开销）。
-    """
+    """手掌关键点回归模型（内部使用）"""
 
     def __init__(self,
                  kmodel_path: str,
@@ -62,13 +74,7 @@ class HandKPModel():
         self.kpu.set_input_tensor(0, tmp_tensor)
 
     def run_crop(self, img, x1, y1, x2, y2) -> np.ndarray:
-        """
-        对检测框内的区域进行 crop 后推理，返回关键点坐标
-
-        @param img: 原图 (H, W, 3) BGR
-        @param x1, y1, x2, y2: 检测框坐标（原图坐标系）
-        @return: 42 个值 (21 个关键点的 x, y 坐标)，在原图坐标系下
-        """
+        """对检测框区域 crop 后推理，返回 42 个关键点坐标（原图坐标系）"""
         img_h, img_w = img.shape[:2]
 
         # 计算 crop 区域（扩大检测框 1.26 倍，确保完整手掌）
@@ -115,15 +121,7 @@ class HandKPModel():
 
 
 class HAND_KEYPOINT:
-    """
-    手掌关键点检测类
-
-    用法:
-        hk = HAND_KEYPOINT()
-        results = hk.run(img)
-        for r in results:
-            print(r.keypoints)  # 21 个关键点
-    """
+    """手掌关键点检测"""
 
     def __init__(self,
                  hand_det_kmodel: str = None,
@@ -132,12 +130,12 @@ class HAND_KEYPOINT:
                  kp_size: int = 256,
                  nncase_version: NNCASEVersionType = "2.11"):
         """
-        初始化手掌关键点检测器
-
-        @param hand_det_kmodel: 手掌检测模型路径，不传则使用默认
-        @param hand_kp_kmodel: 关键点回归模型路径，不传则使用默认
-        @param det_size: 检测模型输入尺寸
-        @param kp_size: 关键点模型输入尺寸
+        Args:
+            hand_det_kmodel: 手掌检测 kmodel 文件路径
+            hand_kp_kmodel: 关键点回归 kmodel 文件路径
+            det_size: 检测模型输入尺寸
+            kp_size: 关键点模型输入尺寸
+            nncase_version: nncase 版本，\"2.10\" 或 \"2.11\"
         """
         _res_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -172,13 +170,15 @@ class HAND_KEYPOINT:
     def run(self, img,
             reliability_threshold: float = 0.2,
             nms_threshold: float = 0.5) -> List[HAND_KEYPOINT_RESULT]:
-        """
-        检测手掌关键点
+        """检测图片中所有手部的 21 个关键点
 
-        @param img: BGR 图片
-        @param reliability_threshold: 检测置信度阈值
-        @param nms_threshold: NMS 阈值
-        @return: HAND_KEYPOINT_RESULT 列表
+        Args:
+            img: BGR 图片 (HWC)
+            reliability_threshold: 手掌检测置信度阈值
+            nms_threshold: 手掌检测 NMS 阈值
+
+        Returns:
+            List[HAND_KEYPOINT_RESULT]: 检测结果列表
         """
         dets = self.detector.run(img,
                                   reliability_threshold=reliability_threshold,
@@ -214,11 +214,13 @@ class HAND_KEYPOINT:
     @staticmethod
     def draw_keypoints(img, result: HAND_KEYPOINT_RESULT,
                        kp_color=(0, 255, 0), bbox_color=(255, 0, 255)):
-        """
-        在图片上绘制关键点和手掌框
+        """在图片上绘制手掌框和关键点（原地修改 img）
 
-        @param img: 图片（会被修改）
-        @param result: 检测结果
+        Args:
+            img: BGR 图片，会被原地修改
+            result: 单只手的关键点检测结果
+            kp_color: 关键点颜色 (B, G, R)
+            bbox_color: 手掌框颜色 (B, G, R)
         """
         # 绘制 bbox
         cv2.rectangle(img,

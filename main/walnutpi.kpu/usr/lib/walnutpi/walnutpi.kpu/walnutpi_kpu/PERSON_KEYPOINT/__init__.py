@@ -1,7 +1,4 @@
-"""
-人体关键点检测模块 (YOLOv8n-pose)
-基于 YOLOv8n-pose 架构，检测人体 17 个关键点
-"""
+'''人体关键点检测，输出人体 bbox + 17个关键点'''
 import os
 import numpy as np
 import cv2
@@ -10,23 +7,40 @@ from walnutpi_kpu import KPU_BASE, NNCASEVersionType
 
 
 class Keypoint:
-    """单个关键点"""
-    x: int          # x 坐标
-    y: int          # y 坐标
-    confidence: float  # 置信度 (0~1)
+    """单个关键点
+
+    Attributes:
+        x: x 坐标（像素）
+        y: y 坐标（像素）
+        confidence: 置信度，范围 [0, 1]
+    """
+
+    x: int
+    y: int
+    confidence: float
 
     def __repr__(self):
         return f"Keypoint(x={self.x}, y={self.y}, conf={self.confidence:.3f})"
 
 
 class PERSON_KEYPOINT_RESULT:
-    """人体关键点检测结果"""
-    x: int              # bbox 左上角 x
-    y: int              # bbox 左上角 y
-    w: int              # bbox 宽度
-    h: int              # bbox 高度
-    reliability: float  # 检测置信度
-    keypoints: List[Keypoint]  # 17 个关键点（COCO 格式）
+    """人体关键点检测结果
+
+    Attributes:
+        x: bbox 左上角 x 坐标（像素）
+        y: bbox 左上角 y 坐标（像素）
+        w: bbox 宽度（像素）
+        h: bbox 高度（像素）
+        reliability: 检测置信度，范围 [0, 1]
+        keypoints: 17 个 COCO 关键点
+    """
+
+    x: int
+    y: int
+    w: int
+    h: int
+    reliability: float
+    keypoints: List[Keypoint]
 
     def __repr__(self):
         kps = ", ".join(
@@ -38,13 +52,7 @@ class PERSON_KEYPOINT_RESULT:
 
 
 class PERSON_KEYPOINT(KPU_BASE):
-    """
-    人体关键点检测类，基于 YOLOv8n-pose 架构
-
-    用法:
-        detector = PERSON_KEYPOINT()
-        results = detector.run(img)
-    """
+    """人体关键点检测"""
 
     results: List[PERSON_KEYPOINT_RESULT] = []
 
@@ -119,11 +127,10 @@ class PERSON_KEYPOINT(KPU_BASE):
                  size: int = 320,
                  nncase_version: NNCASEVersionType = "2.11"):
         """
-        初始化人体关键点检测器
-
-        @size: 模型输入尺寸，默认 320
-        @kmodel_path: 模型路径，不传则使用自带的 yolov8n-pose.kmodel
-        @nncase_version: nncase 版本
+        Args:
+            kmodel_path: yolov8n-pose.kmodel 文件路径
+            size: 模型输入尺寸
+            nncase_version: nncase 版本，\"2.10\" 或 \"2.11\"
         """
         _RES_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -143,7 +150,16 @@ class PERSON_KEYPOINT(KPU_BASE):
     def run(self, img,
             reliability_threshold: float = None,
             nms_threshold: float = None) -> List[PERSON_KEYPOINT_RESULT]:
-        """同步检测人体关键点"""
+        """检测人体关键点
+
+        Args:
+            img: BGR 图片 (HWC)
+            reliability_threshold: 置信度阈值
+            nms_threshold: NMS 阈值
+
+        Returns:
+            List[PERSON_KEYPOINT_RESULT]: 检测结果列表（每人 17 个关键点）
+        """
         if reliability_threshold is None:
             reliability_threshold = self.confidence_threshold
         if nms_threshold is None:
@@ -151,7 +167,11 @@ class PERSON_KEYPOINT(KPU_BASE):
         return super().run(img, reliability_threshold, nms_threshold)
 
     def get_result(self) -> List[PERSON_KEYPOINT_RESULT]:
-        """获取最近一次检测的结果"""
+        """获取最近一次检测的结果
+
+        Returns:
+            List[PERSON_KEYPOINT_RESULT]
+        """
         return super().get_result()
 
     # ============================================================
@@ -160,10 +180,7 @@ class PERSON_KEYPOINT(KPU_BASE):
 
     def ai2d_init(self, model_w: int, model_h: int,
                   img_w: int, img_h: int):
-        """
-        与 KPU_BASE 的区别：padding 方式从「顶部-左侧对齐」改为「居中」。
-        原始 personPoint.py 使用 get_padding_param() 做居中 padding。
-        """
+        """居中 padding 初始化 AI2D（覆盖父类：替代顶部-左侧对齐）"""
         if self.ai2d_2d_w == model_w and self.ai2d_2d_h == model_h:
             return
         self.ai2d_2d_w, self.ai2d_2d_h = model_w, model_h
@@ -203,11 +220,7 @@ class PERSON_KEYPOINT(KPU_BASE):
     def post_process(self,
                      reliability_threshold: float,
                      nms_threshold: float) -> List[PERSON_KEYPOINT_RESULT]:
-        """
-        YOLOv8-pose 后处理（参照 aidemo.person_kp_postprocess）：
-        1. 从输出 tensor 提取 bbox、score、keypoints
-        2. 坐标映射回原图 + NMS
-        """
+        """YOLOv8-pose 后处理：提取 bbox+关键点 → 坐标映射 → NMS"""
 
         # -------------------------------------------------------
         # 1. 获取模型输出

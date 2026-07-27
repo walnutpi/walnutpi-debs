@@ -1,10 +1,4 @@
-"""
-抽烟检测模块 (YOLOv5s, 单类 smoke)
-基于 YOLOv5 anchor-based 架构，检测图片中的抽烟行为。
-移植自 Canaan K230 linux_sdk/smoke_detect 示例 (smoke_detect.h / smoke_detect.cc)。
-
-默认输入尺寸 640×640，灰色 letterbox 填充(114)，BGR 输入（与 C++ 端保持一致）。
-"""
+'''抽烟检测，输出烟的bbox'''
 import os
 import time
 import numpy as np
@@ -13,7 +7,12 @@ from walnutpi_kpu.__yolo5 import YOLO5_BASE, YOLO5_RESULT
 
 
 class SMOKE_DETECT_RESULT(YOLO5_RESULT):
-    """抽烟检测结果"""
+    """抽烟检测结果
+
+    Attributes:
+        label_name: 标签名，固定为 \"smoke\"
+    """
+
     label_name: str = "smoke"
 
     def __repr__(self):
@@ -23,21 +22,7 @@ class SMOKE_DETECT_RESULT(YOLO5_RESULT):
 
 
 class SMOKE_DETECT(YOLO5_BASE):
-    """
-    抽烟检测类，基于 YOLOv5s 架构（单类：smoke）
-
-    用法:
-        detector = SMOKE_DETECT()                          # 默认 640 输入
-        results = detector.run(img)                        # 同步检测
-        detector.run_async(img)                            # 异步检测
-        results = detector.get_result()                    # 获取异步结果
-
-    说明:
-        - 默认输入尺寸 640×640（yolov5s 标准）
-        - 预处理填充色为灰色 114（对齐 C++ 端 Utils::padding_resize(114,114,114)）
-        - 输入按 BGR 顺序（C++ 端 hwc_to_chw 未做色彩转换），与训练分布一致
-        - 推理耗时可经 detector.speed.ms_inference / ms_post_process 读取
-    """
+    """抽烟检测"""
 
     results: List[SMOKE_DETECT_RESULT] = []
 
@@ -64,10 +49,10 @@ class SMOKE_DETECT(YOLO5_BASE):
                  size: int = 640,
                  nncase_version: str = "2.11"):
         """
-        初始化抽烟检测器
-        @param size: 模型输入尺寸，默认 640
-        @param kmodel_path: 模型路径，不传则使用自带 kmodel_name
-        @param nncase_version: nncase 版本
+        Args:
+            kmodel_path: yolov5s_smoke_best.kmodel 文件路径
+            size: 模型输入尺寸
+            nncase_version: nncase 版本，\"2.10\" 或 \"2.11\"
         """
         super().__init__(kmodel_path, size, nncase_version)
         self._print_init_hint()
@@ -88,7 +73,16 @@ class SMOKE_DETECT(YOLO5_BASE):
         print("=" * 52)
 
     def run(self, img, reliability_threshold=None, nms_threshold=None):
-        """同步检测（覆盖父类以保留 BGR 输入顺序）"""
+        """检测图片中的抽烟行为
+
+        Args:
+            img: BGR 图片 (HWC)
+            reliability_threshold: 置信度阈值
+            nms_threshold: NMS 阈值
+
+        Returns:
+            List[SMOKE_DETECT_RESULT]: 检测结果列表
+        """
         if reliability_threshold is None:
             reliability_threshold = self.confidence_threshold
         if nms_threshold is None:

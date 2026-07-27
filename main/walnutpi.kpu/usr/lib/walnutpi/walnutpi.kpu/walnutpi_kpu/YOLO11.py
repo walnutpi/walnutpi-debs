@@ -7,18 +7,37 @@ from typing import Literal
 
 
 class YOLO_RESULT_DET:
+    """YOLO 检测结果
+
+    Attributes:
+        x: bbox 左上角 x 坐标（像素）
+        y: bbox 左上角 y 坐标（像素）
+        w: bbox 宽度（像素）
+        h: bbox 高度（像素）
+        xywh: bbox 中心格式 (cx, cy, w, h)
+        label: 类别索引
+        reliability: 置信度，范围 [0, 1]
+        index_in_all_boxes: 在全部候选框中的索引
+    """
+
     x: int
     y: int
     w: int
     h: int
     xywh: np.ndarray
-    label: int  # 类别索引
-    reliability: float  # 置信度
+    label: int
+    reliability: float
     index_in_all_boxes: int
 
 
 class YOLO_RESULT_OBB(YOLO_RESULT_DET):
-    angle: float  # 旋转角度
+    """YOLO 旋转检测结果
+
+    Attributes:
+        angle: 旋转角度（弧度）
+    """
+
+    angle: float
 
     def _rotate_point(self, cx, cy, x, y, angle):
         """旋转点(x, y)围绕中心点(cx, cy)旋转angle弧度"""
@@ -57,23 +76,50 @@ class YOLO_RESULT_OBB(YOLO_RESULT_DET):
 
 
 class YOLO_RESULT_SEG(YOLO_RESULT_DET):
-    contours: list  # 边界点的坐标，形式是 ((x1, y1)，....)
-    mask: np.ndarray  # 一张单通道图片，被识别为物体的区域为255，背景为0
+    """YOLO 分割检测结果
+
+    Attributes:
+        contours: 边界点坐标列表 [((x1,y1), ...)]
+        mask: 分割掩码图，物体区域为 255，背景为 0
+    """
+
+    contours: list
+    mask: np.ndarray
     _raw_mask: np.ndarray
 
 
 class _YOLO_KEYPOINT:
+    """YOLO 单个关键点（内部使用）
+
+    Attributes:
+        xy: 关键点坐标 (x, y)
+        visibility: 可见度，范围 [0, 1]
+    """
+
     xy = (0, 0)
     visibility: float
 
 
 class YOLO_RESULT_POSE(YOLO_RESULT_DET):
-    keypoints: List[_YOLO_KEYPOINT] = []  # 各个关键点的坐标
+    """YOLO 姿态估计结果
+
+    Attributes:
+        keypoints: 关键点列表
+    """
+
+    keypoints: List[_YOLO_KEYPOINT] = []
 
 
 class _YOLO_RESULT_CLS_INDEX:
-    label: int  # 类别索引
-    reliability: float  # 置信度
+    """YOLO 分类索引-置信度对（内部使用）
+
+    Attributes:
+        label: 类别索引
+        reliability: 置信度
+    """
+
+    label: int
+    reliability: float
 
     def __init__(self, label=0, reliability=0):
         self.label = label
@@ -81,7 +127,13 @@ class _YOLO_RESULT_CLS_INDEX:
 
 
 class YOLO_RESULT_CLS:
-    # TOP5包含了置信度排名前5的类别
+    """YOLO 分类结果
+
+    Attributes:
+        top5: Top-5 分类结果列表
+        all: 所有类别的置信度数组，all[i] 为类别 i 的置信度
+    """
+
     top5 = [
         _YOLO_RESULT_CLS_INDEX(),
         _YOLO_RESULT_CLS_INDEX(),
@@ -89,24 +141,41 @@ class YOLO_RESULT_CLS:
         _YOLO_RESULT_CLS_INDEX(),
         _YOLO_RESULT_CLS_INDEX(),
     ]
-    # all是一个数组，包含所有类别的置信度，all[35]代表类别35的置信度，以此类推
     all = np.zeros(1)
 
 
 
 class YOLO11_DET(KPU_BASE):
+    """YOLO11 目标检测"""
+
     results: List[YOLO_RESULT_DET] = []
     _result_type = YOLO_RESULT_DET
 
     def get_result(self) -> List[YOLO_RESULT_DET]:
+        """获取最近一次检测的结果
+
+        Returns:
+            List[YOLO_RESULT_DET]
+        """
         return super().get_result()
 
     def run(
         self, img, reliability_threshold=0.5, nms_threshold=0.5
     ) -> List[YOLO_RESULT_DET]:
+        """检测图片中的目标
+
+        Args:
+            img: BGR 图片 (HWC)
+            reliability_threshold: 置信度阈值
+            nms_threshold: NMS 阈值
+
+        Returns:
+            List[YOLO_RESULT_DET]: 检测结果列表
+        """
         return super().run(img, reliability_threshold, nms_threshold)
 
     def post_process(self, reliability_threshold, nms_threshold):
+        """YOLO11 检测后处理：提取 bbox → 归一化坐标还原 → NMS"""
         # 获取模型输出
         model_output = self.kpu.get_output_tensor(0).to_numpy()
         predictions = model_output[0].transpose()  # (8400, 84)
@@ -169,16 +238,35 @@ class YOLO11_DET(KPU_BASE):
 
         return []
 class YOLO11_CLS(KPU_BASE):
-    results = YOLO_RESULT_CLS()  # 识别到的分类结果
+    """YOLO11 图像分类"""
+
+    results = YOLO_RESULT_CLS()
 
     def get_result(self) -> YOLO_RESULT_CLS:
+        """获取最近一次分类的结果
+
+        Returns:
+            YOLO_RESULT_CLS
+        """
         return super().get_result()
+
     def run(
         self, img, reliability_threshold=0.5, nms_threshold=0.5
     ) -> YOLO_RESULT_CLS:
+        """对图片进行分类
+
+        Args:
+            img: BGR 图片 (HWC)
+            reliability_threshold: 置信度阈值
+            nms_threshold: 未使用
+
+        Returns:
+            YOLO_RESULT_CLS: 分类结果（含 top5 和 all）
+        """
         return super().run(img, reliability_threshold, nms_threshold)
 
     def post_process(self, reliability_threshold, nms_threshold):
+        """YOLO11 分类后处理：取出 Top-5 类别索引和置信度"""
         model_output = self.kpu.get_output_tensor(0).to_numpy()
         tensor = model_output[0].transpose()
 

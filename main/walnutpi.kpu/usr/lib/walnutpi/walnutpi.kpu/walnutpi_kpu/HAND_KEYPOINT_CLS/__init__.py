@@ -1,8 +1,4 @@
-"""
-手势识别模块
-继承 HAND_KEYPOINT，在关键点检测基础上增加手势分类逻辑
-支持: fist, five, gun, love, one, six, three, thumbUp, yeah
-"""
+'''手势识别，输出 21 个关键点 + 手势标签'''
 import numpy as np
 from typing import List
 from walnutpi_kpu.HAND_KEYPOINT import HAND_KEYPOINT, HAND_KEYPOINT_RESULT, Keypoint
@@ -16,8 +12,13 @@ GESTURE_NAMES = [
 
 
 class HAND_KEYPOINT_CLS_RESULT(HAND_KEYPOINT_RESULT):
-    """手势识别结果（在关键点基础上增加手势）"""
-    label: int = -1  # 手势编号 (-1 表示未识别)
+    """手势识别结果，继承 HAND_KEYPOINT_RESULT 并增加手势标签
+
+    Attributes:
+        label: 手势编号，-1 表示未识别
+    """
+
+    label: int = -1
 
     def __repr__(self):
         return (f"HAND_KEYPOINT_CLS_RESULT(x={self.x}, y={self.y}, "
@@ -26,21 +27,21 @@ class HAND_KEYPOINT_CLS_RESULT(HAND_KEYPOINT_RESULT):
 
 
 class HAND_KEYPOINT_CLS(HAND_KEYPOINT):
-    """
-    手势识别类，继承 HAND_KEYPOINT
-
-    用法:
-        hkc = HAND_KEYPOINT_CLS()
-        results = hkc.run(img)
-        for r in results:
-            print(r.gesture)    # "fist" / "five" / ...
-            print(r.keypoints)  # 21 个关键点
-    """
+    """手势识别"""
 
     def run(self, img,
             reliability_threshold: float = 0.2,
             nms_threshold: float = 0.5) -> List[HAND_KEYPOINT_CLS_RESULT]:
-        """检测手势，返回带手势标签的结果"""
+        """检测图片中所有手部的关键点并识别手势
+
+        Args:
+            img: BGR 图片 (HWC)
+            reliability_threshold: 手掌检测置信度阈值
+            nms_threshold: 手掌检测 NMS 阈值
+
+        Returns:
+            List[HAND_KEYPOINT_CLS_RESULT]: 手势识别结果列表
+        """
         dets = self.detector.run(img,
                                   reliability_threshold=reliability_threshold,
                                   nms_threshold=nms_threshold)
@@ -93,13 +94,7 @@ class HAND_KEYPOINT_CLS(HAND_KEYPOINT):
 
     @staticmethod
     def _classify_gesture(keypoints: List[Keypoint]) -> int:
-        """
-        根据 21 个手部关键点判断手势
-
-        关键点数据格式与原始 HandDetCls.py 一致：
-        42 个值: 腕部(x,y) + 5 根手指 × 每指 8 个值(4点)
-        @return: 手势编号，-1 表示未识别
-        """
+        """根据 21 个关键点判断手势，返回手势编号，-1 表示未识别"""
         if len(keypoints) < 21:
             return -1
 

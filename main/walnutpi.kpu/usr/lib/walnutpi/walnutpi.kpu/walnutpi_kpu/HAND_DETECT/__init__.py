@@ -1,7 +1,4 @@
-"""
-手掌检测模块 (YOLOv5n)
-基于 YOLOv5n 架构，检测图片中的手掌
-"""
+'''手掌检测，输出 bbox + 标签（手掌）'''
 import numpy as np
 from typing import List
 from walnutpi_kpu.__yolo5 import YOLO5_BASE, YOLO5_RESULT
@@ -16,15 +13,7 @@ class HAND_DETECT_RESULT(YOLO5_RESULT):
 
 
 class HAND_DETECT(YOLO5_BASE):
-    """
-    手掌检测类，基于 YOLOv5n 架构
-
-    用法:
-        detector = HAND_DETECT()
-        results = detector.run(img)                    # 同步检测
-        detector.run_async(img)                        # 异步检测
-        results = detector.get_result()                # 获取异步结果
-    """
+    """手掌检测"""
 
     results: List[HAND_DETECT_RESULT] = []
 
@@ -45,10 +34,9 @@ class HAND_DETECT(YOLO5_BASE):
                  size: int = 512,
                  nncase_version: str = "2.11"):
         """
-        初始化手掌检测器
-
-        @param size: 模型输入尺寸，默认 512
-        @param kmodel_path: 模型路径，不传则使用自带的 hand_det.kmodel
-        @param nncase_version: nncase 版本
+        Args:
+            kmodel_path: kmodel 文件路径
+            size: 模型输入尺寸
+            nncase_version: nncase 版本，\"2.10\" 或 \"2.11\"
         """
         super().__init__(kmodel_path, size, nncase_version)

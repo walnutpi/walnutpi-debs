@@ -1,7 +1,4 @@
-"""
-跌倒检测模块 (YOLOv5n)
-基于 YOLOv5n 架构，检测图片中的跌倒/未跌倒
-"""
+'''跌倒检测，出 bbox + 标签（跌倒/未跌倒）'''
 import numpy as np
 from typing import List
 from walnutpi_kpu.__yolo5 import YOLO5_BASE, YOLO5_RESULT
@@ -16,15 +13,7 @@ class FALL_DETECT_RESULT(YOLO5_RESULT):
 
 
 class FALL_DETECT(YOLO5_BASE):
-    """
-    跌倒检测类，基于 YOLOv5n 架构
-
-    用法:
-        detector = FALL_DETECT()
-        results = detector.run(img)                    # 同步检测
-        detector.run_async(img)                        # 异步检测
-        results = detector.get_result()                # 获取异步结果
-    """
+    """跌倒检测"""
 
     results: List[FALL_DETECT_RESULT] = []
 
@@ -46,10 +35,9 @@ class FALL_DETECT(YOLO5_BASE):
                  size: int = 640,
                  nncase_version: str = "2.11"):
         """
-        初始化跌倒检测器
-
-        @param size: 模型输入尺寸，默认 640
-        @param kmodel_path: 模型路径，不传则使用自带的 yolov5n-falldown.kmodel
-        @param nncase_version: nncase 版本
+        Args:
+            kmodel_path: kmodel 文件路径
+            size: 模型输入尺寸
+            nncase_version: nncase 版本，\"2.10\" 或 \"2.11\"
         """
         super().__init__(kmodel_path, size, nncase_version)

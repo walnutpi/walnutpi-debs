@@ -1,112 +1,137 @@
+'''RetinaFace 人脸检测，输出 bbox + 5 点关键点（左眼/右眼/鼻子/左嘴角/右嘴角）'''
 import numpy as np
 import cv2
 from typing import List
 import os
-from walnutpi_kpu import get_nncase, NNCASEVersionType,KPU_BASE
+from walnutpi_kpu import KPU_BASE, NNCASEVersionType
 import time
 
 
 class Landmark:
-    """人脸关键点，包含 x 和 y 坐标"""
+    """人脸关键点"""
+
     def __init__(self, x: int = 0, y: int = 0):
+        """
+        Args:
+            x: 关键点 x 坐标（像素）
+            y: 关键点 y 坐标（像素）
+        """
         self.x = x
         self.y = y
-    
-    def __repr__(self):
+
+    def __repr__(self) -> str:
         return f"Landmark(x={self.x}, y={self.y})"
 
 
-class FACE_DETECT_RESULT():
-    """人脸检测结果，包含 bbox 和 5 个关键点"""
-    x: int  # 框左上角的x
-    y: int  # 框左上角的y
-    w: int  # 框的宽
-    h: int  # 框的高
-    reliability: float  # 置信度
-    left_eye: Landmark    # 左眼关键点
-    right_eye: Landmark   # 右眼关键点
-    nose: Landmark        # 鼻子关键点
-    left_mouth: Landmark  # 左嘴角关键点
-    right_mouth: Landmark # 右嘴角关键点
+class FACE_DETECT_RESULT:
+    """单张人脸检测结果
+
+    Attributes:
+        x: 框左上角 x 坐标（像素）
+        y: 框左上角 y 坐标（像素）
+        w: 框宽度（像素）
+        h: 框高度（像素）
+        reliability: 置信度，范围 [0, 1]
+        left_eye: 左眼关键点
+        right_eye: 右眼关键点
+        nose: 鼻子关键点
+        left_mouth: 左嘴角关键点
+        right_mouth: 右嘴角关键点
+    """
+
+    x: int
+    y: int
+    w: int
+    h: int
+    reliability: float
+    left_eye: Landmark
+    right_eye: Landmark
+    nose: Landmark
+    left_mouth: Landmark
+    right_mouth: Landmark
 
 
 class FACE_DETECT(KPU_BASE):
-    """人脸检测类，基于 RetinaFace 架构，支持 bbox + 5 点关键点检测"""
-    
+    """人脸检测"""
+
     results: List[FACE_DETECT_RESULT] = []
-    
-    # 支持的模型尺寸
+
     SUPPORTED_SIZES = (320, 640)
-    
-    # 默认阈值
+
     _DEFAULT_CONFIDENCE_THRESHOLD = 0.5
     _DEFAULT_NMS_THRESHOLD = 0.4
-    
-    # AI2D 配置：人脸检测专用填充色
+
     ai2d_pad_color = [104, 117, 123]
-    
-    def __init__(self, 
+
+    def __init__(self,
                  kmodel_path: str = None,
                  anchors_path: str = None,
-                 size: int = 320, 
+                 size: int = 320,
                  nncase_version: NNCASEVersionType = "2.11"):
         """
-        初始化人脸检测器
-        
-        @size: 模型输入尺寸，支持 320 和 640
-        @nncase_version: nncase 版本
-        @kmodel_path: 模型路径，不传则根据 size 自动查找 face_detection/face_detection_{size}.kmodel
-        @anchors_path: anchors 文件路径，不传则根据 size 自动查找 face_detection/prior_data_{size}.bin
+        Args:
+            kmodel_path: kmodel 文件路径，为 None 时自动从当前目录查找
+            anchors_path: prior_data bin 文件路径，为 None 时自动匹配
+            size: 模型输入尺寸，仅支持 320 或 640
+            nncase_version: nncase 版本，\"2.10\" 或 \"2.11\"
+
+        Raises:
+            ValueError: size 不在 SUPPORTED_SIZES 中
+            FileNotFoundError: kmodel 或 anchors 文件不存在
         """
         if size not in self.SUPPORTED_SIZES:
             raise ValueError(f"不支持的模型尺寸: {size}，可选: {self.SUPPORTED_SIZES}")
-        
+
         _RES_DIR = os.path.dirname(os.path.abspath(__file__))
 
-        # 自动解析 kmodel 路径
         if kmodel_path is None:
             kmodel_path = os.path.join(_RES_DIR, f"face_detection_{size}.kmodel")
         if not os.path.exists(kmodel_path):
             raise FileNotFoundError(f"模型文件不存在: {kmodel_path}")
-        
-        # 自动解析 anchors 路径
+
         if anchors_path is None:
             anchors_path = os.path.join(_RES_DIR, f"prior_data_{size}.bin")
-        
+
         super().__init__(kmodel_path, size, nncase_version)
         self.confidence_threshold = self._DEFAULT_CONFIDENCE_THRESHOLD
         self.nms_threshold = self._DEFAULT_NMS_THRESHOLD
         self.anchors = self._load_anchors(anchors_path)
-    
+
     def _load_anchors(self, anchors_path: str) -> np.ndarray:
-        """加载 anchors 文件"""
         if not os.path.exists(anchors_path):
             raise FileNotFoundError(f"Anchors file not found: {anchors_path}")
-        
+
         anchors = np.fromfile(anchors_path, dtype=np.float32)
         anchors = anchors.reshape(-1, 4)
         return anchors
-    
-    def run(self, img, reliability_threshold=None, nms_threshold=None) -> List[FACE_DETECT_RESULT]:
-        """检测图片中的人脸"""
+
+    def run(self, img: np.ndarray, reliability_threshold=None, nms_threshold=None) -> List[FACE_DETECT_RESULT]:
+        """检测图片中的人脸
+
+        Args:
+            img: 输入图像，支持opencv格式的图像
+            reliability_threshold: 置信度阈值，为 None 时使用类默认值
+            nms_threshold: NMS IoU 阈值，为 None 时使用类默认值
+
+        Returns:
+            List[FACE_DETECT_RESULT]: 检测到的人脸列表，按置信度降序排列
+        """
         if reliability_threshold is None:
             reliability_threshold = self.confidence_threshold
         if nms_threshold is None:
             nms_threshold = self.nms_threshold
         return super().run(img, reliability_threshold, nms_threshold)
-    
+
     def get_result(self) -> List[FACE_DETECT_RESULT]:
+        """获取最近一次 run() 的结果
+
+        Returns:
+            List[FACE_DETECT_RESULT]
+        """
         return super().get_result()
     
     def post_process(self, reliability_threshold, nms_threshold) -> List[FACE_DETECT_RESULT]:
-        """
-        人脸检测后处理，基于 C++ face_detection.cc 实现
-        
-        模型有 9 个输出，分三个尺度：
-        - Output 0-2: 位置偏移 (1, 8, H, W)  → 8通道 = 2尺度 × 4坐标
-        - Output 3-5: 置信度   (1, 4, H, W)  → 4通道 = 2尺度 × 2类别
-        - Output 6-8: 关键点   (1, 20, H, W) → 20通道 = 2尺度 × 10坐标(5点×2)
-        """
+        """后处理"""
         # 1. 获取所有输出
         outputs = [self.kpu.get_output_tensor(i).to_numpy() for i in range(9)]
         
@@ -258,23 +283,12 @@ class FACE_DETECT(KPU_BASE):
         return results
     
     def _softmax_2class(self, logits: np.ndarray) -> np.ndarray:
-        """
-        对 2 分类 logits 做 softmax，返回正类（人脸）概率
-        Input: (N, 2)  Output: (N,)
-        """
         max_logits = np.max(logits, axis=1, keepdims=True)
         exp_logits = np.exp(logits - max_logits)
         probs = exp_logits / np.sum(exp_logits, axis=1, keepdims=True)
         return probs[:, 1]
     
     def _decode_boxes(self, predictions: np.ndarray, anchors: np.ndarray) -> np.ndarray:
-        """
-        解码 bbox（来自 C++ get_box 函数）
-        cx = anchor_x + tx * 0.1 * anchor_w
-        cy = anchor_y + ty * 0.1 * anchor_h
-        w  = anchor_w * exp(tw * 0.2)
-        h  = anchor_h * exp(th * 0.2)
-        """
         tx = predictions[:, 0]
         ty = predictions[:, 1]
         tw = predictions[:, 2]
