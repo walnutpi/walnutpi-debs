@@ -1,0 +1,17 @@
+#!/bin/bash
+source /etc/WalnutPi-release
+
+# 如果存在这个文件则删除
+function delete_file() {
+    if [ -f "$1" ]; then
+        rm "$1"
+    fi
+}
+
+# 1.0.0 升到 1.1.0
+if [ $version == "1.0.0" ];then
+    delete_file /boot/overlays/k230-cybercam-csi0.dtbo
+    delete_file /boot/overlays/k230-cybercam-csi2.dtbo
+    set-device
+fi
+
