@@ -19,6 +19,7 @@ struct v4l_cam_ctx {
     int      fd;
     int      width;
     int      height;
+    int      stride;         /* bytesperline (row stride); may be > width for NV12 */
     int      buf_count;
     bool     is_bgr;         /* true = BGR24 from ISP, false = NV12 */
     bool     setup_done;     /* REQBUFS + mmap + QBUF completed */
@@ -67,13 +68,13 @@ static inline uint8_t clamp(int v)
 
 static void nv12_to_bgr_full(const uint8_t *y_plane,
                              const uint8_t *uv_plane,
-                             int width, int height,
+                             int width, int height, int stride,
                              uint8_t *bgr)
 {
     for (int y = 0; y < height; y++) {
         for (int x = 0; x < width; x++) {
-            int Y = y_plane[y * width + x];
-            int uv_off = (y / 2) * width + (x & ~1);
+            int Y = y_plane[y * stride + x];
+            int uv_off = (y / 2) * stride + (x & ~1);
             int U = uv_plane[uv_off];
             int V = uv_plane[uv_off + 1];
 
@@ -208,18 +209,21 @@ v4l_cam_ctx_t* v4l_cam_open(int device, int width, int height)
     fmt.fmt.pix.pixelformat = V4L2_PIX_FMT_BGR24;
     fmt.fmt.pix.width       = width;
     fmt.fmt.pix.height      = height;
+    fmt.fmt.pix.field       = V4L2_FIELD_NONE;
     if (xioctl(ctx->fd, VIDIOC_S_FMT, &fmt) == 0) {
         ctx->is_bgr = true;
         ctx->width  = fmt.fmt.pix.width;
         ctx->height = fmt.fmt.pix.height;
-        fprintf(stderr, "[v4l-cam] %s opened, BGR24 %dx%d (setup deferred)\n",
-                dev_path, ctx->width, ctx->height);
+        ctx->stride = fmt.fmt.pix.bytesperline;
+        fprintf(stderr, "[v4l-cam] %s opened, BGR24 %dx%d stride=%d (setup deferred)\n",
+                dev_path, ctx->width, ctx->height, ctx->stride);
     } else {
         /* fallback: NV12 */
         fmt.type                = V4L2_BUF_TYPE_VIDEO_CAPTURE;
         fmt.fmt.pix.pixelformat = V4L2_PIX_FMT_NV12;
         fmt.fmt.pix.width       = width;
         fmt.fmt.pix.height      = height;
+        fmt.fmt.pix.field       = V4L2_FIELD_NONE;
         if (xioctl(ctx->fd, VIDIOC_S_FMT, &fmt) < 0) {
             fprintf(stderr, "[v4l-cam] VIDIOC_S_FMT(NV12,%dx%d) failed: %s\n",
                     width, height, strerror(errno));
@@ -228,8 +232,9 @@ v4l_cam_ctx_t* v4l_cam_open(int device, int width, int height)
         ctx->is_bgr = false;
         ctx->width  = fmt.fmt.pix.width;
         ctx->height = fmt.fmt.pix.height;
-        fprintf(stderr, "[v4l-cam] %s opened, NV12 %dx%d (setup deferred)\n",
-                dev_path, ctx->width, ctx->height);
+        ctx->stride = fmt.fmt.pix.bytesperline;
+        fprintf(stderr, "[v4l-cam] %s opened, NV12 %dx%d stride=%d (setup deferred)\n",
+                dev_path, ctx->width, ctx->height, ctx->stride);
     }
 
     /* 4. REQBUFS + QBUF + STREAMON deferred to first read(),
@@ -375,13 +380,21 @@ int v4l_cam_read(v4l_cam_ctx_t* ctx,
          * overwritten on the next loop iteration if even newer frames
          * are waiting, otherwise it's the one we return. */
         if (ctx->is_bgr) {
-            memcpy(ctx->output, ctx->bufs[dbuf.index].mmap,
-                   ctx->width * ctx->height * 3);
+            const uint8_t *src = ctx->bufs[dbuf.index].mmap;
+            uint8_t *dst = ctx->output;
+            /* BGR24: each row is ctx->stride bytes in the source,
+             * but only width*3 valid pixels — copy row by row */
+            for (int row = 0; row < ctx->height; row++) {
+                memcpy(dst + row * ctx->width * 3,
+                       src + row * ctx->stride,
+                       ctx->width * 3);
+            }
         } else {
             const uint8_t *y_plane  = ctx->bufs[dbuf.index].mmap;
-            const uint8_t *uv_plane = y_plane + ctx->width * ctx->height;
+            const uint8_t *uv_plane = y_plane + ctx->stride * ctx->height;
             nv12_to_bgr_full(y_plane, uv_plane,
-                             ctx->width, ctx->height, ctx->output);
+                             ctx->width, ctx->height, ctx->stride,
+                             ctx->output);
         }
 
         /* if another frame is already queued, keep draining; otherwise

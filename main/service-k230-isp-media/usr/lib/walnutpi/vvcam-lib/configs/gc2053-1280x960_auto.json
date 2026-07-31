@@ -5,7 +5,7 @@
       "enable": true,
       "semMode": 0,
       "antiFlikerMode": 1,
-      "setPoint": 30,
+      "setPoint": 50,
       "tolerance": 10,
       "dampOver": 0.3,
       "dampOverGain": 4.0,
@@ -127,7 +127,7 @@
     },
     {
       "classname": "AGamma64",
-      "enable": true,
+      "enable": false,
       "tables": [
         {
           "curve": [
@@ -236,7 +236,7 @@
         {
           "hdr": false,
           "gains": [ 2, 4, 8, 16, 32 ],
-          "strength": [ 0.3, 0.2, 0.1, 0.0, 0.0 ]
+          "strength": [ 1.0, 1.0, 0.0, 0.0, 0.0 ]
         },
         {
           "hdr": true,
@@ -247,7 +247,7 @@
     },
     {
       "classname": "ACproc",
-      "enable": false,
+      "enable": true,
       "tables": [
         {
           "bright": [0, 0, 0, 0, 0],
@@ -269,7 +269,7 @@
     },
     {
       "classname": "Aeev1",
-      "enable": false,
+      "enable": true,
       "tables": [
         {
           "ca_curve": [
@@ -487,7 +487,7 @@
     },
     {
       "classname": "ADmscv2",
-      "enable": false,
+      "enable": true,
       "tables": [
         {
           "dmsc_denoise_strength": [0, 0, 2, 4, 8, 10],
@@ -587,7 +587,7 @@
     },
     {
       "classname": "A3dnrv3_1",
-      "enable": false,
+      "enable": true,
       "tables": [
         {
           "blend_motion": [95, 95, 95, 90, 85, 80],
@@ -635,7 +635,7 @@
     },
     {
       "classname": "ADpf",
-      "enable": false,
+      "enable": true,
       "tables": [
         {
           "div": [18, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4],
@@ -799,7 +799,7 @@
     },
     {
       "classname": "ABls",
-      "enable": false,
+      "enable": true,
       "tables": [
         {
           "bls": [[64, 64, 64, 64],[64, 64, 64, 64],[60, 60, 60, 60],[56, 56, 56, 56],[52, 52, 52, 52] ],

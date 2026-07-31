@@ -1,11 +1,12 @@
-
+'''用于从csi摄像头读取图像的库'''
+import atexit
 import ctypes
 import os
 
 import cv2
 import numpy as np
 
-from ._SensorSetting import SensorSetting, SensorMode
+from ._SensorSetting import SensorSetting, SensorMode, DEV_ISP
 
 # ── load C library ──────────────────────────────────────────────────
 _so_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
@@ -52,8 +53,10 @@ gc2093 = SensorSetting(
     i2c_addr=0x37,
     sensor="gc2093",
     mode=[
-        # SensorMode(1920, 1080, 30, 0),
         SensorMode(1920, 1080, 60, 1),
+        SensorMode(1920, 1080, 30, 0),
+        SensorMode(1280, 960, 90, 2),
+        SensorMode(1280, 720, 90, 3),
     ]
 )
 
@@ -61,40 +64,66 @@ ov5647 = SensorSetting(
     i2c_addr=0x36,
     sensor="ov5647",
     mode=[
-        SensorMode(1920, 1080, 30, 0)
+        SensorMode(1920, 1080, 30, 0),
+        SensorMode(2592, 1944, 10, 1),
+        SensorMode(1280, 960, 45, 2),
+        SensorMode(1280, 720, 60, 3),
+        SensorMode(640, 480, 90, 4),
     ]
 )
 
 sensor_list = [gc2093, ov5647]
 
 
-class Sensor:
-    """K230 camera sensor, backed by libv4l-cam.so for V4L2 capture."""
 
-    def __init__(self, width: int = 1920, height: int = 1080) -> None:
+class Sensor:
+
+    def sensor_init(self):
+        self.sensor = self._scan_sensor()
+        self.sensor.set_closest_mode(self.width, self.height, self.fps)
+
+    def __init__(self, width: int = 1920, height: int = 1080, id: int = 2) -> None:
+        """初始化摄像头传感器。
+        
+        参数:
+            width: 目标图像宽度，默认 1920。
+            height: 目标图像高度，默认 1080。
+        """
         self.fps = 60
         self.sensor = self._scan_sensor()
         self._ctx = None
         self._hmirror = False
         self._vflip = False
+        self.isp_num = id
+        self._v4l2_dev = (id + 1) * 3  # e.g. sensor=0 → /dev/video3
 
-        # determine the nearest 16:9 sensor mode and the V4L2 resolution
-        # that preserves aspect ratio (avoids distortion)
-        self.mode = self.sensor.get_mode(width, height, self.fps)
+
+        self.mode = self.sensor.get_mode(self.isp_num)
         self.width = width
         self.height = height
         self._v4l2_w, self._v4l2_h = self._calc_v4l2_size(width, height)
-        self.sensor.set_mode(self.mode)
 
         # open V4L2 device
-        self._ctx = _lib.v4l_cam_open(1, self._v4l2_w, self._v4l2_h)
+        self._ctx = _lib.v4l_cam_open(self._v4l2_dev, self._v4l2_w, self._v4l2_h)
         if not self._ctx:
-            raise RuntimeError("v4l_cam_open failed: cannot open /dev/video1")
+            raise RuntimeError(f"v4l_cam_open failed: cannot open /dev/{self._v4l2_dev}")
+
+        # Best-effort cleanup on normal exit.  Ctrl+C (SIGINT)
+        # works naturally now: v4l-cam.c no longer retries poll()
+        # on EINTR, so KeyboardInterrupt can be delivered to Python
+        # even when blocked in read().  The calling code should use
+        # try/finally to call release() explicitly.
+        atexit.register(self.release)
 
     # ── public API ───────────────────────────────────────────────
 
     def read(self):
-        """Read one BGR frame. Returns (True, img) or (False, None)."""
+        """读取一帧图像。
+        
+        返回:
+            (True, img): 读取成功，img 为 numpy 数组格式的 BGR 图像。
+            (False, None): 读取失败。
+        """
         data_ptr = ctypes.POINTER(ctypes.c_uint8)()
         w = ctypes.c_int()
         h = ctypes.c_int()
@@ -123,35 +152,38 @@ class Sensor:
         return True, img
 
     def set_framesize(self, width: int = 1920, height: int = 1080):
-        """Change frame size. Re-opens the V4L2 device with new resolution."""
+        """修改read函数返回的图像尺寸。
+        
+        参数:
+            width: 新的目标宽度，默认 1920。
+            height: 新的目标高度，默认 1080。
+        """
         self.width = width
         self.height = height
-        self.mode = self.sensor.get_mode(width, height, self.fps)
         self._v4l2_w, self._v4l2_h = self._calc_v4l2_size(width, height)
-        self.sensor.set_mode(self.mode)
+        self.mode = self.sensor.get_mode(self.isp_num)
 
         # reopen device with new resolution
         if self._ctx:
             _lib.v4l_cam_close(self._ctx)
-        self._ctx = _lib.v4l_cam_open(1, self._v4l2_w, self._v4l2_h)
+        self._ctx = _lib.v4l_cam_open(self._v4l2_dev, self._v4l2_w, self._v4l2_h)
         if not self._ctx:
             raise RuntimeError("v4l_cam_open failed in set_framesize")
 
     def _reopen(self):
-        """Close and re-open the V4L2 device from scratch."""
+        """关闭并重新打开 V4L2 设备。"""
         if self._ctx:
             _lib.v4l_cam_close(self._ctx)
             self._ctx = None
-        self.sensor.set_mode(self.mode)
-        self._ctx = _lib.v4l_cam_open(1, self._v4l2_w, self._v4l2_h)
+        self._ctx = _lib.v4l_cam_open(self._v4l2_dev, self._v4l2_w, self._v4l2_h)
         if not self._ctx:
             raise RuntimeError("v4l_cam_open failed during reopen")
 
     def set_hmirror(self, enable: bool = True):
-        """Hardware horizontal mirror (V4L2_CID_HFLIP).
+        """水平镜像功能
         
-        Because most V4L2 drivers do not allow changing this control while
-        the stream is active, we close and re-open the device internally.
+        参数:
+            enable: True 开启水平镜像，False 关闭，默认 True。
         """
         if not self._ctx:
             return
@@ -163,10 +195,10 @@ class Sensor:
         _lib.v4l_cam_set_hmirror(self._ctx, 1 if enable else 0)
 
     def set_vflip(self, enable: bool = True):
-        """Hardware vertical flip (V4L2_CID_VFLIP).
-        
-        Because most V4L2 drivers do not allow changing this control while
-        the stream is active, we close and re-open the device internally.
+        """垂直翻转
+
+        参数:
+            enable: True 开启垂直翻转，False 关闭，默认 True。
         """
         if not self._ctx:
             return
@@ -178,33 +210,48 @@ class Sensor:
         _lib.v4l_cam_set_vflip(self._ctx, 1 if enable else 0)
 
     def isOpened(self):
-        """Compatibility with cv2.VideoCapture API."""
+        """判断摄像头是否已打开。
+        
+        返回:
+            bool: 摄像头已打开返回 True，否则返回 False。
+        """
         return self._ctx is not None
 
     def release(self):
-        """Close the camera."""
+        """关闭摄像头，释放 V4L2 设备资源。"""
         if self._ctx:
             _lib.v4l_cam_close(self._ctx)
             self._ctx = None
 
     def __del__(self):
+        # Belt-and-suspenders: also try to clean up via GC
         self.release()
 
     # ── internals ────────────────────────────────────────────────
 
     def _scan_sensor(self, i2c_bus: int = 0) -> SensorSetting:
-        """Scan I2C bus for known sensors."""
+        """在指定 I2C 总线上扫描已知的摄像头传感器。
+        
+        参数:
+            i2c_bus: I2C 总线编号，默认 0。
+        
+        返回:
+            SensorSetting: 匹配到的传感器配置对象，若未匹配到则默认返回 gc2093。
+        """
         for setting in sensor_list:
             if setting.check_i2c(i2c_bus):
                 return setting
         return gc2093  # fallback
 
     def _calc_v4l2_size(self, width: int, height: int):
-        """
-        Calculate the V4L2 capture resolution that preserves the sensor's
-        native aspect ratio (16:9).  When the user requests e.g. 640x480 (4:3)
-        we actually open a 16:9 resolution that covers the requested area,
-        then crop + resize in read() to avoid distortion.
+        """内部使用，计算保持传感器原始宽高比（16:9）的 V4L2 采集分辨率。
+        
+        参数:
+            width: 目标宽度。
+            height: 目标高度。
+        
+        返回:
+            tuple[int, int]: 计算后的 V4L2 采集宽度和高度。
         """
         sensor_w = self.mode.width
         sensor_h = self.mode.height

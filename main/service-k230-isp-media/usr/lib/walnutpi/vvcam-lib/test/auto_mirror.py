@@ -25,14 +25,14 @@ mirrof=False
 while True:
     #计算帧率
     count+=1    
-    if time.time()-pt >=1 : #超过1秒
+    if time.time()-pt >=3 : #超过1秒
         fps=1/((time.time()-pt)/count)#计算帧率
         fps = round(fps, 1)
         count=0
         pt=time.time()
         print("FPS:",fps)
-    mirrof = not mirrof
-    cap.set_hmirror(mirrof) # 水平镜像
+        mirrof = not mirrof
+        cap.set_hmirror(mirrof) # 水平镜像
         
 
     # 摄像头读取一帧图像    

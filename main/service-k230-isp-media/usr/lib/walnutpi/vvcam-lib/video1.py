@@ -7,7 +7,8 @@ from walnutpi import Display,IDE
 Display.init()
 
 # 打开摄像头
-cap = k230_sensor.Sensor(640, 480)
+cap = k230_sensor.Sensor(640, 480, 0)
+# cap = k230_sensor.Sensor(640, 480)
 
 if not cap.isOpened():
     print("Cannot open camera")
