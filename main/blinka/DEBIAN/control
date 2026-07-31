@@ -1,9 +1,9 @@
 Package: blinka
 Description: control the gpio with python
-Version: 0.3
+Version: 0.3.1
 Maintainer: sc-bin <3335447573@qq.com>
 Section: free
 Priority: optional
-Installed-Size: 5888
+Installed-Size: 6196
 Architecture: all
 Depends: make, gcc
